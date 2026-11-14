@@ -119,3 +119,36 @@ export type EnvironmentId = Environment["id"];
 export type Region = z.infer<typeof regionsFileSchema>["regions"][number];
 export type HazardId = (typeof HAZARD_IDS)[number];
 export type RegionId = (typeof REGION_IDS)[number];
+
+const clause = z.object({ metric: z.string(), op: z.enum([">", ">=", "<", "<="]), value: z.number() });
+export const conditionCardSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  severity: z.enum(["watch", "act"]),
+  when: z.union([z.object({ all: z.array(clause).min(1) }), z.object({ any: z.array(clause).min(1) })]),
+  supersedes: z.array(z.string()).optional(),
+  tHarmMin: z.number().positive(),
+  assumption: z.boolean(),
+  bodyRegions: z.array(z.enum(REGION_IDS)),
+  hazards: z.array(z.enum(HAZARD_IDS)),
+  plain: z.string(),
+  steps: z.array(z.string()).min(1),
+  escalation: z.string(),
+  redFlags: z.array(z.string()),
+  sources: z.array(z.object({ title: z.string(), url: z.string().url() })),
+});
+const detectorCard = z.object({
+  name: z.string(),
+  tHarmMin: z.number().optional(),
+  assumption: z.boolean(),
+  plain: z.string(),
+  steps: z.array(z.string()),
+  escalation: z.string(),
+});
+export const conditionsFileSchema = z.object({
+  _note: z.string(),
+  cards: z.array(conditionCardSchema),
+  detectorCards: z.object({ unusual: detectorCard, drift: detectorCard }),
+});
+export type ConditionCard = z.infer<typeof conditionCardSchema>;
+export type Clause = z.infer<typeof clause>;

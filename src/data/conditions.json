@@ -1,0 +1,426 @@
+{
+  "_note": "Condition cards are DATA. A medic can change a limit or T_harm here without touching code. Every T_harm marked assumption: true is an ASSUMPTION for the prototype, not a medical standard.",
+  "cards": [
+    {
+      "id": "fever-tachycardia",
+      "name": "Fever with fast heart rate",
+      "severity": "act",
+      "when": {
+        "all": [
+          {
+            "metric": "temp.temp",
+            "op": ">=",
+            "value": 38.0
+          },
+          {
+            "metric": "hr.hr",
+            "op": ">",
+            "value": 100
+          }
+        ]
+      },
+      "tHarmMin": 60,
+      "assumption": true,
+      "bodyRegions": [
+        "skin",
+        "heart"
+      ],
+      "hazards": [
+        "hostile",
+        "radiation",
+        "isolation"
+      ],
+      "plain": "Your temperature is high and your heart is beating fast at rest. Together these can mean your body is fighting an infection and may get worse within hours.",
+      "steps": [
+        "Stop work and rest lying down in your crew quarters.",
+        "Drink 250 ml of water now and keep sipping.",
+        "Re-measure temperature and heart rate in 30 minutes.",
+        "Ask a crewmate to stay nearby and check on you."
+      ],
+      "escalation": "Tell the Crew Medical Officer (CMO) now. The CMO decides what to do next using the on-board medical guide.",
+      "redFlags": [
+        "Confused or very drowsy",
+        "Hard to breathe",
+        "Stiff neck or a rash that does not fade when pressed"
+      ],
+      "sources": [
+        {
+          "title": "MedlinePlus: Fever",
+          "url": "https://medlineplus.gov/fever.html"
+        },
+        {
+          "title": "American Heart Association: Tachycardia",
+          "url": "https://www.heart.org/en/health-topics/arrhythmia/about-arrhythmia/tachycardia--fast-heart-rate"
+        }
+      ],
+      "supersedes": [
+        "fever"
+      ]
+    },
+    {
+      "id": "fever",
+      "name": "Fever",
+      "severity": "act",
+      "when": {
+        "all": [
+          {
+            "metric": "temp.temp",
+            "op": ">=",
+            "value": 38.0
+          }
+        ]
+      },
+      "tHarmMin": 240,
+      "assumption": true,
+      "bodyRegions": [
+        "skin"
+      ],
+      "hazards": [
+        "hostile",
+        "isolation"
+      ],
+      "plain": "Your temperature is 38 °C or higher. A fever usually means an infection; in space your immune system may be weaker than on Earth.",
+      "steps": [
+        "Rest and drink fluids.",
+        "Note any other symptoms: cough, sore throat, rash, pain.",
+        "Re-measure in 2 hours.",
+        "Keep a little distance from crewmates until it settles."
+      ],
+      "escalation": "Tell the CMO today. If it rises above 39 °C, tell the CMO straight away.",
+      "redFlags": [
+        "Temperature above 39 °C",
+        "Confused",
+        "Stiff neck"
+      ],
+      "sources": [
+        {
+          "title": "MedlinePlus: Fever",
+          "url": "https://medlineplus.gov/fever.html"
+        }
+      ]
+    },
+    {
+      "id": "bp-crisis",
+      "name": "Very high blood pressure",
+      "severity": "act",
+      "when": {
+        "any": [
+          {
+            "metric": "bp.systolic",
+            "op": ">=",
+            "value": 180
+          },
+          {
+            "metric": "bp.diastolic",
+            "op": ">=",
+            "value": 120
+          }
+        ]
+      },
+      "tHarmMin": 60,
+      "assumption": true,
+      "bodyRegions": [
+        "heart",
+        "brain"
+      ],
+      "hazards": [
+        "gravity",
+        "isolation"
+      ],
+      "plain": "Blood pressure this high can strain the heart and brain quickly.",
+      "steps": [
+        "Sit still, breathe slowly for 5 minutes.",
+        "Re-measure after 5 minutes on the other arm."
+      ],
+      "escalation": "Tell the CMO now, even if you feel fine.",
+      "redFlags": [
+        "Chest pain",
+        "Very bad headache or blurred vision",
+        "Weak or numb on one side, trouble speaking"
+      ],
+      "sources": [
+        {
+          "title": "American Heart Association: Hypertensive crisis",
+          "url": "https://www.heart.org/en/health-topics/high-blood-pressure/understanding-blood-pressure-readings/hypertensive-crisis-when-you-should-call-911-for-high-blood-pressure"
+        }
+      ],
+      "supersedes": [
+        "bp-high"
+      ]
+    },
+    {
+      "id": "bp-high",
+      "name": "High blood pressure",
+      "severity": "act",
+      "when": {
+        "any": [
+          {
+            "metric": "bp.systolic",
+            "op": ">=",
+            "value": 140
+          },
+          {
+            "metric": "bp.diastolic",
+            "op": ">=",
+            "value": 90
+          }
+        ]
+      },
+      "tHarmMin": 10080,
+      "assumption": true,
+      "bodyRegions": [
+        "heart"
+      ],
+      "hazards": [
+        "gravity",
+        "isolation",
+        "hostile"
+      ],
+      "plain": "Your blood pressure is in the high range. It is not an emergency on its own, but it should come down over the next days.",
+      "steps": [
+        "Rest 10 minutes and re-measure.",
+        "Keep salt low and drink your water ration.",
+        "Protect tonight's sleep.",
+        "Do your planned aerobic exercise."
+      ],
+      "escalation": "Tell the CMO today and re-measure every 4 hours.",
+      "redFlags": [
+        "Chest pain",
+        "Very bad headache or blurred vision"
+      ],
+      "sources": [
+        {
+          "title": "American Heart Association: Understanding blood pressure readings",
+          "url": "https://www.heart.org/en/health-topics/high-blood-pressure/understanding-blood-pressure-readings"
+        }
+      ]
+    },
+    {
+      "id": "low-oxygen",
+      "name": "Low blood oxygen",
+      "severity": "act",
+      "when": {
+        "all": [
+          {
+            "metric": "spo2.spo2",
+            "op": "<",
+            "value": 92
+          }
+        ]
+      },
+      "tHarmMin": 30,
+      "assumption": true,
+      "bodyRegions": [
+        "lungs",
+        "heart"
+      ],
+      "hazards": [
+        "hostile"
+      ],
+      "plain": "Your blood is carrying less oxygen than it should. This can come from the cabin air or from your lungs.",
+      "steps": [
+        "Check the cabin O₂/CO₂ display.",
+        "Sit upright and breathe slowly and deeply.",
+        "Re-measure in 5 minutes with warm hands."
+      ],
+      "escalation": "Tell the CMO now. If the cabin air is fine, the CMO decides on oxygen using the on-board guide.",
+      "redFlags": [
+        "Hard to breathe at rest",
+        "Blue lips or fingertips",
+        "Confused"
+      ],
+      "sources": [
+        {
+          "title": "MedlinePlus: Pulse oximetry",
+          "url": "https://medlineplus.gov/lab-tests/pulse-oximetry/"
+        }
+      ]
+    },
+    {
+      "id": "low-sugar",
+      "name": "Low blood sugar",
+      "severity": "act",
+      "when": {
+        "all": [
+          {
+            "metric": "glucose.glucose",
+            "op": "<",
+            "value": 54
+          }
+        ]
+      },
+      "tHarmMin": 15,
+      "assumption": true,
+      "bodyRegions": [
+        "gut",
+        "brain"
+      ],
+      "hazards": [
+        "isolation"
+      ],
+      "plain": "Your blood sugar is very low. It can make you shaky, confused or faint within minutes.",
+      "steps": [
+        "Eat or drink 15 g of fast sugar now (a juice pouch).",
+        "Re-measure in 15 minutes.",
+        "Eat a proper snack once it is back above 70 mg/dL."
+      ],
+      "escalation": "Tell the CMO now.",
+      "redFlags": [
+        "Confused or hard to wake",
+        "Shaking and sweating"
+      ],
+      "sources": [
+        {
+          "title": "American Diabetes Association: Standards of Care (hypoglycaemia levels)",
+          "url": "https://professional.diabetes.org/standards-of-care"
+        }
+      ]
+    },
+    {
+      "id": "slow-heart",
+      "name": "Very slow heart rate",
+      "severity": "act",
+      "when": {
+        "all": [
+          {
+            "metric": "hr.hr",
+            "op": "<",
+            "value": 40
+          }
+        ]
+      },
+      "tHarmMin": 60,
+      "assumption": true,
+      "bodyRegions": [
+        "heart"
+      ],
+      "hazards": [
+        "gravity"
+      ],
+      "plain": "Your resting heart rate is very slow. In fit people it can be normal, but with dizziness it needs attention.",
+      "steps": [
+        "Lie down.",
+        "Re-measure in 10 minutes."
+      ],
+      "escalation": "Tell the CMO now if you feel dizzy or faint.",
+      "redFlags": [
+        "Fainting or nearly fainting",
+        "Chest pain"
+      ],
+      "sources": [
+        {
+          "title": "American Heart Association: Bradycardia",
+          "url": "https://www.heart.org/en/health-topics/arrhythmia/about-arrhythmia/bradycardia--slow-heart-rate"
+        }
+      ]
+    },
+    {
+      "id": "sleep-loss",
+      "name": "Severe sleep loss",
+      "severity": "act",
+      "when": {
+        "all": [
+          {
+            "metric": "sleep.hours",
+            "op": "<",
+            "value": 5
+          }
+        ]
+      },
+      "tHarmMin": 1440,
+      "assumption": true,
+      "bodyRegions": [
+        "brain"
+      ],
+      "hazards": [
+        "isolation",
+        "hostile",
+        "distance"
+      ],
+      "plain": "You slept less than 5 hours. Your reactions and judgement are slower today.",
+      "steps": [
+        "No safety-critical tasks (EVA, docking, piloting) today.",
+        "Lights out at 22:00, no screens for an hour before.",
+        "No caffeine after 14:00.",
+        "Crew check-in: talk with a crewmate."
+      ],
+      "escalation": "Tell the CMO and the commander so the schedule can change on board.",
+      "redFlags": [
+        "Falling asleep during tasks",
+        "Confused or making unusual mistakes"
+      ],
+      "sources": [
+        {
+          "title": "Watson et al. (2015) Recommended amount of sleep for a healthy adult",
+          "url": "https://doi.org/10.5664/jcsm.4758"
+        }
+      ]
+    },
+    {
+      "id": "low-mood",
+      "name": "Very low mood",
+      "severity": "act",
+      "when": {
+        "all": [
+          {
+            "metric": "mood.mood",
+            "op": "<",
+            "value": 3
+          }
+        ]
+      },
+      "tHarmMin": 2880,
+      "assumption": true,
+      "bodyRegions": [
+        "brain"
+      ],
+      "hazards": [
+        "isolation",
+        "distance"
+      ],
+      "plain": "Your mood is very low. Long isolation and distance from home make this common, and it gets better with support.",
+      "steps": [
+        "Talk to a crewmate today.",
+        "Record a message to family for the next link window.",
+        "Do 20 minutes of exercise you enjoy.",
+        "Keep a regular sleep time."
+      ],
+      "escalation": "Tell the commander or CMO today. Use the buddy system.",
+      "redFlags": [
+        "Thoughts of harming yourself",
+        "Not eating or drinking"
+      ],
+      "sources": [
+        {
+          "title": "NASA Human Research Program: Hazards of human spaceflight",
+          "url": "https://www.nasa.gov/hrp/hazards/"
+        }
+      ]
+    }
+  ],
+  "detectorCards": {
+    "unusual": {
+      "name": "Unusual day for you",
+      "tHarmMin": 720,
+      "assumption": true,
+      "plain": "Several of your readings are each a little off at the same time. On their own none would set off an alarm, but together they are unusual for you.",
+      "steps": [
+        "Re-measure the flagged readings in 2 hours.",
+        "Note any symptoms (feeling hot, aches, cough, headache).",
+        "Rest and drink water."
+      ],
+      "escalation": "If anything is worse at the re-check, tell the CMO."
+    },
+    "drift": {
+      "name": "Slow drift",
+      "assumption": true,
+      "plain": "One reading has been creeping in the same direction for days. No single day looks wrong, but the trend will reach the limit if it continues.",
+      "steps": [
+        "Keep measuring daily at the same time.",
+        "Look at sleep, exercise, salt and stress over the same days.",
+        "Follow the recovery steps for this reading."
+      ],
+      "escalation": "Tell the CMO at the next medical check-in and include the trend in a Consult Packet."
+    }
+  }
+}

@@ -5,7 +5,8 @@
 import indicatorsJson from "./indicators.json";
 import hazardsJson from "./hazards.json";
 import regionsJson from "./regions.json";
-import { hazardsFileSchema, indicatorsFileSchema, regionsFileSchema } from "./schema";
+import conditionsJson from "./conditions.json";
+import { conditionsFileSchema, hazardsFileSchema, indicatorsFileSchema, regionsFileSchema } from "./schema";
 import type { EnvironmentId, HazardId, Indicator, RegionId } from "./schema";
 
 export * from "./schema";
@@ -13,6 +14,7 @@ export * from "./schema";
 const indicatorsFile = indicatorsFileSchema.parse(indicatorsJson);
 const hazardsFile = hazardsFileSchema.parse(hazardsJson);
 const regionsFile = regionsFileSchema.parse(regionsJson);
+const conditionsFile = conditionsFileSchema.parse(conditionsJson);
 
 export const INDICATORS = indicatorsFile.indicators;
 export const READINESS = indicatorsFile.readiness;
@@ -20,6 +22,8 @@ export const HAZARDS = hazardsFile.hazards;
 export const ENVIRONMENTS = hazardsFile.environments;
 export const ENVIRONMENT_NOTE = hazardsFile.environmentNote;
 export const REGIONS = regionsFile.regions;
+export const CONDITION_CARDS = conditionsFile.cards;
+export const DETECTOR_CARDS = conditionsFile.detectorCards;
 
 export const indicatorById = (id: string): Indicator => {
   const found = INDICATORS.find((i) => i.id === id);

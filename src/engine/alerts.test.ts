@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { indicatorById } from "../data";
 import { evaluate, slope, thresholdStatus, worst } from "./alerts";
-import { PROFILES } from "./profiles";
+import { profileById } from "./profiles";
 import { buildHistory, type Reading } from "./simulation";
 import { briefSentence, dueIndicators, readiness } from "./readiness";
 
@@ -9,7 +9,12 @@ const bp = indicatorById("bp");
 const spo2 = indicatorById("spo2");
 const rad = indicatorById("radiation");
 const sleep = indicatorById("sleep");
-const base = PROFILES[0].baselines;
+const base = {
+  "bp.systolic": { mean: 120, sd: 5 },
+  "bp.diastolic": { mean: 76, sd: 4 },
+  "hr.hr": { mean: 62, sd: 4 },
+  "hr.hrv": { mean: 58, sd: 8 },
+};
 
 const r = (indicatorId: string, day: number, ...values: number[]): Reading => ({ indicatorId, day, values, source: "sim" });
 
@@ -103,9 +108,9 @@ describe("helpers", () => {
 });
 
 describe("Day 120 scenario (integration)", () => {
-  const profile = PROFILES[0];
+  const profile = profileById("vega");
   const evalAll = (day: number) => {
-    const h = buildHistory(profile, "spacecraft", day, []);
+    const h = buildHistory(profile, "spacecraft", day, [], 1, true);
     return Object.fromEntries(Object.entries(h).map(([id, list]) => [id, evaluate(indicatorById(id), list, profile.baselines, day)]));
   };
 

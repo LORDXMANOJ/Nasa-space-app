@@ -12,8 +12,11 @@ export type Status = "nominal" | "watch" | "act" | "stale";
 export type Rule = "threshold" | "baseline" | "trend" | "none" | "stale";
 export type Confidence = "high" | "medium" | "low";
 
+export type DetectorName = "Rules" | "Personal baseline" | "Trend" | "Unusual day" | "Slow drift" | "None";
+
 export interface Evaluation {
   status: Status;
+  detector?: DetectorName;
   reason: string;
   rule: Rule;
   confidence: Confidence;
@@ -79,6 +82,7 @@ function evaluateMetric(
   idx: number,
   readings: Reading[],
   baseline: MetricBaseline | undefined,
+  skipStats = false,
 ): MetricResult {
   const latest = readings[readings.length - 1];
   const v = latest.values[idx];
@@ -97,7 +101,7 @@ function evaluateMetric(
     });
   }
 
-  if (baseline && baseline.sd > 0 && !m.cumulative) {
+  if (baseline && baseline.sd > 0 && !m.cumulative && !skipStats) {
     const z = (v - baseline.mean) / baseline.sd;
     const bad = dir === "both" ? Math.abs(z) : dir === "high" ? z : -z;
     if (bad >= Z_LIMIT) {
@@ -143,6 +147,8 @@ export function evaluate(
   readings: Reading[],
   baselines: Record<string, MetricBaseline>,
   currentDay: number,
+  /** Metric keys ("ind.metric") whose baseline/trend rules are handled by the multivariate detectors instead. */
+  skipStats: ReadonlySet<string> = new Set(),
 ): Evaluation {
   if (readings.length === 0) {
     return { status: "stale", rule: "stale", confidence: "low", reason: "No readings yet. Take a measurement to see your status." };
@@ -161,7 +167,8 @@ export function evaluate(
 
   let best: (MetricResult & { metricKey: string }) | undefined;
   ind.metrics.forEach((m, i) => {
-    const r = { ...evaluateMetric(m, i, readings, baselines[`${ind.id}.${m.key}`]), metricKey: m.key };
+    const key = `${ind.id}.${m.key}`;
+    const r = { ...evaluateMetric(m, i, readings, baselines[key], skipStats.has(key)), metricKey: m.key };
     if (!best || RANK[r.status] > RANK[best.status] || (RANK[r.status] === RANK[best.status] && r.priority > best.priority)) {
       best = r;
     }
@@ -171,5 +178,6 @@ export function evaluate(
   const confidence: Confidence =
     n === 1 ? "low" : b.rule === "threshold" ? (n >= 3 ? "high" : "medium") : b.rule === "none" ? (n >= 3 ? "high" : "medium") : n >= 5 ? "medium" : "low";
 
-  return { status: b.status, reason: b.reason, rule: b.rule, confidence, metricKey: b.metricKey, z: b.z, slope: b.slope, latest };
+  const detector: DetectorName = b.rule === "threshold" ? "Rules" : b.rule === "baseline" ? "Personal baseline" : b.rule === "trend" ? "Trend" : "None";
+  return { status: b.status, detector, reason: b.reason, rule: b.rule, confidence, metricKey: b.metricKey, z: b.z, slope: b.slope, latest };
 }
