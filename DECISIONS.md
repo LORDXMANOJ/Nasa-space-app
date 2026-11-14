@@ -30,7 +30,8 @@ The teammate's source wasn't available, so all logic was re-implemented from the
 - **Body mass added as a 9th indicator** (user direction). Shown as kg plus % change since launch. Watch at ±5 %, Act at ±10 % (clinical rule of thumb for unintended weight change). Weekly cadence. Maps to gut/metabolism and bones & muscles, which also covers the nutrition and muscle/bone-loss hazards the court pointed out. The device name is generic until the ISS device name (SLAMMD) is verified.
 - **Web first, Electron later** (user direction). Vite `base: "./"` and a hash router keep the build loadable from `file://`, so wrapping it later is a packaging task, not a rewrite.
 - **3D body is procedural** (capsules and spheres), not a downloaded anatomy model. There's no licence risk, nothing to attribute, it stays light, and the brief allows this fallback. A licensed GLB can replace it later.
-- **Fonts:** IBM Plex Sans + IBM Plex Mono via `@fontsource` (OFL, bundled locally). Icons: lucide-react (ISC), bundled.
+- **Fonts:** Public Sans (UI, the U.S. government document typeface) + IBM Plex Mono (JSON preview only) via `@fontsource` (OFL, bundled locally). Icons: lucide-react (ISC), bundled.
+- **Redesign (2026-11-14):** light "crew procedure sheet" world chosen by the user from an impeccable seeded direction round; see DESIGN.md and PRODUCT.md.
 - **Status vocabulary:** Nominal / Watch / Act / Stale, each with its own shape (circle / triangle / octagon / dashed circle) so colour is never the only signal.
 
 ## Court verdict (11–1 GUILTY: "idea sound, plan overloaded"), adopted as the build order

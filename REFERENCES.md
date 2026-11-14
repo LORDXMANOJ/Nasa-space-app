@@ -46,7 +46,7 @@ Claims about ISS private medical conferences, scheduled exams and research senso
 
 | Asset | Licence |
 |---|---|
-| IBM Plex Sans 5.3.0, IBM Plex Mono 5.3.0 via @fontsource | SIL Open Font License 1.1 |
+| Public Sans 5.3.0 (UI), IBM Plex Mono 5.3.0 (data preview only) via @fontsource | SIL Open Font License 1.1 |
 | lucide-react 1.73.0 icons | ISC |
 | App icon (`public/icon.svg`) | Original, made for this project |
 | 3D body | Procedural (three.js capsules and spheres), original; no third-party model |

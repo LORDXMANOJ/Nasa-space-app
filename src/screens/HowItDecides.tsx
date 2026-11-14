@@ -205,7 +205,7 @@ export function HowItDecides() {
           </ul>
           <h3>Software and assets</h3>
           <p className="dim">
-            React, React Router, Zustand, Recharts, three.js, @react-three/fiber, @react-three/drei, Zod (MIT); Dexie (Apache-2.0); lucide-react icons (ISC); IBM Plex Sans and
+            React, React Router, Zustand, Recharts, three.js, @react-three/fiber, @react-three/drei, Zod (MIT); Dexie (Apache-2.0); lucide-react icons (ISC); Public Sans and
             IBM Plex Mono fonts (SIL Open Font License 1.1, bundled). The 3D body is procedural (no third-party model). Full list with licences in REFERENCES.md.
           </p>
         </section>
