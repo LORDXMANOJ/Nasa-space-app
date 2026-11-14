@@ -2,6 +2,23 @@
 
 Short log of choices made during the build, newest first. Each line says what we chose and why.
 
+## LightLag merge (2026-11-14)
+
+The teammate's source wasn't available, so all logic was re-implemented from the add-on brief in TypeScript and re-measured on our code.
+- **Earth reply:** default mission is Mars transit at 22 min one-way (64 min reply). The user's "Earth takes weeks" case is **solar conjunction** (no contact for about 2 weeks, so everything is handled on board and packets queue). Environment modes map to presets: station→ISS, rover→Moon, spacecraft→Mars transit, base→Mars base.
+- **No Ollama:** the assistant gives pre-written answers only. That keeps the CSP strict, needs no model download, and the "pre-written" label is honest.
+- **Alert engine:** for the 7 core readings, the z-score/trend rules are replaced by the three detectors. A core *Watch* limit only fires if the value is also ≥ 2 sd from the person's own normal; *Act* limits always fire. Without this gate, 28 % of normal days were flagged in the Monte Carlo check.
+- **Tuning (measured):**
+  - covariance inflation ×1.35;
+  - CUSUM z uses sd ×1.3, k = 0.75, h = 6;
+  - sd floors per metric.
+
+  Results: unusual-day false alarms 0.92 %/day, steady false drift 1.3 %, mild fevers 73 %, slow climbs 99 % (median 12 d).
+- **Heart rate** is an automatic wearable feed (Bio-Monitor). **Sleep Watch** is < 6 h (demo assumption); < 7 h flagged steady crew too often.
+- **Crew:** the brief's four crew (Okafor, Lindqvist, Raman, Sato) replace my three invented ones; Day 120 stays as story 5 (Mira Vega). Priya's story text was corrected to what the system actually does: the personal-gated sleep rule fires on day 22, and detectors confirm by day 24.
+- **Ground Link → Consult Packet.** PDF is the browser's print-to-PDF (no extra library).
+- **Recovery steps are drug-free.** Two indicator escalations that mentioned medicine were rewritten as "the CMO decides".
+
 ## Product
 
 - **Earth is weeks away, and the crew has basic medical training only** (user direction, 2026-11-14). Escalation is now an on-board protocol:
