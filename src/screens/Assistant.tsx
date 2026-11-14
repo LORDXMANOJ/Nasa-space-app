@@ -33,8 +33,7 @@ export function Assistant() {
     <div className="page">
       <div className="page-head">
         <div>
-          <div className="eyebrow">On-board assistant</div>
-          <h1>Ask why, what now, or whether it can wait</h1>
+          <h1>On-board assistant</h1>
           <p className="lede">
             Works offline. Answers are <strong>pre-written</strong>, built only from the condition cards and today's detector results. No AI model runs here.
           </p>

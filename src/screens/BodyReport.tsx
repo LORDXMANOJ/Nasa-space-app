@@ -45,8 +45,7 @@ export default function BodyReport() {
     <div className="page">
       <div className="page-head">
         <div>
-          <div className="eyebrow">Day {h.day} · Body report</div>
-          <h1>Where in your body</h1>
+          <h1>Body report</h1>
           <p className="lede">Pick a region to see what it does, its readings and the plan. Colour, shape and word always agree.</p>
         </div>
       </div>
@@ -56,7 +55,7 @@ export default function BodyReport() {
             <li key={r.id}>
               <button aria-pressed={sel === r.id} onClick={() => setSel(r.id)}>
                 <span>{r.name}</span>
-                <StatusBadge status={h.regionStatus[r.id]} />
+                {INDICATORS.some((i) => i.bodyRegions.includes(r.id)) ? <StatusBadge status={h.regionStatus[r.id]} /> : <span className="chip">Not tracked</span>}
               </button>
             </li>
           ))}
@@ -91,11 +90,11 @@ export default function BodyReport() {
           <div className="row">
             <h2>{region.name}</h2>
             <span className="spacer" style={{ flex: 1 }} />
-            <StatusBadge status={h.regionStatus[sel]} large />
+            {related.length > 0 ? <StatusBadge status={h.regionStatus[sel]} large /> : <span className="chip">Not tracked</span>}
           </div>
           <p className="dim">{region.function}</p>
           <div className="stack" style={{ gap: "var(--sp-3)" }}>
-            {related.length === 0 && <p className="dim">No indicator measures this region yet (stretch goal: vision self-test).</p>}
+            {related.length === 0 && <p className="dim">No reading covers this region yet. A vision self-test is planned.</p>}
             {related.map((i) => {
               const r = h.history[i.id].at(-1);
               const v = formatPrimary(i, r?.values, settings);

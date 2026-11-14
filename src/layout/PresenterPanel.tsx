@@ -37,7 +37,7 @@ export function PresenterPanel() {
   return (
     <aside className="presenter stack" aria-label="Presenter controls">
       <div className="row">
-        <span className="eyebrow">Presenter</span>
+        <h2>Presenter controls</h2>
         <span className="spacer" style={{ flex: 1 }} />
         <button className="icon-btn" onClick={() => s.togglePresenter(false)} aria-label="Close presenter controls">
           <X />
@@ -49,7 +49,7 @@ export function PresenterPanel() {
         <select className="select" value={s.profileId} onChange={(e) => s.setProfile(e.target.value)}>
           {PROFILES.map((p) => (
             <option key={p.id} value={p.id}>
-              {p.name} — {p.storyTitle}
+              {p.name}: {p.storyTitle}
             </option>
           ))}
         </select>

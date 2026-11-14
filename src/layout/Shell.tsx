@@ -99,31 +99,31 @@ export function Shell({ children }: { children: ReactNode }) {
         <span className="item">
           <Activity aria-hidden />
           <span>
-            DAY <strong>{day}</strong>
+            Day <strong>{day}</strong>
           </span>
         </span>
         <span className="sep" />
-        <span className="item">{env.name.toUpperCase()}</span>
+        <span className="item">{env.name}</span>
         <span className="sep" />
         <span className="item" title="Time to get an answer from the flight surgeon on Earth (signal out + review + signal back)">
           <Satellite aria-hidden />
           {health.link.conjunction ? (
-            <strong style={{ color: "var(--act)" }}>NO CONTACT · SOLAR CONJUNCTION</strong>
+            <span style={{ color: "var(--act)", fontWeight: 600 }}>No contact: solar conjunction</span>
           ) : (
             <>
-              EARTH REPLY <strong>{formatDuration(health.link.reply.totalMin)}</strong>
+              Earth reply <strong>{formatDuration(health.link.reply.totalMin)}</strong>
             </>
           )}
         </span>
         <span className="sep" />
         <span className="item">
-          CREW <strong>{health.profile.name}</strong>
+          <span className="crew">{health.profile.name}</span>
         </span>
         <span className="spacer" style={{ flex: 1 }} />
         {lowPower && (
           <span className="item" title="Low-power mode: 3D and animation off">
             <Zap aria-hidden />
-            LOW POWER
+            Low power
           </span>
         )}
         <span className="sim-pill" role="note">
@@ -138,8 +138,7 @@ export function Shell({ children }: { children: ReactNode }) {
 
       <footer className="foot" role="contentinfo">
         <TriangleAlert aria-hidden />
-        Prototype with simulated data. It flags and explains; it does not diagnose. Your Crew Medical Officer decides —
-        consult the flight surgeon.
+        Prototype with simulated data. It flags and explains; it does not diagnose. Your Crew Medical Officer decides. Consult the flight surgeon.
         <span className="spacer" style={{ flex: 1 }} />
         <span>
           Press <span className="kbd">?</span> for shortcuts

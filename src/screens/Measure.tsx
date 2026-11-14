@@ -5,7 +5,7 @@
  */
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, BadgeCheck, CircleHelp, Pause, Play, PenLine } from "lucide-react";
+import { ArrowLeft, ArrowRight, BadgeCheck, Check, CircleHelp, Pause, Play, PenLine } from "lucide-react";
 import { INDICATORS, indicatorById, type Indicator } from "../data";
 import { simulateReading } from "../engine/simulation";
 import { learnMetricBaselines } from "../engine/detectors";
@@ -24,8 +24,7 @@ export function MeasureList() {
     <div className="page">
       <div className="page-head">
         <div>
-          <div className="eyebrow">Guided measurements</div>
-          <h1>Measure with step-by-step help</h1>
+          <h1>Guided measurements</h1>
           <p className="lede">Each one explains why it matters in space, shows how to do it, then reads the (simulated) device.</p>
         </div>
         <Link className="btn btn--primary" to="/checkin">
@@ -69,8 +68,8 @@ export function MeasureFlow() {
           <Link to="/measure" className="btn btn--ghost btn--sm" style={{ marginBottom: "var(--sp-3)" }}>
             <ArrowLeft /> All measurements
           </Link>
-          <div className="eyebrow">{ind.deviceName}</div>
           <h1>{ind.name}</h1>
+          <p className="lede">{ind.deviceName}</p>
         </div>
         {completions >= 3 && step < 2 && (
           <button className="btn" onClick={() => setStep(2)}>
@@ -83,7 +82,7 @@ export function MeasureFlow() {
           {STEPS.map((s, i) => (
             <li key={s} className={i < step ? "done" : ""}>
               <button aria-current={i === step ? "step" : undefined} onClick={() => i <= 2 && setStep(i)} disabled={i === 3 && step < 3}>
-                <span className="k">{i < step ? "✓" : i + 1}</span>
+                <span className="k">{i < step ? <Check width={16} height={16} aria-label="done" /> : i + 1}</span>
                 {s}
               </button>
             </li>
@@ -215,7 +214,7 @@ function Capture({ ind, onDone }: { ind: Indicator; onDone: () => void }) {
     <section className="card stack reveal">
       <div className="capture" aria-live="polite">
         <Wave kind={ind.id} progress={progress} />
-        <div className="readout">{phase === "running" ? (ind.id === "bp" ? `${shown[0]}/${shown[1]}` : shown[0]) : "— —"}</div>
+        <div className="readout">{phase === "running" ? (ind.id === "bp" ? `${shown[0]}/${shown[1]}` : shown[0]) : "Ready"}</div>
         <div className="dim">
           {phase === "running" ? `Reading from ${ind.deviceName}…` : `Simulated reading from ${ind.deviceName}. Stay still once you press start.`}
         </div>
@@ -270,7 +269,7 @@ function ManualEntry({ ind, onSave, onCancel }: { ind: Indicator; onSave: (v: nu
     if (v === "") return "Required";
     const n = Number(v);
     const b = bounds(i);
-    return Number.isNaN(n) ? "Numbers only" : n < b.min || n > b.max ? `Check this: usually ${ind.metrics[i].normalRange.min}–${ind.metrics[i].normalRange.max} ${ind.metrics[i].unit}` : "";
+    return Number.isNaN(n) ? "Numbers only" : n < b.min || n > b.max ? `Check this: usually ${ind.metrics[i].normalRange.min} to ${ind.metrics[i].normalRange.max} ${ind.metrics[i].unit}` : "";
   });
   const ok = errs.every((e) => !e);
   return (
@@ -346,7 +345,7 @@ function MoodCapture({ onSave, simReaction }: { onSave: (v: number[]) => void; s
           {state === "idle" && "Tap to start"}
           {state === "wait" && "Wait for green…"}
           {state === "go" && "TAP!"}
-          {state === "early" && "Too soon — tap to try again"}
+          {state === "early" && "Too soon. Tap to try again"}
           {state === "done" && `Done: average ${avg} ms`}
         </button>
       </div>
@@ -416,7 +415,7 @@ function Result({ ind }: { ind: Indicator }) {
                 <a href={s.url} target="_blank" rel="noreferrer">
                   {s.title}
                 </a>{" "}
-                <span className="dim">— {s.usedFor}</span>
+                <span className="dim">({s.usedFor})</span>
               </li>
             ))}
           </ul>

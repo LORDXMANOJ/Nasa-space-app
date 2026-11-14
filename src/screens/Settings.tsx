@@ -6,23 +6,22 @@ import { ENVIRONMENTS, type EnvironmentId } from "../data";
 import { PROFILES } from "../engine/profiles";
 import { formatDuration, MISSIONS, ENV_TO_MISSION } from "../engine/missions";
 import { useLink } from "../store/health";
-import { useMission, type Settings as S } from "../store/mission";
+import { useMission } from "../store/mission";
 
-export function Settings() {
-  const st = useMission();
-  const link = useLink();
-  const set = st.updateSettings;
-  const mission = MISSIONS[ENV_TO_MISSION[st.environment]];
-  const Toggle = ({ k, label, hint }: { k: keyof S; label: string; hint: string }) => (
+function Toggle({ checked, onChange, label, hint }: { checked: boolean; onChange: (v: boolean) => void; label: string; hint: string }) {
+  return (
     <label className="toggle">
       <span>
         <strong style={{ display: "block" }}>{label}</strong>
         <small className="dim">{hint}</small>
       </span>
-      <input type="checkbox" checked={!!st.settings[k]} onChange={(e) => set({ [k]: e.target.checked } as Partial<S>)} />
+      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
     </label>
   );
-  const Seg = <T extends string>({ value, options, onChange, label }: { value: T; options: T[]; onChange: (v: T) => void; label: string }) => (
+}
+
+function Seg<T extends string>({ value, options, onChange, label }: { value: T; options: T[]; onChange: (v: T) => void; label: string }) {
+  return (
     <div className="seg" role="group" aria-label={label}>
       {options.map((o) => (
         <button key={o} aria-pressed={value === o} onClick={() => onChange(o)}>
@@ -31,13 +30,18 @@ export function Settings() {
       ))}
     </div>
   );
+}
 
+export function Settings() {
+  const st = useMission();
+  const link = useLink();
+  const set = st.updateSettings;
+  const mission = MISSIONS[ENV_TO_MISSION[st.environment]];
   return (
     <div className="page">
       <div className="page-head">
         <div>
-          <div className="eyebrow">Settings</div>
-          <h1>Make it work for you</h1>
+          <h1>Settings</h1>
         </div>
       </div>
       <div className="settings-grid">
@@ -75,7 +79,7 @@ export function Settings() {
                 One-way signal delay to Earth: <span className="num">{st.marsOneWayMin} min</span>
               </span>
               <input type="range" min={mission.adjustable.min} max={mission.adjustable.max} value={st.marsOneWayMin} onChange={(e) => st.setMarsDelay(Number(e.target.value))} />
-              <small>Mars is 3–22 light-minutes away depending on where the planets are.</small>
+              <small>Mars is 3 to 22 light-minutes away depending on where the planets are.</small>
             </label>
           )}
           {mission.canConjunct && (
@@ -90,8 +94,8 @@ export function Settings() {
           <div className="banner banner--info">
             <span>
               Earth reply right now: <strong>{formatDuration(link.reply.totalMin)}</strong>
-              {!link.reply.noContact && <> ({link.reply.parts.map((p) => `${p.label} ${formatDuration(p.min)}${p.assumption ? "*" : ""}`).join(" + ")})</>}
-              . *ASSUMPTION
+              {!link.reply.noContact && <>: {link.reply.parts.map((p) => `${p.label.toLowerCase()} ${formatDuration(p.min)}`).join(" + ")}.</>}
+              <span className="assume">ASSUMPTION</span> review time and relay waits
             </span>
           </div>
         </section>
@@ -114,10 +118,10 @@ export function Settings() {
 
         <section className="card stack">
           <h2>Comfort and power</h2>
-          <Toggle k="lowPower" label="Low-power mode" hint="Turns off 3D and animation. Saves laptop battery." />
-          <Toggle k="largeText" label="Large text" hint="Everything 25 % bigger, for reading at arm's length." />
-          <Toggle k="highContrast" label="High contrast" hint="Brighter text and borders, no transparency." />
-          <Toggle k="reducedMotion" label="Reduce motion" hint="No pulsing or sliding." />
+          <Toggle checked={st.settings.lowPower} onChange={(v) => set({ lowPower: v })} label="Low-power mode" hint="Turns off 3D and animation. Saves laptop battery." />
+          <Toggle checked={st.settings.largeText} onChange={(v) => set({ largeText: v })} label="Large text" hint="Everything 25 % bigger, for reading at arm's length." />
+          <Toggle checked={st.settings.highContrast} onChange={(v) => set({ highContrast: v })} label="High contrast" hint="Brighter text and borders, no transparency." />
+          <Toggle checked={st.settings.reducedMotion} onChange={(v) => set({ reducedMotion: v })} label="Reduce motion" hint="No pulsing or sliding." />
           <hr className="divider" />
           <div className="row">
             <button className="btn" onClick={st.replayOnboarding}>

@@ -59,7 +59,7 @@ export const PROFILES: CrewProfile[] = [
     story: "steady",
     storyTitle: "A resting heart rate of 52 is normal for him",
     storySummary:
-      "A fixed 60–100 bpm rule would flag Mikael almost every day. His personal baseline knows 52 is his normal, so nothing is flagged. This is what the baseline is for.",
+      "A fixed 60-100 bpm rule would flag Mikael almost every day. His personal baseline knows 52 is his normal, so nothing is flagged. This is what the baseline is for.",
     days: { min: 11, max: 30, focus: 20 },
     baselines: base({ "hr.hr": { mean: 52, sd: 3 }, "hr.hrv": { mean: 78, sd: 9 }, "bp.systolic": { mean: 114, sd: 5 }, "weight.mass": { mean: 79, sd: 0.4 } }),
   },

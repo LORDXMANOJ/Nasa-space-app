@@ -36,19 +36,19 @@ export function DecisionPanel({ title, tHarmMin, tHarmSource, assumption, reply,
       <div className="bars" role="img" aria-label={`Safe wait ${formatDuration(tHarmMin)}; Earth reply ${formatDuration(reply.totalMin)}.`}>
         <div className="bar-row">
           <span className="bar-label">
-            <Timer aria-hidden /> Safe wait (T<sub>harm</sub>)
+            <Timer aria-hidden /> Safe wait
           </span>
           <div className="bar-track">
-            <div className="bar-fill bar-fill--harm" style={{ width: `${pos(tHarmMin) * 100}%` }} />
+            <div className="bar-fill bar-fill--harm" style={{ transform: `scaleX(${pos(tHarmMin)})` }} />
           </div>
           <span className="bar-value num">{formatDuration(tHarmMin)}</span>
         </div>
         <div className="bar-row">
           <span className="bar-label">
-            <Earth aria-hidden /> Earth reply (T<sub>reply</sub>)
+            <Earth aria-hidden /> Earth reply
           </span>
           <div className="bar-track">
-            <div className={`bar-fill bar-fill--reply${reply.noContact ? " is-none" : ""}`} style={{ width: `${pos(reply.totalMin) * 100}%` }} />
+            <div className={`bar-fill bar-fill--reply${reply.noContact ? " is-none" : ""}`} style={{ transform: `scaleX(${pos(reply.totalMin)})` }} />
           </div>
           <span className="bar-value num">{formatDuration(reply.totalMin)}</span>
         </div>

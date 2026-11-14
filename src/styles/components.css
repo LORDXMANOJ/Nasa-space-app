@@ -100,13 +100,12 @@
   display: inline-flex;
   align-items: center;
   gap: 0.45em;
-  padding: 0.28em 0.75em 0.28em 0.55em;
+  padding: 0.24em 0.7em 0.24em 0.5em;
   border-radius: var(--r-pill);
   border: var(--bw) solid currentColor;
-  font-family: var(--font-mono);
-  font-size: var(--fs-label);
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   white-space: nowrap;
   line-height: 1.2;
@@ -311,14 +310,12 @@
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1);
-  padding: 0.3em 0.75em;
+  padding: 0.25em 0.7em;
   border-radius: var(--r-sm);
   background: var(--surface-2);
   border: var(--bw) solid var(--border);
-  font-family: var(--font-mono);
-  font-size: var(--fs-label);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: var(--fs-sm);
+  font-weight: 500;
   color: var(--text-soft);
   text-decoration: none;
   white-space: nowrap;
@@ -557,10 +554,7 @@ input[type="range"] {
   border-bottom: var(--bw) solid var(--border);
 }
 .table th {
-  font-family: var(--font-mono);
-  font-size: var(--fs-label);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: var(--fs-sm);
   color: var(--text-dim);
   font-weight: 600;
 }
@@ -617,11 +611,42 @@ input[type="range"] {
     opacity: 0.55;
   }
 }
+/* Product UI loads straight into the task: no entrance choreography on content. */
 .reveal {
-  animation: rise-in var(--dur-slow) var(--ease-out) both;
+  animation: none;
 }
 [data-lowpower="true"] .reveal,
 [data-lowpower="true"] .tile:hover {
   animation: none;
   transform: none;
+}
+
+/* ---------- No nested cards: inner groups become rows ---------- */
+.card .card {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  border-bottom: var(--bw) solid var(--border);
+  padding: var(--sp-3) 0;
+}
+.card .card:last-child {
+  border-bottom: 0;
+}
+.card .decision {
+  background: transparent;
+  border: 0;
+  border-top: var(--bw) solid var(--border);
+  border-radius: 0;
+  padding: var(--sp-5) 0 0;
+}
+.card .decision.is-act {
+  border-top-color: color-mix(in srgb, var(--act) 55%, var(--border));
+}
+
+/* Headings inside cards step down one level so cards never shout over the page title. */
+.card h2 {
+  font-size: var(--fs-lg);
+}
+.card h3 {
+  font-size: var(--fs-md);
 }

@@ -77,14 +77,19 @@
   gap: var(--sp-5);
   padding: 0 var(--sp-6) 0 var(--sp-8);
   border-bottom: var(--bw) solid var(--border);
-  background: color-mix(in srgb, var(--surface-0) 88%, transparent);
-  font-family: var(--font-mono);
+  background: var(--surface-0);
   font-size: var(--fs-sm);
   color: var(--text-dim);
   white-space: nowrap;
   overflow: hidden;
 }
 .bar strong {
+  color: var(--text);
+  font-weight: 600;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.bar .crew {
   color: var(--text);
   font-weight: 600;
 }
@@ -110,9 +115,9 @@
   border: var(--bw) solid var(--watch);
   border-radius: var(--r-sm);
   color: var(--watch);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-size: 0.75rem;
 }
 
 .foot {
@@ -150,6 +155,10 @@
 }
 .presenter h2 {
   font-size: var(--fs-md);
+}
+.presenter .seg button {
+  white-space: nowrap;
+  padding: 0 var(--sp-3);
 }
 .kbd {
   display: inline-block;

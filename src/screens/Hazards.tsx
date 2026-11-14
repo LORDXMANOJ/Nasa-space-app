@@ -15,8 +15,7 @@ export function Hazards() {
     <div className="page">
       <div className="page-head">
         <div>
-          <div className="eyebrow">The five hazards of long missions</div>
-          <h1>What space does to your body, and what we watch</h1>
+          <h1>Five hazards of long missions</h1>
           <p className="lede">Each hazard links to the readings that would show its effect on you. Highlighted: most important for {env.name}.</p>
         </div>
       </div>

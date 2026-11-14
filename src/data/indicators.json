@@ -263,7 +263,7 @@
         {
           "title": "American Heart Association: Target heart rates",
           "url": "https://www.heart.org/en/healthy-living/fitness/fitness-basics/target-heart-rates",
-          "usedFor": "Resting heart rate normal range (60–100 bpm; widened for trained crew)"
+          "usedFor": "Resting heart rate normal range (60-100 bpm; widened for trained crew)"
         },
         {
           "title": "Shaffer & Ginsberg (2017) An overview of heart rate variability metrics and norms, Front. Public Health",
@@ -376,7 +376,7 @@
         {
           "title": "MedlinePlus: Pulse oximetry",
           "url": "https://medlineplus.gov/lab-tests/pulse-oximetry/",
-          "usedFor": "Normal range (95–100 %)"
+          "usedFor": "Normal range (95-100 %)"
         }
       ]
     },
@@ -543,7 +543,7 @@
       "weight": 15,
       "thresholdSource": "clinical-reference",
       "todo": "Watch at < 6 h is a demo assumption (AASM recommends ≥ 7 h; < 7 h on every short night flagged steady crew too often). Quality cut-offs are demo assumptions.",
-      "whyItMatters": "Noise, light, workload and no day–night cycle make sleep hard in space. Poor sleep affects mood, focus and your heart.",
+      "whyItMatters": "Noise, light, workload and no day-night cycle make sleep hard in space. Poor sleep affects mood, focus and your heart.",
       "plainMeaning": {
         "nominal": "You are getting enough sleep.",
         "watch": "Less sleep than you need. Protect tonight's sleep period.",

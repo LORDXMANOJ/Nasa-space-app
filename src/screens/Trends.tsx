@@ -45,9 +45,8 @@ export default function Trends() {
     <div className="page">
       <div className="page-head">
         <div>
-          <div className="eyebrow">Trends</div>
-          <h1>{ind.name}</h1>
-          <p className="lede">The shaded band is your normal, learned on mission days 1–{BASELINE_DAYS}. Dashed lines are the fixed safety limits.</p>
+          <h1>{ind.name} trend</h1>
+          <p className="lede">The shaded band is your normal, learned on mission days 1 to {BASELINE_DAYS}. Dashed lines are the fixed safety limits.</p>
         </div>
         <StatusBadge status={h.evals[ind.id].status} large />
       </div>

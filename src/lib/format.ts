@@ -25,7 +25,7 @@ function convert(ind: Indicator, v: number, settings: Settings): { v: number; un
 
 /** Headline value of an indicator: BP shows "sys/dia", others show the primary metric. */
 export function formatPrimary(ind: Indicator, values: number[] | undefined, settings: Settings): Display {
-  if (!values) return { text: "—", unit: ind.metrics[0].unit };
+  if (!values) return { text: "No reading", unit: "" };
   if (ind.id === "bp") return { text: `${values[0].toFixed(0)}/${values[1].toFixed(0)}`, unit: "mmHg" };
   const c = convert(ind, values[0], settings);
   return { text: c.v.toFixed(c.decimals), unit: c.unit };

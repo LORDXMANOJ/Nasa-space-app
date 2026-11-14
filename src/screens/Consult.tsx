@@ -95,19 +95,18 @@ export function Consult() {
     <div className="page">
       <div className="page-head no-print">
         <div>
-          <div className="eyebrow">Consult Packet · to the flight surgeon</div>
-          <h1>One complete message, your choice of what to share</h1>
+          <h1>Consult Packet</h1>
           <p className="lede">
             {h.link.reply.noContact
-              ? "No contact during solar conjunction. Sending queues the packet on board; it leaves as soon as contact returns."
-              : `A reply takes about ${formatDuration(h.link.reply.totalMin)} (${h.link.reply.parts.map((p) => `${p.label} ${formatDuration(p.min)}`).join(" + ")}).`}
+              ? "One complete message for the flight surgeon. No contact during solar conjunction: the packet waits on board until contact returns."
+              : `One complete message for the flight surgeon; you choose what to share. A reply takes about ${formatDuration(h.link.reply.totalMin)} (${h.link.reply.parts.map((p) => `${p.label} ${formatDuration(p.min)}`).join(" + ")}).`}
           </p>
         </div>
       </div>
 
       <div className="consult no-print">
         <section className="card stack">
-          <div className="label">What to include (privacy)</div>
+          <h2>What to include</h2>
           <div className="symptoms">
             {INDICATORS.map((i) => (
               <label key={i.id}>
@@ -136,7 +135,7 @@ export function Consult() {
             <span>Note to the flight surgeon (optional)</span>
             <textarea className="input" rows={3} style={{ padding: "var(--sp-3)" }} value={note} onChange={(e) => setNote(e.target.value)} />
           </label>
-          <div className="label">Preview</div>
+          <h2>Preview</h2>
           <pre className="packet-preview" tabIndex={0} aria-label="Packet preview">
             {json}
           </pre>
@@ -175,7 +174,7 @@ function Outbox({ items, onClear }: { items: ConsultPacket[]; onClear: () => voi
   return (
     <aside className="card stack" aria-label="Outbox" aria-live="polite">
       <div className="row">
-        <div className="label">Outbox</div>
+        <h2>Outbox</h2>
         <span className="spacer" style={{ flex: 1 }} />
         {items.length > 0 && (
           <button className="btn btn--ghost btn--sm" onClick={onClear}>
@@ -221,7 +220,7 @@ function Outbox({ items, onClear }: { items: ConsultPacket[]; onClear: () => voi
 function PrintView({ payload }: { payload: Record<string, unknown> }) {
   return (
     <div className="print-only packet-print">
-      <h1>Consult Packet — PROTOTYPE, SIMULATED DATA</h1>
+      <h1>Consult Packet (prototype, simulated data)</h1>
       <p>Decision-support prototype. It flags and explains; it does not diagnose.</p>
       <pre style={{ whiteSpace: "pre-wrap", fontSize: 11 }}>{JSON.stringify(payload, null, 2)}</pre>
     </div>

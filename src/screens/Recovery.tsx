@@ -21,9 +21,11 @@ export function Recovery() {
     <div className="page">
       <div className="page-head">
         <div>
-          <div className="eyebrow">Day {h.day} · Recovery plan</div>
-          <h1>{h.alerts.length ? "What to do now, step by step" : "Nothing needs a plan today"}</h1>
-          <p className="lede">Self-care steps only: rest, fluids, re-measuring, exercise, sleep and talking to your crew. Treatment decisions belong to your Crew Medical Officer.</p>
+          <h1>Recovery plan</h1>
+          <p className="lede">
+            {h.alerts.length ? "What to do now, step by step." : "Nothing needs a plan today."} Self-care steps only; treatment decisions belong to your Crew Medical
+            Officer.
+          </p>
         </div>
         {h.alerts.length > 0 && (
           <Link className="btn btn--primary" to="/consult">

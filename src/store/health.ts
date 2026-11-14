@@ -57,7 +57,7 @@ export function useHealth() {
       parts.push(
         `${top.title}: ${
           top.verdict === "act-onboard"
-            ? `act on board now — Earth's reply (${formatDuration(link.reply.totalMin)}) would come after the safe wait (${formatDuration(top.tHarmMin)}).`
+            ? `act on board now. Earth's reply (${formatDuration(link.reply.totalMin)}) would come after the safe wait (${formatDuration(top.tHarmMin)}).`
             : `this can wait for Earth (safe wait ${formatDuration(top.tHarmMin)}, reply ${formatDuration(link.reply.totalMin)}). Start the steps anyway.`
         }`,
       );

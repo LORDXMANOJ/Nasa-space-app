@@ -36,8 +36,7 @@ export function HowItDecides() {
     <div className="page">
       <div className="page-head">
         <div>
-          <div className="eyebrow">How it decides · Sources</div>
-          <h1>Flags, explains, and decides whether it can wait</h1>
+          <h1>How it decides</h1>
           <p className="lede">
             A prototype with simulated data. It never diagnoses and never acts by itself: it gives the crew a reason, a safe wait, and a checklist; the Crew
             Medical Officer decides.
@@ -53,7 +52,7 @@ export function HowItDecides() {
             <i>→</i>
             <span>Safety rules (condition cards)</span>
             <i>+</i>
-            <span>Your normal (days 1–{BASELINE_DAYS})</span>
+            <span>Your normal (days 1 to {BASELINE_DAYS})</span>
             <i>→</i>
             <span>Unusual day · Slow drift · Forecast</span>
             <i>→</i>
@@ -89,7 +88,7 @@ export function HowItDecides() {
               ))}
               <tr>
                 <td>Mars, solar conjunction</td>
-                <td className="num">—</td>
+                <td className="num">none</td>
                 <td className="num">no contact (~{CONJUNCTION_DAYS} days)</td>
               </tr>
             </tbody>
@@ -107,12 +106,12 @@ export function HowItDecides() {
           <p>
             Condition cards are data (limits, safe wait, steps, red flags, sources), read by a small rule interpreter, so a medic can change a limit without touching code.
             Act limits always count. For the seven daily readings a Watch limit only counts when the value is also at least {WATCH_GATE_Z} sd from your own normal
-            — this is why a resting heart rate of 52 that is normal for one astronaut is never flagged.
+            This is why a resting heart rate of 52 that is normal for one astronaut is never flagged.
           </p>
           <h3>2 · Unusual day</h3>
           <code className="formula">D² = (x − μ)ᵀ Σ⁻¹ (x − μ),  flag if D² &gt; χ²(0.99, k)  (18.475 for all 7 readings)</code>
           <p>
-            μ and Σ come from mission days 1–{BASELINE_DAYS}. With so few days, the correlation matrix is shrunk toward the identity (Schäfer–Strimmer, intensity
+            μ and Σ come from mission days 1 to {BASELINE_DAYS}. With so few days, the correlation matrix is shrunk toward the identity (Schäfer-Strimmer, intensity
             estimated from the data), standard deviations have floors (e.g. temperature {SD_FLOOR["temp.temp"]} °C, heart rate {SD_FLOOR["hr.hr"]} bpm), Σ is
             inflated ×{TUNING.covScale} for estimation error, and solved with a Cholesky factorisation Σ = L Lᵀ, never inverted directly. k = readings present today.
           </p>
@@ -120,7 +119,7 @@ export function HowItDecides() {
           <code className="formula">S⁺ = max(0, S⁺ + z − k),  S⁻ = max(0, S⁻ − z − k),  alarm if S &gt; h</code>
           <p>
             Two-sided CUSUM on standardised readings (z uses sd ×{TUNING.zScale}), k = {TUNING.k}, h = {TUNING.h}, chosen with the Monte Carlo check below. When it
-            alarms, a Theil–Sen line (median of all pairwise slopes, robust to one wild reading) is projected to the Act limit; the days until it gets there become
+            alarms, a Theil-Sen line (median of all pairwise slopes, robust to one wild reading) is projected to the Act limit; the days until it gets there become
             T_harm.
           </p>
         </section>

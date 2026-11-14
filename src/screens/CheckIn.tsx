@@ -66,9 +66,8 @@ export function CheckIn() {
     <div className="page">
       <div className="page-head">
         <div>
-          <div className="eyebrow">Day {h.day} · Daily check-in</div>
-          <h1>About one minute. Skip anything you can't do.</h1>
-          <p className="lede">Wearables already filled some fields. Skipped readings are fine: the app only uses what you give it.</p>
+          <h1>Daily check-in</h1>
+          <p className="lede">About a minute. Wearables already filled some fields; skip anything you can't do. The app only uses what you give it.</p>
         </div>
       </div>
 
@@ -115,7 +114,7 @@ export function CheckIn() {
                       {ind.deviceName} · <Link to={`/measure/${ind.id}`}>How to measure</Link>
                     </div>
                   </div>
-                  <span className="val">{r ? `${v.text}` : "—"} {r && <small className="dim">{v.unit}</small>}</span>
+                  <span className="val">{r ? `${v.text}` : "Not taken"} {r && <small className="dim">{v.unit}</small>}</span>
                   {r ? (
                     <span className="autotag">
                       <Check width={14} height={14} aria-hidden /> FROM DEVICE

@@ -6,7 +6,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Award, CheckCircle2, ChevronDown, GraduationCap, Satellite, Stethoscope } from "lucide-react";
-import { INDICATORS, environmentById } from "../data";
+import { INDICATORS } from "../data";
 import { IndicatorTile } from "../components/IndicatorTile";
 import { DecisionPanel } from "../components/DecisionPanel";
 import { StatusBadge, StatusShape } from "../components/status";
@@ -17,7 +17,6 @@ import { useMission } from "../store/mission";
 
 export function Dashboard() {
   const h = useHealth();
-  const env = environmentById(useMission((s) => s.environment));
   const completions = useMission((s) => s.completions);
   const outbox = useMission((s) => s.outbox);
   const checks = useMission((s) => s.checks);
@@ -38,23 +37,10 @@ export function Dashboard() {
     <div className="page">
       <div className="page-head">
         <div>
-          <div className="eyebrow">
-            Day {h.day} · {env.name}
-          </div>
-          <h1>
-            {firstName}, here is your health today
-          </h1>
+          <h1>{firstName}, here is your health today</h1>
           <p className="lede">
-            {h.profile.role} · {h.alerts.length === 0 ? "No alerts" : `${h.alerts.length} alert${h.alerts.length > 1 ? "s" : ""}`}
+            {h.profile.role}. Day {h.day}, {h.link.preset.name}.
           </p>
-        </div>
-        <div className="row">
-          {badges.map((b) => (
-            <span key={b.id} className={`patch${b.earned ? " is-earned" : ""}`} title={b.earned ? "Earned (routine, never health outcomes)" : "Not yet"}>
-              {b.earned && <Award width={14} height={14} style={{ verticalAlign: -2, marginRight: 4 }} aria-hidden />}
-              {b.label}
-            </span>
-          ))}
         </div>
       </div>
 
@@ -62,7 +48,7 @@ export function Dashboard() {
         <div className="banner banner--info learning" style={{ marginBottom: "var(--sp-5)" }}>
           <GraduationCap aria-hidden />
           <span>
-            Learning your normal: days 1–{BASELINE_DAYS} teach the app your personal baseline. Until then only the fixed safety rules can flag
+            Learning your normal: days 1 to {BASELINE_DAYS} teach the app your personal baseline. Until then only the fixed safety rules can flag
             anything.
           </span>
         </div>
@@ -175,8 +161,16 @@ export function Dashboard() {
         </div>
       </section>
 
-      <section className="dash-foot" aria-label="Consult Packets">
-        <span />
+      <section className="dash-foot" aria-label="Routine and Consult Packets">
+        <div className="card card--tight row" aria-label="Mission patches for keeping the routine">
+          <Award aria-hidden style={{ color: "var(--accent)" }} />
+          <span className="label">Routine patches</span>
+          {badges.map((b) => (
+            <span key={b.id} className={`patch${b.earned ? " is-earned" : ""}`} title={b.earned ? "Earned for keeping the routine" : "Not earned yet"}>
+              {b.label}
+            </span>
+          ))}
+        </div>
         <Link to="/consult" className="card card--tight row ground-mini">
           <Satellite aria-hidden />
           <span>{outbox.length === 0 ? "No Consult Packets sent yet" : `${outbox.length} Consult Packet${outbox.length > 1 ? "s" : ""} in the outbox`}</span>
