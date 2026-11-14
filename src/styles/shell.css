@@ -176,3 +176,24 @@
     display: none !important;
   }
 }
+
+/* Portrait tablets: the title bar scrolls inside itself instead of widening the page; the footer drops the keyboard hint */
+.bar {
+  min-width: 0;
+}
+@media (max-width: 960px) {
+  .bar {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .bar::-webkit-scrollbar {
+    display: none;
+  }
+  .foot {
+    min-width: 0;
+    overflow: hidden;
+  }
+  .foot > span:last-child {
+    display: none;
+  }
+}

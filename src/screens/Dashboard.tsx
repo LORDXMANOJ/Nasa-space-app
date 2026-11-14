@@ -37,8 +37,16 @@ export function Dashboard() {
   const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
   const [why, setWhy] = useState(false);
+  const [more, setMore] = useState(false);
+  const [how, setHow] = useState(false);
+  const [allRegions, setAllRegions] = useState(false);
+  const tracked = REGIONS.filter((r) => INDICATORS.some((i) => i.bodyRegions.includes(r.id)));
+  const flagged = tracked.filter((r) => h.regionStatus[r.id] === "act" || h.regionStatus[r.id] === "watch");
   const webgl = useMemo(hasWebGL, []);
-  const firstFlagged = REGIONS.find((r) => h.regionStatus[r.id] === "act") ?? REGIONS.find((r) => h.regionStatus[r.id] === "watch") ?? REGIONS[0];
+  const firstFlagged =
+    REGIONS.find((r) => h.regionStatus[r.id] === "act") ??
+    REGIONS.find((r) => h.regionStatus[r.id] === "watch") ??
+    REGIONS[0];
   const [sel, setSel] = useState<RegionId>(firstFlagged.id);
 
   const showForm = !done || editing;
@@ -78,7 +86,8 @@ export function Dashboard() {
               <span style={{ width: `${h.readiness.score}%` }} />
             </div>
             <button className="btn btn--ghost btn--sm" aria-expanded={why} onClick={() => setWhy((w) => !w)}>
-              Why {h.readiness.score}? <ChevronDown width={14} style={{ transform: why ? "rotate(180deg)" : undefined }} />
+              Why {h.readiness.score}?{" "}
+              <ChevronDown width={14} style={{ transform: why ? "rotate(180deg)" : undefined }} />
             </button>
             {why && (
               <ul className="why-list">
@@ -93,7 +102,8 @@ export function Dashboard() {
                     </li>
                   ))}
                 <li className="dim">
-                  Watch costs half an indicator's weight, Act all of it. <Link to="/how#readiness">How it works</Link>
+                  Watch costs half an indicator's weight, Act all of it.{" "}
+                  <Link to="/how#readiness">How it works</Link>
                 </li>
               </ul>
             )}
@@ -112,10 +122,9 @@ export function Dashboard() {
 
       {showForm ? (
         <section className="card" aria-labelledby="today-readings">
-          <h2 id="today-readings">Step 3: enter today's readings</h2>
-          <p className="dim" style={{ margin: "var(--sp-1) 0 var(--sp-4)", maxWidth: "72ch" }}>
-            Your wearable already filled the first rows; check them. Press Measure for the devices, or type the number. Your Earth reading is beside each one.
-          </p>
+          <h2 id="today-readings" className="sr-only">
+            Step 3: today's readings
+          </h2>
           <CheckInForm
             onDone={() => {
               setEditing(false);
@@ -125,11 +134,13 @@ export function Dashboard() {
         </section>
       ) : (
         <>
-          <section className="results" aria-labelledby="results">
+          <section className="results results-reveal" aria-labelledby="results">
             <div className="results-body">
               <div className="body-stage" style={{ height: 520, minHeight: 0 }}>
                 {use3d ? (
-                  <Suspense fallback={<Body2D status={h.regionStatus} selected={sel} onSelect={setSel} reduced />}>
+                  <Suspense
+                    fallback={<Body2D status={h.regionStatus} selected={sel} onSelect={setSel} reduced />}
+                  >
                     <Body3D status={h.regionStatus} selected={sel} onSelect={setSel} reduced={reduced} />
                   </Suspense>
                 ) : (
@@ -147,15 +158,27 @@ export function Dashboard() {
               </div>
               <p className="brief-text">{h.brief}</p>
               <ul className="region-list" aria-label="Body regions">
-                {REGIONS.filter((r) => INDICATORS.some((i) => i.bodyRegions.includes(r.id))).map((r) => (
-                  <li key={r.id}>
-                    <button aria-pressed={sel === r.id} onClick={() => setSel(r.id)}>
-                      <span>{r.name}</span>
-                      <StatusBadge status={h.regionStatus[r.id]} />
-                    </button>
-                  </li>
-                ))}
+                {tracked
+                  .filter((r) => allRegions || flagged.length === 0 || flagged.includes(r) || r.id === sel)
+                  .map((r) => (
+                    <li key={r.id}>
+                      <button aria-pressed={sel === r.id} onClick={() => setSel(r.id)}>
+                        <span>{r.name}</span>
+                        <StatusBadge status={h.regionStatus[r.id]} />
+                      </button>
+                    </li>
+                  ))}
               </ul>
+              {flagged.length > 0 && flagged.length < tracked.length && (
+                <button
+                  className="btn btn--sm"
+                  aria-expanded={allRegions}
+                  onClick={() => setAllRegions((v) => !v)}
+                >
+                  {allRegions ? "Show only flagged regions" : `Show all ${tracked.length} regions`}
+                  <ChevronDown aria-hidden style={{ transform: allRegions ? "rotate(180deg)" : undefined }} />
+                </button>
+              )}
               <p className="dim" style={{ fontSize: "var(--fs-sm)" }}>
                 {region.name}: {region.function}{" "}
                 <button className="btn btn--ghost btn--sm" onClick={() => navigate("/body")}>
@@ -166,7 +189,11 @@ export function Dashboard() {
           </section>
 
           {top ? (
-            <section className={`block block--${top.status}`} aria-labelledby="top-alert" style={{ margin: "var(--sp-8) 0" }}>
+            <section
+              className={`block block--${top.status}`}
+              aria-labelledby="top-alert"
+              style={{ margin: "var(--sp-8) 0" }}
+            >
               <div className="block-head">
                 {top.status === "act" ? <OctagonAlert aria-hidden /> : <TriangleAlert aria-hidden />}
                 {top.status === "act" ? "Warning" : "Caution"}
@@ -178,16 +205,31 @@ export function Dashboard() {
                     <StatusBadge status={top.status} large />
                   </div>
                   <p>{top.reason}</p>
-                  <p className="meta">
-                    <span>
-                      Detector <b>{top.detector}</b>
-                    </span>
-                    <span>
-                      Confidence <b>{top.confidence}</b>
-                    </span>
-                  </p>
+                  <button
+                    className="btn btn--ghost btn--sm"
+                    style={{ alignSelf: "flex-start" }}
+                    aria-expanded={how}
+                    onClick={() => setHow((v) => !v)}
+                  >
+                    How was this found?{" "}
+                    <ChevronDown aria-hidden style={{ transform: how ? "rotate(180deg)" : undefined }} />
+                  </button>
+                  {how && (
+                    <p className="meta">
+                      <span>
+                        Detector <b>{top.detector}</b>
+                      </span>
+                      <span>
+                        Confidence <b>{top.confidence}</b>
+                      </span>
+                      <Link to="/how">How it decides</Link>
+                    </p>
+                  )}
                   <div className="row" style={{ marginTop: "var(--sp-2)" }}>
-                    <Link className={`btn${top.status === "act" ? " btn--danger" : " btn--primary"}`} to="/recovery">
+                    <Link
+                      className={`btn${top.status === "act" ? " btn--danger" : " btn--primary"}`}
+                      to="/recovery"
+                    >
                       What to do now
                     </Link>
                     <Link className="btn" to="/consult">
@@ -195,7 +237,15 @@ export function Dashboard() {
                     </Link>
                   </div>
                 </div>
-                <DecisionPanel title={top.title} tHarmMin={top.tHarmMin} tHarmSource={top.tHarmSource} assumption={top.assumption} reply={h.link.reply} verdict={top.verdict} compact />
+                <DecisionPanel
+                  title={top.title}
+                  tHarmMin={top.tHarmMin}
+                  tHarmSource={top.tHarmSource}
+                  assumption={top.assumption}
+                  reply={h.link.reply}
+                  verdict={top.verdict}
+                  compact
+                />
               </div>
             </section>
           ) : (
@@ -205,75 +255,96 @@ export function Dashboard() {
             </div>
           )}
 
-          <div className="dash-grid">
-            <section className="card" aria-labelledby="readings">
-              <div className="row">
-                <h2 id="readings">Readings</h2>
-                <span className="spacer" />
-                <Link to="/trends" className="btn btn--ghost btn--sm">
-                  All trends
-                </Link>
-              </div>
-              <table className="table readings">
-                <thead>
-                  <tr>
-                    <th scope="col">Reading</th>
-                    <th scope="col">Today</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Last 10</th>
-                    <th scope="col">Measured</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {INDICATORS.map((ind) => {
-                    const list = h.history[ind.id];
-                    const latest = list[list.length - 1];
-                    const v = formatPrimary(ind, latest?.values, settings);
-                    const s = h.evals[ind.id].status;
-                    return (
-                      <tr key={ind.id} className={`is-${s}`}>
-                        <td>
-                          <Link to={`/trends?ind=${ind.id}`} className="tile-link">
-                            {ind.shortName}
-                          </Link>
-                        </td>
-                        <td className="num">
-                          {v.text}
-                          <span className="unit">{v.unit}</span>
-                        </td>
-                        <td>
-                          <StatusBadge status={s} />
-                        </td>
-                        <td className="spark-cell">
-                          <Sparkline values={list.filter((r) => r.day > 0).slice(-10).map((r) => displayValue(ind, r.values[0], settings))} status={s} height={24} />
-                        </td>
-                        <td className="dim">{ago(h.day, latest?.day)}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </section>
-            <aside className="card" aria-labelledby="others">
-              <h2 id="others">Other alerts</h2>
-              {rest.length === 0 ? (
-                <p className="dim">None.</p>
-              ) : (
-                <ul className="why-list" style={{ marginTop: "var(--sp-2)" }}>
-                  {rest.map((a) => (
-                    <li key={a.id}>
-                      <Link to="/recovery" className="tile-link">
-                        <StatusBadge status={a.status} /> {a.title}
-                      </Link>
-                      <span className="dim" title="Safe wait">
-                        {formatDuration(a.tHarmMin)}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </aside>
-          </div>
+          <button
+            className="btn more-toggle"
+            aria-expanded={more}
+            aria-controls="dash-more"
+            onClick={() => setMore((m) => !m)}
+          >
+            <span>
+              {more ? "Hide" : "Show"} all readings
+              {rest.length ? ` and ${rest.length} other alert${rest.length > 1 ? "s" : ""}` : ""}
+            </span>
+            <ChevronDown aria-hidden style={{ transform: more ? "rotate(180deg)" : undefined }} />
+          </button>
+          {more && (
+            <div className="dash-grid results-reveal" id="dash-more" style={{ marginTop: "var(--sp-4)" }}>
+              <section className="card" aria-labelledby="readings">
+                <div className="row">
+                  <h2 id="readings">Readings</h2>
+                  <span className="spacer" />
+                  <Link to="/trends" className="btn btn--ghost btn--sm">
+                    All trends
+                  </Link>
+                </div>
+                <table className="table readings">
+                  <thead>
+                    <tr>
+                      <th scope="col">Reading</th>
+                      <th scope="col">Today</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Last 10</th>
+                      <th scope="col">Measured</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {INDICATORS.map((ind) => {
+                      const list = h.history[ind.id];
+                      const latest = list[list.length - 1];
+                      const v = formatPrimary(ind, latest?.values, settings);
+                      const s = h.evals[ind.id].status;
+                      return (
+                        <tr key={ind.id} className={`is-${s}`}>
+                          <td>
+                            <Link to={`/trends?ind=${ind.id}`} className="tile-link">
+                              {ind.shortName}
+                            </Link>
+                          </td>
+                          <td className="num">
+                            {v.text}
+                            <span className="unit">{v.unit}</span>
+                          </td>
+                          <td>
+                            <StatusBadge status={s} />
+                          </td>
+                          <td className="spark-cell">
+                            <Sparkline
+                              values={list
+                                .filter((r) => r.day > 0)
+                                .slice(-10)
+                                .map((r) => displayValue(ind, r.values[0], settings))}
+                              status={s}
+                              height={24}
+                            />
+                          </td>
+                          <td className="dim">{ago(h.day, latest?.day)}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </section>
+              <aside className="card" aria-labelledby="others">
+                <h2 id="others">Other alerts</h2>
+                {rest.length === 0 ? (
+                  <p className="dim">None.</p>
+                ) : (
+                  <ul className="why-list" style={{ marginTop: "var(--sp-2)" }}>
+                    {rest.map((a) => (
+                      <li key={a.id}>
+                        <Link to="/recovery" className="tile-link">
+                          <StatusBadge status={a.status} /> {a.title}
+                        </Link>
+                        <span className="dim" title="Safe wait">
+                          {formatDuration(a.tHarmMin)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </aside>
+            </div>
+          )}
         </>
       )}
     </div>

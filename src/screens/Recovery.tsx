@@ -11,6 +11,7 @@ import { StatusBadge } from "../components/status";
 import { EmptyState, HazardChip } from "../components/ui";
 import { useHealth } from "../store/health";
 import { useMission } from "../store/mission";
+import { toast } from "../store/toast";
 
 export function Recovery() {
   const h = useHealth();
@@ -98,7 +99,17 @@ export function Recovery() {
                         <li key={i}>
                           <label>
                             <span>{s}</span>
-                            <input type="checkbox" checked={!!checks[key(i)]} onChange={() => toggle(key(i))} />
+                            <input
+                              type="checkbox"
+                              checked={!!checks[key(i)]}
+                              onChange={() => {
+                                const was = !!checks[key(i)];
+                                toggle(key(i));
+                                if (was) return toast(`Step ${i + 1} unticked`, "info");
+                                const left = a.steps.length - done - 1;
+                                toast(left === 0 ? "All steps done. Tell your Crew Medical Officer how you feel." : `Step ${i + 1} done. ${left} to go.`);
+                              }}
+                            />
                           </label>
                         </li>
                       ))}

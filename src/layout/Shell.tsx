@@ -26,6 +26,7 @@ import { formatDuration } from "../engine/missions";
 import { useMission } from "../store/mission";
 import { Modal } from "../components/ui";
 import { PresenterPanel } from "./PresenterPanel";
+import { Toaster } from "../components/Feedback";
 
 export const NAV = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, key: "1" },
@@ -144,6 +145,7 @@ export function Shell({ children }: { children: ReactNode }) {
         </span>
       </footer>
 
+      <Toaster />
       {presenterOpen && <PresenterPanel />}
       {help && (
         <Modal title="Keyboard shortcuts" onClose={() => setHelp(false)}>

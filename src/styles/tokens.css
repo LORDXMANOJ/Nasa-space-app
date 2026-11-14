@@ -99,8 +99,8 @@
   --ease-in-out: cubic-bezier(0.6, 0, 0.3, 1);
 
   /* ---- component ---- */
-  --target-min: 44px;
-  --target-primary: 52px;
+  --target-min: 56px; /* touch first (Fitts): crew use a touch panel, maybe with gloves */
+  --target-primary: 64px;
   --rail-w: 92px;
   --bar-h: 54px;
   --footer-h: 34px;

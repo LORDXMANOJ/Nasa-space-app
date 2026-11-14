@@ -135,14 +135,14 @@ html {
 }
 .shell {
   display: grid;
-  grid-template-columns: var(--rail-w) 1fr;
+  grid-template-columns: var(--rail-w) minmax(0, 1fr);
   grid-template-rows: var(--bar-h) 1fr var(--footer-h);
   grid-template-areas:
     "rail bar"
     "rail main"
     "rail foot";
   height: 100vh;
-  min-width: 1000px;
+  min-width: 760px; /* portrait tablets (touch panels) and up */
   background: var(--bg);
 }
 .shell-main {

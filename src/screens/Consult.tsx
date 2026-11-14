@@ -5,15 +5,18 @@
  * Exports as JSON and printable PDF (browser print), generated locally.
  */
 import { useEffect, useMemo, useState } from "react";
-import { Download, Printer, Send, Trash2 } from "lucide-react";
+import { ChevronDown, Download, Printer, Send, Trash2 } from "lucide-react";
 import { INDICATORS } from "../data";
 import { formatDuration } from "../engine/missions";
 import { formatPrimary } from "../lib/format";
 import { useHealth } from "../store/health";
 import { packetStatus, useMission, type ConsultPacket } from "../store/mission";
 import { StatusBadge } from "../components/status";
+import { ActionButton } from "../components/Feedback";
+import { toast } from "../store/toast";
 
 export function Consult() {
+  const [preview, setPreview] = useState(false);
   const h = useHealth();
   const settings = useMission((s) => s.settings);
   const outbox = useMission((s) => s.outbox);
@@ -23,12 +26,15 @@ export function Consult() {
   const symptomsRaw = useMission((s) => s.symptoms[s.day]);
   const symptoms = useMemo(() => symptomsRaw ?? [], [symptomsRaw]);
   const checks = useMission((s) => s.checks);
-  const [include, setInclude] = useState<Record<string, boolean>>(() => Object.fromEntries(INDICATORS.map((i) => [i.id, true])));
+  const [include, setInclude] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(INDICATORS.map((i) => [i.id, true])),
+  );
   const [sections, setSections] = useState({ alerts: true, trends: true, symptoms: true, actions: true });
   const [note, setNote] = useState("");
-  const [sentFlash, setSentFlash] = useState(false);
 
-  const actionsTaken = h.alerts.flatMap((a) => a.steps.filter((_, i) => checks[`${h.profile.id}:${h.day}:${a.id}:${i}`]).map((s) => `${a.title}: ${s}`));
+  const actionsTaken = h.alerts.flatMap((a) =>
+    a.steps.filter((_, i) => checks[`${h.profile.id}:${h.day}:${a.id}:${i}`]).map((s) => `${a.title}: ${s}`),
+  );
 
   const payload = useMemo(() => {
     const ids = INDICATORS.filter((i) => include[i.id]);
@@ -44,16 +50,32 @@ export function Consult() {
         ids.map((i) => {
           const r = h.history[i.id].at(-1);
           const v = formatPrimary(i, r?.values, settings);
-          return [i.shortName, { value: `${v.text} ${v.unit}`, measuredDay: r?.day ?? null, status: h.evals[i.id].status }];
+          return [
+            i.shortName,
+            { value: `${v.text} ${v.unit}`, measuredDay: r?.day ?? null, status: h.evals[i.id].status },
+          ];
         }),
       ),
       ...(sections.trends && {
-        trends7d: Object.fromEntries(ids.map((i) => [i.shortName, h.history[i.id].slice(-7).map((r) => ({ day: r.day, value: r.values[0] }))])),
+        trends7d: Object.fromEntries(
+          ids.map((i) => [
+            i.shortName,
+            h.history[i.id].slice(-7).map((r) => ({ day: r.day, value: r.values[0] })),
+          ]),
+        ),
       }),
       ...(sections.alerts && {
         alerts: h.alerts
           .filter((a) => a.indicatorIds.every((i) => include[i]))
-          .map((a) => ({ title: a.title, status: a.status, detector: a.detector, confidence: a.confidence, reason: a.reason, safeWait: formatDuration(a.tHarmMin), verdict: a.verdict })),
+          .map((a) => ({
+            title: a.title,
+            status: a.status,
+            detector: a.detector,
+            confidence: a.confidence,
+            reason: a.reason,
+            safeWait: formatDuration(a.tHarmMin),
+            verdict: a.verdict,
+          })),
       }),
       ...(sections.symptoms && { symptoms }),
       ...(sections.actions && { actionsAlreadyTaken: actionsTaken }),
@@ -78,8 +100,11 @@ export function Consult() {
       },
       h.link.reply.noContact,
     );
-    setSentFlash(true);
-    window.setTimeout(() => setSentFlash(false), 2500);
+    toast(
+      h.link.reply.noContact
+        ? "Packet queued on board. It goes out when contact returns."
+        : "Packet sent to the flight surgeon. It is in the outbox.",
+    );
   };
 
   const download = () => {
@@ -110,7 +135,11 @@ export function Consult() {
           <div className="symptoms">
             {INDICATORS.map((i) => (
               <label key={i.id}>
-                <input type="checkbox" checked={include[i.id]} onChange={(e) => setInclude((c) => ({ ...c, [i.id]: e.target.checked }))} />
+                <input
+                  type="checkbox"
+                  checked={include[i.id]}
+                  onChange={(e) => setInclude((c) => ({ ...c, [i.id]: e.target.checked }))}
+                />
                 {i.shortName}
                 <StatusBadge status={h.evals[i.id].status} />
               </label>
@@ -126,34 +155,55 @@ export function Consult() {
               ] as const
             ).map(([k, label]) => (
               <label key={k}>
-                <input type="checkbox" checked={sections[k]} onChange={(e) => setSections((s) => ({ ...s, [k]: e.target.checked }))} />
+                <input
+                  type="checkbox"
+                  checked={sections[k]}
+                  onChange={(e) => setSections((s) => ({ ...s, [k]: e.target.checked }))}
+                />
                 {label}
               </label>
             ))}
           </div>
           <label className="field">
             <span>Note to the flight surgeon (optional)</span>
-            <textarea className="input" rows={3} style={{ padding: "var(--sp-3)" }} value={note} onChange={(e) => setNote(e.target.value)} />
+            <textarea
+              className="input"
+              rows={3}
+              style={{ padding: "var(--sp-3)" }}
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            />
           </label>
-          <h2>Preview</h2>
-          <pre className="packet-preview" tabIndex={0} aria-label="Packet preview">
-            {json}
-          </pre>
+          <button
+            className="btn btn--sm"
+            style={{ alignSelf: "flex-start" }}
+            aria-expanded={preview}
+            onClick={() => setPreview((v) => !v)}
+          >
+            {preview ? "Hide" : "Show"} what will be sent{" "}
+            <ChevronDown aria-hidden style={{ transform: preview ? "rotate(180deg)" : undefined }} />
+          </button>
+          {preview && (
+            <pre className="packet-preview" tabIndex={0} aria-label="Packet preview">
+              {json}
+            </pre>
+          )}
           <div className="row">
-            <button className="btn btn--primary btn--lg" onClick={doSend}>
+            <ActionButton
+              className="btn btn--primary btn--lg"
+              onAction={doSend}
+              minWorkMs={900}
+              workingLabel={h.link.reply.noContact ? "Queuing…" : "Sending…"}
+              doneLabel={h.link.reply.noContact ? "Queued" : "Sent"}
+            >
               <Send /> {h.link.reply.noContact ? "Queue for flight surgeon" : "Send to flight surgeon"}
-            </button>
+            </ActionButton>
             <button className="btn" onClick={download}>
               <Download /> JSON
             </button>
             <button className="btn" onClick={() => window.print()}>
               <Printer /> Print / PDF
             </button>
-            {sentFlash && (
-              <span role="status" style={{ color: "var(--nominal)", fontWeight: 600 }}>
-                {h.link.reply.noContact ? "Queued on board." : "Sent."}
-              </span>
-            )}
           </div>
         </section>
 
@@ -182,7 +232,9 @@ function Outbox({ items, onClear }: { items: ConsultPacket[]; onClear: () => voi
           </button>
         )}
       </div>
-      {items.length === 0 && <p className="dim">Nothing sent yet. Packets stay on board until sent, and work fully offline.</p>}
+      {items.length === 0 && (
+        <p className="dim">Nothing sent yet. Packets stay on board until sent, and work fully offline.</p>
+      )}
       {items.map((p) => {
         const { status, replyInMs } = packetStatus(p, now);
         const order = ["queued", "transit", "delivered", "reply-due"];

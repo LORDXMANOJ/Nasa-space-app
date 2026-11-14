@@ -20,7 +20,9 @@ export function Assistant() {
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [q, setQ] = useState("");
   const end = useRef<HTMLDivElement>(null);
-  useEffect(() => end.current?.scrollIntoView({ block: "end" }), [msgs]);
+  useEffect(() => {
+    end.current?.scrollIntoView({ block: "end" }); // braces: scrollIntoView may return a Promise in new browsers
+  }, [msgs]);
 
   const ask = (text: string) => {
     if (!text.trim()) return;

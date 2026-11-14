@@ -7,6 +7,7 @@ import { PROFILES } from "../engine/profiles";
 import { formatDuration, MISSIONS, ENV_TO_MISSION } from "../engine/missions";
 import { useLink } from "../store/health";
 import { useMission } from "../store/mission";
+import { toast } from "../store/toast";
 
 function Toggle({ checked, onChange, label, hint }: { checked: boolean; onChange: (v: boolean) => void; label: string; hint: string }) {
   return (
@@ -35,7 +36,10 @@ function Seg<T extends string>({ value, options, onChange, label }: { value: T; 
 export function Settings() {
   const st = useMission();
   const link = useLink();
-  const set = st.updateSettings;
+  const set = (patch: Parameters<typeof st.updateSettings>[0]) => {
+    st.updateSettings(patch);
+    toast("Saved");
+  };
   const mission = MISSIONS[ENV_TO_MISSION[st.environment]];
   return (
     <div className="page">
@@ -65,7 +69,10 @@ export function Settings() {
           <h2>Where are we?</h2>
           <label className="field">
             <span>Environment</span>
-            <select className="select" value={st.environment} onChange={(e) => st.setEnvironment(e.target.value as EnvironmentId)}>
+            <select className="select" value={st.environment} onChange={(e) => {
+                st.setEnvironment(e.target.value as EnvironmentId);
+                toast("Saved. Earth reply updated.");
+              }}>
               {ENVIRONMENTS.map((e) => (
                 <option key={e.id} value={e.id}>
                   {e.name}
@@ -88,7 +95,10 @@ export function Settings() {
                 <strong style={{ display: "block" }}>Solar conjunction</strong>
                 <small className="dim">The Sun blocks the signal for about two weeks: no contact at all.</small>
               </span>
-              <input type="checkbox" checked={st.conjunction} onChange={(e) => st.setConjunction(e.target.checked)} />
+              <input type="checkbox" checked={st.conjunction} onChange={(e) => {
+                st.setConjunction(e.target.checked);
+                toast(e.target.checked ? "Conjunction on: no contact with Earth." : "Conjunction off: contact restored.", "info");
+              }} />
             </label>
           )}
           <div className="banner banner--info">

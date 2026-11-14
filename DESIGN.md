@@ -171,8 +171,11 @@ Header row in bold dim 14px over a 2px ink rule, 1px light rules between rows; A
 ### Check-in step strip
 Four numbered cells (You, Earth readings, Today's readings, Your results); done steps show a tick, the current step is filled Hunter Green.
 
-### Check-in form
-A table: reading, how it is measured (auto from the wearable or a Measure button), your Earth value, today's input with its unit. Mood is a 1 to 10 scale. Errors sit under the field.
+### Check-in (touch first)
+Three short steps with their own strip: Your wearable, Measure, How you feel. Each reading is a card with its Earth value and a number field (− value +, 56px). Tapping the value opens an on-screen number pad (bottom sheet, 64px keys). Mood is a 1 to 10 row of 64px buttons; symptoms are whole-row toggles. A sticky bar at the bottom holds Back, how many are still to fill, and Next / See my results. Missing fields get a red outline, a message under them and a short jiggle.
+
+### Feedback
+Buttons scale to 0.96 when pressed. Working: spinner + words, colour kept (never greyed). Done: tick + word on a Nominal-green button for 1.6 s. Toasts (Pine Teal, bottom centre, 56px, dismissable) confirm saves and sends. Touch targets: 56px minimum, 64px for the main action, 48px for small buttons.
 
 ### Body views
 3D: a translucent Dry Sage body with real organ models inside (heart, lungs, skull, stomach, intestines, spine), each in its status colour; eyes, skin and whole body use status-coloured hotspots. 2D: a Hairline line drawing in the green palette; damage is marked with arrows, and the coloured status words sit in the box beneath it.

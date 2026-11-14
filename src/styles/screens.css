@@ -1164,7 +1164,7 @@ details.why summary {
   border: 0;
   background: none;
   padding: 2px 0;
-  min-height: 28px;
+  min-height: 44px;
   font-weight: 800;
   cursor: pointer;
 }
@@ -1184,4 +1184,264 @@ details.why summary {
   font-size: var(--fs-sm);
   font-weight: 700;
   color: var(--text-dim);
+}
+
+/* ---------- Check-in, touch first in steps ---------- */
+.ci-steps {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  margin: 0 0 var(--sp-6);
+  padding: 0;
+  list-style: none;
+  border: var(--bw) solid var(--border-strong);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.ci-steps li {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 52px;
+  padding: 0 var(--sp-4);
+  font-weight: 700;
+  color: var(--text-dim);
+  border-right: var(--bw) solid var(--border);
+}
+.ci-steps li:last-child {
+  border-right: 0;
+}
+.ci-steps .k {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: var(--bw-strong) solid currentColor;
+  font-size: var(--fs-sm);
+}
+.ci-steps li.is-done {
+  color: var(--p-hunter);
+}
+.ci-steps li.is-now {
+  background: var(--p-hunter);
+  color: var(--p-dust);
+}
+.ci-pane {
+  animation: slide-in var(--dur-slow) var(--ease-out);
+}
+[data-motion="reduced"] .ci-pane {
+  animation: none;
+}
+.ci-pane-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: 600;
+}
+.ci-pane-hint {
+  margin: var(--sp-1) 0 var(--sp-5);
+  max-width: 64ch;
+}
+.ci-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ci-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border: var(--bw) solid var(--border-strong);
+  border-radius: var(--r-lg);
+  background: var(--surface-0);
+}
+.ci-card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.ci-card-head > svg {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  color: var(--p-fern);
+}
+.ci-card-head div {
+  display: flex;
+  flex-direction: column;
+}
+.ci-card-head strong {
+  font-size: var(--fs-md);
+}
+.ci-card-head .dim {
+  font-size: var(--fs-sm);
+}
+.ci-card-head .dim svg {
+  vertical-align: -2px;
+}
+.ci-card-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--sp-3);
+}
+.ci-numfield {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ci-sub {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--text-dim);
+}
+.ci-measure {
+  min-height: var(--target-min);
+  min-width: 156px;
+}
+.ci-err {
+  display: block;
+  max-width: 300px;
+}
+.ci-mood,
+.ci-symptoms {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.ci-mood legend,
+.ci-symptoms legend {
+  font-weight: 700;
+  margin-bottom: var(--sp-2);
+}
+.ci-mood .mood-scale {
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.ci-mood .mood-scale button {
+  min-height: 64px;
+  font-size: var(--fs-md);
+}
+.mood-scale[aria-invalid="true"] {
+  border-color: var(--act);
+  box-shadow: 0 0 0 3px rgba(179, 38, 30, 0.15);
+}
+.ci-symptoms .symptoms label {
+  position: relative;
+  min-height: var(--target-min);
+  padding: 0 var(--sp-4) 0 var(--sp-3);
+  border-radius: var(--r-md);
+  font-size: var(--fs-base);
+  gap: var(--sp-3);
+}
+.ci-symptoms .symptoms input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.sym-box {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: var(--bw-strong) solid var(--border-strong);
+  border-radius: var(--r-sm);
+  color: transparent;
+}
+.sym-box svg {
+  width: 18px;
+  height: 18px;
+}
+.ci-symptoms .symptoms label:has(input:checked) {
+  background: var(--p-hunter);
+  border-color: var(--p-hunter);
+  color: var(--p-dust);
+}
+.ci-symptoms .symptoms label:has(input:checked) .sym-box {
+  border-color: var(--p-dust);
+  color: var(--p-dust);
+}
+.ci-symptoms .symptoms label:has(input:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+.ci-pain {
+  max-width: 520px;
+}
+/* sticky action bar: the main button stays under the thumb */
+.ci-bar {
+  position: sticky;
+  bottom: -40px; /* sit on the real bottom edge: .shell-main has 40px bottom padding */
+  box-shadow: 0 -10px 24px rgba(38, 58, 48, 0.08);
+  z-index: 5;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--sp-4);
+  margin: var(--sp-8) calc(-1 * var(--sp-4)) 0;
+  padding: var(--sp-3) var(--sp-4);
+  border-top: var(--bw-strong) solid var(--rule);
+  background: var(--surface-0);
+}
+.ci-bar-note {
+  text-align: right;
+  font-weight: 600;
+}
+.ci-bar .btn--lg {
+  min-width: 200px;
+}
+.ci-go {
+  position: relative;
+  overflow: hidden;
+  min-width: 300px !important;
+}
+.ci-go-bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 5px;
+  width: 100%;
+  background: var(--p-sage);
+  transform-origin: left center;
+  animation: go-bar 1100ms var(--ease-in-out) forwards;
+}
+@keyframes go-bar {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+[data-motion="reduced"] .ci-go-bar {
+  animation-duration: 300ms;
+}
+.results-reveal {
+  animation: slide-in var(--dur-slow) var(--ease-out);
+}
+[data-motion="reduced"] .results-reveal {
+  animation: none;
+}
+.more-toggle {
+  width: 100%;
+  justify-content: space-between;
+  margin-top: var(--sp-6);
+}
+@media (max-width: 720px) {
+  .ci-steps {
+    grid-auto-flow: row;
+  }
+  .ci-bar {
+    grid-template-columns: 1fr 1fr;
+  }
+  .ci-bar-note {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    text-align: left;
+  }
+  .ci-bar .btn--lg,
+  .ci-go {
+    min-width: 0 !important;
+  }
 }
