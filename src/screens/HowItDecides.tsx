@@ -341,7 +341,7 @@ export function HowItDecides() {
             fonts (SIL Open Font License 1.1, bundled). 3D body and organs from Sketchfab, CC-BY 4.0:
             "Low-Poly Male Body" by Tidominer, "Anatomically Correct Human Heart" by Pigcraft, "Lungs" by
             prasanth.k, "ROJO-HS-1 Human Skull" by Kent MORI, "Human Organs" by Suyanto, "Cauda Equina - 4-22"
-            by aandp (simplified and recoloured). 2D body drawn with the Hairline kernel by Lucas Markes. Full
+            by aandp (simplified and recoloured). 2D body drawn with the Hairline kernel by Lucas Marques (MIT). Full
             list with licences in REFERENCES.md.
           </p>
         </section>

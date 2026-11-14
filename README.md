@@ -25,7 +25,7 @@ It runs fully offline: a strict Content-Security-Policy, bundled fonts and icons
 |---|---|
 | Who are you? | Opens the app: pick yourself from the crew and see the readings you took on Earth before launch (your normal) |
 | Dashboard | A 4-step flow: you → Earth readings → enter today's readings right here → results on the 3D body, then the most urgent alert with its **Decision Panel** (safe wait vs Earth reply) and the readings log |
-| Check-in | About one minute. Wearables auto-fill sleep, heart rate, temperature and radiation; you start BP, SpO₂, glucose and body mass; you enter mood, symptoms and pain |
+| Check-in | Three short touch-first steps: confirm your wearable readings, tap Measure for the devices, say how you feel. Earth value beside every reading; numbers by − / + or an on-screen number pad |
 | Measure | Guided 4-step flow per indicator: why it matters in space → how-to step cards → simulated device reading or manual entry → result with "Why this status?" |
 | Body | 3D see-through body with real organ models that light up in their status colour (Sketchfab, CC-BY 4.0), and a Hairline line-drawing 2D body that marks damage with arrows (low-power aware) with a keyboard-accessible region list and region panel |
 | Recovery | Red flags, drug-free on-board checklist, Crew Medical Officer escalation, decision panel per alert |
@@ -59,11 +59,12 @@ src/store/       zustand state persisted to IndexedDB (Dexie); useHealth() deriv
 src/screens/     one file per screen; body/ holds the 2D and 3D bodies
 src/components/  status badge/shape, tiles, Decision Panel, shared UI
 src/styles/      tokens (dark, high-contrast, large text), components, shell, screens
-videos/          60-second concept video (HyperFrames)
+videos/          concept video and demo walkthrough (HyperFrames)
+docs/ux/         UX decisions (touch first, feedback, empty and error states)
 ```
 
 ## Docs
 
-[PITCH.md](PITCH.md) · [HOW_IT_DECIDES.md](HOW_IT_DECIDES.md) · [DECISIONS.md](DECISIONS.md) · [REFERENCES.md](REFERENCES.md) · [APP_PREVIEW.md](APP_PREVIEW.md) · [PROMPT.md](PROMPT.md)
+**[UX decisions: why it is touch-first and how it guides the crew](docs/ux/README.md)** · [PITCH.md](PITCH.md) · [HOW_IT_DECIDES.md](HOW_IT_DECIDES.md) · [DECISIONS.md](DECISIONS.md) · [REFERENCES.md](REFERENCES.md) · [APP_PREVIEW.md](APP_PREVIEW.md) · [PROMPT.md](PROMPT.md)
 
 An AI coding assistant (Claude) helped write this code and documentation.

@@ -66,7 +66,7 @@ Body-mass ±5 % / ±10 % limits: **demo assumption**. A MedlinePlus "5 % uninten
 | 3D stomach and intestines: "Human Organs" (`stomach.glb`, `intestines.glb`) | Suyanto, **CC-BY 4.0**, https://sketchfab.com/3d-models/human-organs-bced6b6ebded4845bcfb2496a6e6d35c |
 | 3D spine: "Cauda Equina - 4-22" (`spine.glb`) | aandp, **CC-BY 4.0**, https://sketchfab.com/3d-models/cauda-equina-4-22-5d39455bf3c040a6ba3ab030b7b46890 |
 | (all 3D models) | Simplified, textures removed, recoloured by status, rescaled and placed inside the body. Credited in the app (How it decides) and in `public/models/CREDITS.txt`. Not used: "Thorax and abdomen" by E-learning UMCG (CC-BY-NC-ND, no changes allowed) |
-| 2D body: Hairline kernel (`public/hairline/kernel.js`) | From the `@lucasmarkes/hairline` figure engine via the hairline-create skill, copied unchanged. ◻ Confirm its licence before publishing |
+| 2D body: Hairline kernel (`public/hairline/kernel.js`) | From `@lucasmarkes/hairline` 0.5.1 by Lucas Marques, **MIT** (licence text in `public/hairline/LICENSE`), copied unchanged. https://github.com/lucasmarkes/hairline |
 
 ## Libraries (runtime)
 
