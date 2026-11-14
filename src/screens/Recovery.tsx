@@ -4,10 +4,10 @@
  * "Can this wait for Earth?" Decision Panel and the sources. No doses, ever.
  */
 import { Link } from "react-router-dom";
-import { CheckCircle2, OctagonAlert, UserRound } from "lucide-react";
+import { CheckCircle2, OctagonAlert, TriangleAlert, UserRound } from "lucide-react";
 import { indicatorById } from "../data";
 import { DecisionPanel } from "../components/DecisionPanel";
-import { StatusBadge, StatusShape } from "../components/status";
+import { StatusBadge } from "../components/status";
 import { EmptyState, HazardChip } from "../components/ui";
 import { useHealth } from "../store/health";
 import { useMission } from "../store/mission";
@@ -52,7 +52,7 @@ export function Recovery() {
           return (
             <article key={a.id} className={`block block--${a.status}`} aria-labelledby={`t-${a.id}`}>
               <div className="block-head">
-                <StatusShape status={a.status} size={18} />
+                {a.status === "act" ? <OctagonAlert aria-hidden /> : <TriangleAlert aria-hidden />}
                 {a.status === "act" ? "Warning" : "Caution"}
               </div>
               <div className="block-body stack">
