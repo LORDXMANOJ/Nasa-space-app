@@ -59,7 +59,13 @@ Body-mass ±5 % / ±10 % limits: **demo assumption**. A MedlinePlus "5 % uninten
 | Shantell Sans 5.3.0 (all text), DynaPuff 5.3.0 (headings), IBM Plex Mono 5.3.0 (data preview only) via @fontsource | SIL Open Font License 1.1 |
 | lucide-react 1.73.0 icons | ISC |
 | App icon (`public/icon.svg`) | Original, made for this project |
-| 3D body: "Rigged Figure" (`public/models/rigged-figure.glb`) | © 2017 Cesium, **CC-BY 4.0**, from the Khronos glTF Sample Assets: https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/RiggedFigure. Recoloured and scaled; credited in the app (How it decides) and in `public/models/CREDITS.txt` |
+| 3D body: "Low-Poly Male Body" (`public/models/organs/body.glb`) | Tidominer, **CC-BY 4.0**, https://sketchfab.com/3d-models/low-poly-male-body-ddf11918aa8042cf9f43193f33611f47 |
+| 3D heart: "Anatomically Correct Human Heart" (`heart.glb`) | Pigcraft, **CC-BY 4.0**, https://sketchfab.com/3d-models/anatomically-correct-human-heart-54fa880728d14c11afff78be8721620a |
+| 3D lungs: "Lungs" (`lungs.glb`) | prasanth.k, **CC-BY 4.0**, https://sketchfab.com/3d-models/lungs-2706caba9679481bb809f141f87d7c14 |
+| 3D skull: "ROJO-HS-1 Human Skull" (`skull.glb`) | Kent MORI (@rojohaku), **CC-BY 4.0**, https://sketchfab.com/3d-models/rojo-hs-1-human-skull-489fd613299942e4abe8477d7df0cfa7 |
+| 3D stomach and intestines: "Human Organs" (`stomach.glb`, `intestines.glb`) | Suyanto, **CC-BY 4.0**, https://sketchfab.com/3d-models/human-organs-bced6b6ebded4845bcfb2496a6e6d35c |
+| 3D spine: "Cauda Equina - 4-22" (`spine.glb`) | aandp, **CC-BY 4.0**, https://sketchfab.com/3d-models/cauda-equina-4-22-5d39455bf3c040a6ba3ab030b7b46890 |
+| (all 3D models) | Simplified, textures removed, recoloured by status, rescaled and placed inside the body. Credited in the app (How it decides) and in `public/models/CREDITS.txt`. Not used: "Thorax and abdomen" by E-learning UMCG (CC-BY-NC-ND, no changes allowed) |
 | 2D body: Hairline kernel (`public/hairline/kernel.js`) | From the `@lucasmarkes/hairline` figure engine via the hairline-create skill, copied unchanged. ◻ Confirm its licence before publishing |
 
 ## Libraries (runtime)

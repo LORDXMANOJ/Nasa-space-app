@@ -27,7 +27,7 @@ It runs fully offline: a strict Content-Security-Policy, bundled fonts and icons
 | Dashboard | A 4-step flow: you → Earth readings → enter today's readings right here → results on the 3D body, then the most urgent alert with its **Decision Panel** (safe wait vs Earth reply) and the readings log |
 | Check-in | About one minute. Wearables auto-fill sleep, heart rate, temperature and radiation; you start BP, SpO₂, glucose and body mass; you enter mood, symptoms and pain |
 | Measure | Guided 4-step flow per indicator: why it matters in space → how-to step cards → simulated device reading or manual entry → result with "Why this status?" |
-| Body | 3D body ("Rigged Figure", CC-BY 4.0) with glowing hotspots, and a Hairline line-drawing 2D body that marks damage with arrows (low-power aware) with a keyboard-accessible region list and region panel |
+| Body | 3D see-through body with real organ models that light up in their status colour (Sketchfab, CC-BY 4.0), and a Hairline line-drawing 2D body that marks damage with arrows (low-power aware) with a keyboard-accessible region list and region panel |
 | Recovery | Red flags, drug-free on-board checklist, Crew Medical Officer escalation, decision panel per alert |
 | Trends | Personal baseline band, Watch/Act limits, data-table alternative |
 | Hazards | The five NASA hazards linked to live indicators |

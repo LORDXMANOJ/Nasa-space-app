@@ -17,3 +17,6 @@ videos/**/assets/vo/*.wav
 videos/**/.waveform-cache/
 .playwright-mcp/
 *.tsbuildinfo
+
+# Original Sketchfab downloads (large; the shrunk copies live in public/models/organs)
+models-src/

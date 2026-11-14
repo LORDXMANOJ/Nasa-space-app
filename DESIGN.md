@@ -175,7 +175,7 @@ Four numbered cells (You, Earth readings, Today's readings, Your results); done 
 A table: reading, how it is measured (auto from the wearable or a Measure button), your Earth value, today's input with its unit. Mood is a 1 to 10 scale. Errors sit under the field.
 
 ### Body views
-3D: the "Rigged Figure" model in translucent Dry Sage with status-coloured hotspots. 2D: a Hairline line drawing in the green palette; damage is marked with arrows, and the coloured status words sit in the box beneath it.
+3D: a translucent Dry Sage body with real organ models inside (heart, lungs, skull, stomach, intestines, spine), each in its status colour; eyes, skin and whole body use status-coloured hotspots. 2D: a Hairline line drawing in the green palette; damage is marked with arrows, and the coloured status words sit in the box beneath it.
 
 ### Procedure steps
 Ordered list: bold step number, step text, dotted leader, checkbox at the right. Checked steps are struck through.

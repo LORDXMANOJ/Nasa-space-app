@@ -1,5 +1,19 @@
-rigged-figure.glb: "Rigged Figure" by Cesium (2017), from the Khronos glTF-Sample-Assets repository,
-https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/RiggedFigure
-Licensed under Creative Commons Attribution 4.0 International (CC-BY-4.0):
-https://creativecommons.org/licenses/by/4.0/legalcode
-Changes: recoloured and rendered translucent, scaled to 1.75 m; no logos or trademarks used.
+3D models used in the body view (public/models/organs/). All are free downloads from Sketchfab,
+licensed under Creative Commons Attribution 4.0 International (CC-BY-4.0):
+https://creativecommons.org/licenses/by/4.0/
+
+Changes made to every model: textures and materials removed, recoloured by health status,
+simplified to a few thousand triangles, rescaled and repositioned inside the body.
+
+body.glb        "Low-Poly Male Body" by Tidominer
+                https://sketchfab.com/3d-models/low-poly-male-body-ddf11918aa8042cf9f43193f33611f47
+heart.glb       "Anatomically Correct Human Heart" by Pigcraft
+                https://sketchfab.com/3d-models/anatomically-correct-human-heart-54fa880728d14c11afff78be8721620a
+lungs.glb       "Lungs" by prasanth.k (lungs, bronchi and trachea kept)
+                https://sketchfab.com/3d-models/lungs-2706caba9679481bb809f141f87d7c14
+skull.glb       "ROJO-HS-1 Human Skull" by Kent MORI (@rojohaku)
+                https://sketchfab.com/3d-models/rojo-hs-1-human-skull-489fd613299942e4abe8477d7df0cfa7
+stomach.glb,    "Human Organs" by Suyanto (stomach and intestines, split into two files)
+intestines.glb  https://sketchfab.com/3d-models/human-organs-bced6b6ebded4845bcfb2496a6e6d35c
+spine.glb       "Cauda Equina - 4-22" by aandp
+                https://sketchfab.com/3d-models/cauda-equina-4-22-5d39455bf3c040a6ba3ab030b7b46890
