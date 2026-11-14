@@ -20,6 +20,8 @@ const metric = z.object({
   red: band,
   /** Monotonic running total (e.g. radiation dose): skip baseline z-score and trend rules. */
   cumulative: z.boolean().optional(),
+  /** Judge by limits only (e.g. body mass, judged by % change since launch instead). */
+  limitsOnly: z.boolean().optional(),
 });
 
 const source = z.object({ title: z.string(), url: z.string().url(), usedFor: z.string() });

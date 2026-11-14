@@ -1,61 +1,56 @@
 ---
 name: Astronaut Health Monitor
-description: A crew procedure page for daily astronaut health checks. Paper, ink, rules and standard WARNING / CAUTION blocks.
+description: A crew procedure page for daily astronaut health checks, in the crew's sage-and-pine palette. Paper sheet, rules, a guided 4-step check-in, and standard WARNING / CAUTION blocks.
 colors:
-  ink: "#101318"
-  ink-soft: "#2b313a"
-  ink-dim: "#4d5562"
-  paper: "#ffffff"
-  binder: "#e9ecef"
-  surface-2: "#f4f6f8"
-  rule-light: "#dde1e6"
-  rule-strong: "#c7ccd3"
-  procedure-blue: "#0b4f9c"
-  procedure-blue-deep: "#083d7a"
-  nominal: "#1d6b43"
+  dust-grey: "#dad7cd"
+  dry-sage: "#a3b18a"
+  fern: "#588157"
+  hunter-green: "#3a5a40"
+  pine-teal: "#344e41"
+  paper: "#f6f5f0"
+  on-fill: "#ffffff"
+  paper-2: "#eceae2"
+  rule: "#cfcbbf"
+  pine-dim: "#4e5f55"
+  pine-deep: "#263a30"
+  nominal: "#2e6b3f"
   watch-text: "#8a5300"
-  caution-amber: "#f2b13c"
+  caution-amber: "#e0a33a"
   warning-red: "#b3261e"
-  stale: "#6b7380"
+  stale: "#767b70"
 typography:
   page-title:
-    fontFamily: "Public Sans, system-ui, sans-serif"
-    fontSize: "2rem"
-    fontWeight: 800
-    lineHeight: 1.15
-    letterSpacing: "-0.02em"
+    fontFamily: "DynaPuff, Shantell Sans, system-ui, sans-serif"
+    fontSize: "32px"
+    fontWeight: 600
   section-heading:
-    fontFamily: "Public Sans, system-ui, sans-serif"
-    fontSize: "1.125rem"
-    fontWeight: 800
-    lineHeight: 1.25
-    letterSpacing: "0.02em"
+    fontFamily: "DynaPuff, Shantell Sans, system-ui, sans-serif"
+    fontSize: "20px"
+    fontWeight: 600
   block-label:
-    fontFamily: "Public Sans, system-ui, sans-serif"
-    fontSize: "0.875rem"
-    fontWeight: 800
-    lineHeight: 1.2
-    letterSpacing: "0.18em"
+    fontFamily: "DynaPuff, Shantell Sans, system-ui, sans-serif"
+    fontSize: "14px"
+    fontWeight: 600
+    letterSpacing: "0.12em"
   body:
-    fontFamily: "Public Sans, system-ui, sans-serif"
-    fontSize: "1rem"
+    fontFamily: "Shantell Sans, system-ui, sans-serif"
+    fontSize: "16px"
     fontWeight: 400
     lineHeight: 1.5
-    letterSpacing: "normal"
   status-mark:
-    fontFamily: "Public Sans, system-ui, sans-serif"
-    fontSize: "0.8125rem"
+    fontFamily: "Shantell Sans, system-ui, sans-serif"
+    fontSize: "13px"
     fontWeight: 800
-    lineHeight: 1.2
-    letterSpacing: "0.06em"
-  data:
+  mono:
     fontFamily: "IBM Plex Mono, ui-monospace, monospace"
-    fontSize: "0.875rem"
+    fontSize: "13px"
     fontWeight: 400
-    lineHeight: 1.5
-    letterSpacing: "normal"
 rounded:
-  none: "0"
+  sm: "6px"
+  md: "10px"
+  lg: "12px"
+  xl: "16px"
+  pill: "999px"
 spacing:
   xs: "4px"
   sm: "8px"
@@ -65,23 +60,23 @@ spacing:
   xxl: "48px"
 components:
   button-primary:
-    backgroundColor: "{colors.procedure-blue}"
-    textColor: "{colors.paper}"
-    rounded: "{rounded.none}"
+    backgroundColor: "{colors.hunter-green}"
+    textColor: "{colors.dust-grey}"
+    rounded: "{rounded.md}"
     padding: "0 20px"
     height: "44px"
   button-primary-hover:
-    backgroundColor: "{colors.procedure-blue-deep}"
+    backgroundColor: "{colors.pine-teal}"
   button-secondary:
     backgroundColor: "{colors.paper}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.none}"
+    textColor: "{colors.pine-teal}"
+    rounded: "{rounded.md}"
     padding: "0 20px"
     height: "44px"
   button-danger:
     backgroundColor: "{colors.warning-red}"
     textColor: "{colors.paper}"
-    rounded: "{rounded.none}"
+    rounded: "{rounded.md}"
     padding: "0 20px"
     height: "44px"
   block-warning-head:
@@ -90,82 +85,97 @@ components:
     typography: "{typography.block-label}"
   block-caution-head:
     backgroundColor: "{colors.caution-amber}"
-    textColor: "{colors.ink}"
+    textColor: "{colors.pine-deep}"
     typography: "{typography.block-label}"
   input:
     backgroundColor: "{colors.paper}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.none}"
+    textColor: "{colors.pine-teal}"
+    rounded: "{rounded.sm}"
     height: "44px"
+  rail:
+    backgroundColor: "{colors.pine-teal}"
+    textColor: "{colors.dust-grey}"
 ---
 
 # Design System: Astronaut Health Monitor
 
 ## Overview
 
-The app is a crew procedure page, not a dashboard. Astronauts already trust the format of an onboard procedure: white paper, black ink, numbered steps, and standard WARNING and CAUTION blocks. Every screen is one white sheet on a light grey binder ground, organised by rules, tables and steps instead of cards.
+The app is a crew procedure page, not a dashboard. Every screen is one paper sheet (`#f6f5f0`, 16px corners) on a Dust Grey ground, organised by rules, tables and steps instead of cards. The left rail is Pine Teal with Dust Grey links; the active link sits on Hunter Green with a Dry Sage edge.
 
-The most urgent alert always comes first as a WARNING (Act) or CAUTION (Watch) block. Inside it, the "Can this wait for Earth?" timing table compares the safe wait with Earth's reply on one tick scale, and the verdict is boxed in caps. The tone is calm and exact: colour is reserved for status, and the page reads top to bottom like a checklist.
+The app opens with **Who are you?**: pick yourself, see the readings you took on Earth before launch, then the dashboard walks you through a 4-step strip (You, Earth readings, Today's readings, Your results). Results land on the 3D body, then the most urgent alert comes first as a WARNING (Act) or CAUTION (Watch) block with the "Can this wait for Earth?" timing table.
 
 ## Colors
 
+The palette is the user's (2026-11-14): Dust Grey, Dry Sage, Fern, Hunter Green, Pine Teal.
+
 ### Primary
-- **Procedure blue** `#0b4f9c`: primary actions, links, focus rings, selected values. Deep `#083d7a` on hover.
+- **Hunter Green** `#3a5a40`: primary buttons, links, selected values, the "now" step. **Pine Teal** `#344e41` on hover and for text.
+- **Fern** `#588157`: focus rings and the 3D floor ring. **Dry Sage** `#a3b18a`: the 3D body skin and the rail's active edge.
 
 ### Neutral
-- **Ink** `#101318` for text, section rules, title-block rules and the Earth-reply bar. **Ink soft** `#2b313a` and **ink dim** `#4d5562` for secondary text.
-- **Paper** `#ffffff` for the sheet, **binder** `#e9ecef` behind it, **surface 2** `#f4f6f8` for hover and wells.
-- **Rules:** light `#dde1e6` between table rows, strong `#c7ccd3` around the sheet and grid cells.
+- **Pine Teal** `#344e41` for text, **pine dim** `#4e5f55` for secondary text.
+- **Paper** `#f6f5f0` for the sheet, **Dust Grey** `#dad7cd` behind it, **paper 2** `#eceae2` for hover and wells, **rule** `#cfcbbf` between rows.
 
 ### Status (semantic only)
-Nominal `#1d6b43`; Watch text `#8a5300` with caution-amber `#f2b13c` fills; Act and WARNING `#b3261e`; Stale `#6b7380`.
+Nominal `#2e6b3f`; Watch text `#8a5300` with caution-amber `#e0a33a` fills; Act and WARNING `#b3261e`; Stale `#767b70`.
 
 ### Named Rules
-- **The status-only rule.** Red, amber and green appear only in status marks, WARNING / CAUTION blocks and the safe-wait bar, never as decoration.
+- **The status-only rule.** Red and amber appear only in status marks, WARNING / CAUTION blocks, the safe-wait bar and the 3D hotspots, never as decoration.
+- **The arrows-not-colour rule (2D body).** The Hairline 2D body stays in the green line palette. Damage is drawn as arrows: a doubled arrow with a double head for Act, a dashed arrow with a single head for Watch. The status words in colour sit in the box under the drawing.
 - **The simulation strip rule.** The title block always ends with the amber SIMULATED DEMO DATA cell.
 
 ## Typography
 
-Public Sans (the U.S. government's document typeface, OFL, bundled locally) carries everything, with tabular figures on globally. IBM Plex Mono appears only in the Consult Packet JSON preview and in formulas.
+**Shantell Sans** (OFL, bundled) carries all text, with tabular figures on globally; it reads like a careful hand on a checklist. **DynaPuff** (OFL, bundled) is for big headings only: page titles, section headings, block labels and hero figures. IBM Plex Mono appears only in the Consult Packet JSON preview and in formulas.
 
 ### Hierarchy
-- **Page title:** 32px, weight 800, sentence case.
-- **Section heading:** 18px, weight 800, caps, under a 2px ink rule.
-- **Block label:** 14px, weight 800, caps, tracked 0.18em, centred in the WARNING / CAUTION head.
-- **Body:** 16px, weight 400, line height 1.5, measure under 72ch.
-- **Status mark:** 13px, weight 800, caps, tracked 0.06em, always beside its shape.
+- **Page title:** 32px DynaPuff 600, sentence case.
+- **Section heading:** 20px DynaPuff 600, sentence case.
+- **Block label:** 14px DynaPuff 600, caps, tracked, centred in the WARNING / CAUTION head.
+- **Body:** 16px Shantell Sans 400, line height 1.5, measure under 72ch.
+- **Status mark:** 13px Shantell Sans 800, always beside its shape.
+
+## Shape
+
+Soft corners on one scale: inputs and chips 6px, buttons 10px, blocks and tables 12px, the sheet 16px; bars, meters and toggles are pills.
 
 ## Layout
 
-One sheet per screen (max 1320px), 40px inner padding, on the binder ground.
-- **Left tab rail:** icon + label; the active tab is marked by a 4px ink edge.
+One sheet per screen (max 1320px), 40px inner padding, on the Dust Grey ground.
+- **Left tab rail:** Pine Teal, icon + label; the active tab sits on Hunter Green with a 4px Dry Sage edge.
 - **Title-block strip** across the top: Health check, day, environment, Earth reply, crew, SIMULATED.
 - **Document footer** carrying the safety line.
 
-Sections are separated by 2px ink rules, with more space above each heading than below it. Two-column screens keep a fixed side column (300 to 380px) and stack below 1100 to 1280px.
+Sections are separated by 2px Pine Teal rules, with more space above each heading than below it. Two-column screens keep a fixed side column (300 to 380px) and stack below 1100 to 1280px.
 
 ## Elevation & Depth
 
 Flat. Depth comes from rules and the sheet edge, not shadows. The one shadow is the pop shadow on modals, popovers and the presenter panel: `0 18px 48px rgba(16,19,24,0.18)`.
 
-## Shapes
-
-Zero radius everywhere. Paper has no rounded corners.
-
 ## Components
 
 ### Buttons
-Rectangular, with a 2px border, 44px tall (52px for the primary daily action).
-- **Primary:** procedure-blue fill.
-- **Secondary:** paper with an ink border.
+10px corners, a 2px border, 44px tall (52px for the primary daily action).
+- **Primary:** Hunter Green fill, Dust Grey text.
+- **Secondary:** paper with a Pine Teal border.
 - **Danger:** warning-red fill, used only for "Open the plan" on an Act alert.
-- **Ghost:** underlined blue text link.
+- **Ghost:** underlined Hunter Green text link.
 
 ### WARNING / CAUTION / NOTE blocks
-A 2px border in the status colour, a full-width caps label strip (red WARNING, amber CAUTION with ink text, grey NOTE), then a padded body. These replace cards for anything urgent.
+12px corners, a 2px border in the status colour, a full-width caps label strip (red WARNING, amber CAUTION with ink text, grey NOTE), then a padded body. These replace cards for anything urgent.
 
 ### Tables
 Header row in bold dim 14px over a 2px ink rule, 1px light rules between rows; Act rows get a pale red wash. The readings log is a table, not a tile grid.
+
+### Check-in step strip
+Four numbered cells (You, Earth readings, Today's readings, Your results); done steps show a tick, the current step is filled Hunter Green.
+
+### Check-in form
+A table: reading, how it is measured (auto from the wearable or a Measure button), your Earth value, today's input with its unit. Mood is a 1 to 10 scale. Errors sit under the field.
+
+### Body views
+3D: the "Rigged Figure" model in translucent Dry Sage with status-coloured hotspots. 2D: a Hairline line drawing in the green palette; damage is marked with arrows, and the coloured status words sit in the box beneath it.
 
 ### Procedure steps
 Ordered list: bold step number, step text, dotted leader, checkbox at the right. Checked steps are struck through.
@@ -174,10 +184,10 @@ Ordered list: bold step number, step text, dotted leader, checkbox at the right.
 Where a grid is needed (measurement index, crew picker), cells share 1px rules like a form, never floating cards.
 
 ### Inputs / Fields
-Square, 1px dim border, ink on hover, 2px red when invalid. Segmented controls are an ink-bordered strip; the pressed segment is filled ink.
+6px corners, 1px dim border, Pine Teal on hover, 2px red when invalid. Segmented controls are an ink-bordered strip; the pressed segment is filled Pine Teal.
 
 ### Navigation
-Left tab rail; the current screen is marked by a 4px ink edge and a bold label.
+Left tab rail; the current screen sits on Hunter Green with a 4px Dry Sage edge and a bold label.
 
 ### Timing table (signature)
 Two bars on one log tick scale (1 min, 1 h, 1 day, 30 days): the safe wait in its status colour, Earth's reply in ink. The verdict is boxed in caps: white on red for ACT ON BOARD NOW, ink outline for ASK EARTH.
@@ -190,6 +200,6 @@ Two bars on one log tick scale (1 min, 1 h, 1 day, 30 days): the safe wait in it
 - Pair every status colour with its shape and word.
 
 ### Don't:
-- Don't use cards, rounded corners, gradients or glows.
+- Don't use floating cards, gradients or glows; corners stay on the one soft scale.
 - Don't use red, amber or green outside status.
 - Don't put a small label above a page title; the title stands alone.

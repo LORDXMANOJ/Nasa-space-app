@@ -1,7 +1,7 @@
 /**
  * Monte Carlo validation of the detectors on simulated astronauts (checks the METHOD, not clinical accuracy).
- * 300 astronauts with random personal baselines: days 1–10 learn the baseline, days 11–30 are normal days
- * (6,000 in total). Injected events: a full fever, an early mild fever, and a slow blood-pressure climb.
+ * 300 astronauts with random personal baselines: 10 pre-flight days on Earth learn the baseline, then flight days 1-20 are
+ * normal days (6,000 in total). Injected events: a full fever, an early mild fever, and a slow blood-pressure climb.
  */
 import { assessDay } from "./assess";
 import { runDetectors } from "./detectors";
@@ -47,7 +47,7 @@ type Shift = Partial<Record<keyof Person["m"], number>>;
 function history(p: Person, seed: number, days: number, shift: (d: number) => Shift): Record<string, Reading[]> {
   const h: Record<string, Reading[]> = { bp: [], hr: [], glucose: [], temp: [], sleep: [], mood: [] };
   const g = (k: string, d: number) => gaussian(`v:${seed}:${p.id}:${k}:${d}`);
-  for (let d = 1; d <= days; d++) {
+  for (let d = -9; d <= days; d++) {
     const s = shift(d);
     const v = (k: keyof Person["m"]) => p.m[k] + (s[k] ?? 0) + g(k, d) * SD[k] * p.k;
     const push = (id: string, values: number[]) => h[id].push({ indicatorId: id, day: d, values, source: "sim" });
@@ -80,9 +80,9 @@ export function runValidation(n = 300, seed = 2026): ValidationResult {
   for (let i = 0; i < n; i++) {
     const p = makePerson(i, seed);
     // Normal days 11–30.
-    const normal = history(p, seed, 30, () => ({}));
+    const normal = history(p, seed, 20, () => ({}));
     let drifted = false;
-    for (let d = 11; d <= 30; d++) {
+    for (let d = 1; d <= 20; d++) {
       const view = cut(normal, d);
       const a = assessDay(view, d);
       normalDays++;
@@ -95,7 +95,7 @@ export function runValidation(n = 300, seed = 2026): ValidationResult {
     if (drifted) steadyDrift++;
 
     // Full fever starting on a random day 12–28: flagged that same day?
-    const fd = 12 + (i % 17);
+    const fd = 2 + (i % 17);
     const fever = history(p, seed + 1, fd, (d) => (d === fd ? FEVER : {}));
     if (assessDay(fever, fd).alerts.length) feverCaught++;
 
@@ -105,12 +105,12 @@ export function runValidation(n = 300, seed = 2026): ValidationResult {
     if (ma?.unusual?.flagged || ma?.drift.length) mildCaught++;
 
     // Slow systolic climb of +1 mmHg/day from day 11, watched for 20 days.
-    const climb = history(p, seed + 3, 30, (d) => (d > 10 ? { sys: (d - 10) * 1, dia: (d - 10) * 0.25 } : {}));
-    for (let d = 11; d <= 30; d++) {
+    const climb = history(p, seed + 3, 20, (d) => (d > 0 ? { sys: d * 1, dia: d * 0.25 } : {}));
+    for (let d = 1; d <= 20; d++) {
       const r = runDetectors(cut(climb, d), d);
       if (r?.drift.some((x) => x.key === "bp.systolic")) {
         climbCaught++;
-        climbDays.push(d - 10);
+        climbDays.push(d);
         break;
       }
     }

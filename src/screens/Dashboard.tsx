@@ -1,269 +1,281 @@
 /**
- * Dashboard as a crew procedure page: the most urgent alert first as a WARNING / CAUTION block with the
- * "Can this wait for Earth?" timing table, then today's line and primary action, then the readings log (a table,
- * not cards), other alerts, and routine patches. Answers "Am I OK, and what do I do next?" in three seconds.
+ * Dashboard as a guided flow so the astronaut always knows what to do next:
+ *   1 Who are you  >  2 Earth readings  >  3 Today's readings (entered right here)  >  4 Results on the 3D body.
+ * After the check-in, the most urgent alert leads as a WARNING / CAUTION block with the "Can this wait for Earth?"
+ * timing table, followed by the readings log and other alerts.
  */
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { CheckCircle2, ChevronDown, Circle, GraduationCap, OctagonAlert, Satellite, Stethoscope, TriangleAlert } from "lucide-react";
-import { INDICATORS } from "../data";
+import { lazy, Suspense, useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Check, CheckCircle2, ChevronDown, OctagonAlert, Pencil, TriangleAlert } from "lucide-react";
+import { INDICATORS, REGIONS, type RegionId } from "../data";
+import { CheckInForm } from "../components/CheckInForm";
 import { DecisionPanel } from "../components/DecisionPanel";
 import { StatusBadge } from "../components/status";
 import { Sparkline } from "../components/ui";
-import { BASELINE_DAYS } from "../engine/detectors";
 import { formatDuration } from "../engine/missions";
 import { ago, displayValue, formatPrimary } from "../lib/format";
 import { useHealth } from "../store/health";
 import { useMission } from "../store/mission";
+import { Body2D } from "./body/Body2D";
+
+const Body3D = lazy(() => import("./body/Body3D"));
+
+function hasWebGL() {
+  try {
+    const c = document.createElement("canvas");
+    return !!(c.getContext("webgl2") || c.getContext("webgl"));
+  } catch {
+    return false;
+  }
+}
 
 export function Dashboard() {
   const h = useHealth();
   const settings = useMission((s) => s.settings);
-  const completions = useMission((s) => s.completions);
-  const outbox = useMission((s) => s.outbox);
-  const checks = useMission((s) => s.checks);
+  const signOut = useMission((s) => s.signOut);
+  const done = useMission((s) => !!s.checkedIn[`${s.profileId}:${s.day}`]);
+  const navigate = useNavigate();
+  const [editing, setEditing] = useState(false);
   const [why, setWhy] = useState(false);
+  const webgl = useMemo(hasWebGL, []);
+  const firstFlagged = REGIONS.find((r) => h.regionStatus[r.id] === "act") ?? REGIONS.find((r) => h.regionStatus[r.id] === "watch") ?? REGIONS[0];
+  const [sel, setSel] = useState<RegionId>(firstFlagged.id);
 
+  const showForm = !done || editing;
   const top = h.alerts[0];
   const rest = h.alerts.slice(1);
-  const dueIds = new Set(h.due.map((d) => d.id));
   const firstName = h.profile.name.split(" ")[0];
-  const totalDone = Object.values(completions).reduce((a, b) => a + b, 0);
-  const patches = [
-    { id: "first", label: "First check-in", earned: totalDone > 0 },
-    { id: "full", label: "Full check-in day", earned: h.due.length === 0 },
-    { id: "recovery", label: "Recovery step done", earned: Object.values(checks).some(Boolean) },
-    { id: "ground", label: "Consult Packet sent", earned: outbox.length > 0 },
+  const reduced = settings.reducedMotion || settings.lowPower;
+  const use3d = webgl && !settings.lowPower;
+  const steps = [
+    { n: 1, label: `You are ${firstName}`, state: "done" as const },
+    { n: 2, label: "Earth readings", state: "done" as const },
+    { n: 3, label: "Today's readings", state: showForm ? ("now" as const) : ("done" as const) },
+    { n: 4, label: "Your results", state: showForm ? ("next" as const) : ("now" as const) },
   ];
-  const score = h.readiness.score;
+  const region = REGIONS.find((r) => r.id === sel)!;
 
   return (
     <div className="page">
       <div className="page-head">
         <div>
-          <h1>{firstName}, here is your health today</h1>
+          <h1>Hello {firstName}</h1>
           <p className="lede">
-            {h.profile.role}. Day {h.day}, {h.link.preset.name}.
+            {h.profile.role}. Day {h.day} of the mission, {h.link.preset.name}.{" "}
+            <button className="btn btn--ghost btn--sm" onClick={signOut}>
+              Not you?
+            </button>
           </p>
         </div>
-        <div className="readiness">
-          <span className="label">Crew readiness</span>
-          <span className="figure">
-            {score}
-            <small> / 100</small>
-          </span>
-          <div className="meter" role="img" aria-label={`Readiness ${score} of 100`}>
-            <span style={{ width: `${score}%` }} />
-            <i style={{ left: "65%" }} title="Watch below 65" />
-            <i style={{ left: "85%" }} title="Nominal from 85" />
+        {!showForm && (
+          <div className="readiness">
+            <span className="label">Crew readiness</span>
+            <span className="figure">
+              {h.readiness.score}
+              <small> / 100</small>
+            </span>
+            <div className="meter" role="img" aria-label={`Readiness ${h.readiness.score} of 100`}>
+              <span style={{ width: `${h.readiness.score}%` }} />
+            </div>
+            <button className="btn btn--ghost btn--sm" aria-expanded={why} onClick={() => setWhy((w) => !w)}>
+              Why {h.readiness.score}? <ChevronDown width={14} style={{ transform: why ? "rotate(180deg)" : undefined }} />
+            </button>
+            {why && (
+              <ul className="why-list">
+                {h.readiness.breakdown
+                  .filter((b) => b.loss > 0)
+                  .map((b) => (
+                    <li key={b.indicator.id}>
+                      <span>
+                        <StatusBadge status={b.status} /> {b.indicator.shortName}
+                      </span>
+                      <span className="num">−{b.loss.toFixed(1)}</span>
+                    </li>
+                  ))}
+                <li className="dim">
+                  Watch costs half an indicator's weight, Act all of it. <Link to="/how#readiness">How it works</Link>
+                </li>
+              </ul>
+            )}
           </div>
-          <button className="btn btn--ghost btn--sm" aria-expanded={why} onClick={() => setWhy((w) => !w)}>
-            Why {score}? <ChevronDown width={14} style={{ transform: why ? "rotate(180deg)" : undefined }} />
-          </button>
-          {why && (
-            <ul className="why-list">
-              {h.readiness.breakdown
-                .filter((b) => b.loss > 0)
-                .map((b) => (
-                  <li key={b.indicator.id}>
-                    <span>
-                      <StatusBadge status={b.status} /> {b.indicator.shortName}
-                    </span>
-                    <span className="num">−{b.loss.toFixed(1)}</span>
-                  </li>
-                ))}
-              {h.readiness.breakdown.every((b) => b.loss === 0) && <li className="dim">Nothing is pulling your score down.</li>}
-              <li className="dim">
-                Watch costs half an indicator's weight, Act all of it. <Link to="/how#readiness">How it works</Link>
-              </li>
-            </ul>
-          )}
-        </div>
+        )}
       </div>
 
-      {h.learning && (
-        <div className="banner banner--info learning" style={{ marginBottom: "var(--sp-6)" }}>
-          <GraduationCap aria-hidden />
-          <span>
-            Learning your normal: days 1 to {BASELINE_DAYS} teach the app your personal baseline. Until then only the fixed safety rules can flag anything.
-          </span>
-        </div>
-      )}
+      <ol className="flow-steps" aria-label="Your check-in steps">
+        {steps.map((s) => (
+          <li key={s.n} className={`is-${s.state}`} aria-current={s.state === "now" ? "step" : undefined}>
+            <span className="k">{s.state === "done" ? <Check width={16} aria-label="done" /> : s.n}</span>
+            {s.label}
+          </li>
+        ))}
+      </ol>
 
-      {top && (
-        <section className={`block block--${top.status}`} aria-labelledby="top-alert" style={{ marginBottom: "var(--sp-8)" }}>
-          <div className="block-head">
-            {top.status === "act" ? <OctagonAlert aria-hidden /> : <TriangleAlert aria-hidden />}
-            {top.status === "act" ? "Warning" : "Caution"}
-          </div>
-          <div className="block-body alert-grid">
-            <div className="stack" style={{ gap: "var(--sp-3)" }}>
-              <div className="alert-head">
-                <h3 id="top-alert">{top.title}</h3>
-                <StatusBadge status={top.status} large />
-              </div>
-              <p>{top.reason}</p>
-              <p className="meta">
-                <span>
-                  Detector <b>{top.detector}</b>
-                </span>
-                <span>
-                  Confidence <b>{top.confidence}</b>
-                </span>
-              </p>
-              <div className="row" style={{ marginTop: "var(--sp-2)" }}>
-                <Link className={`btn${top.status === "act" ? " btn--danger" : " btn--primary"}`} to="/recovery">
-                  Open the plan
-                </Link>
-                <Link className="btn" to="/consult">
-                  Build Consult Packet
-                </Link>
-              </div>
-            </div>
-            <DecisionPanel title={top.title} tHarmMin={top.tHarmMin} tHarmSource={top.tHarmSource} assumption={top.assumption} reply={h.link.reply} verdict={top.verdict} compact />
-          </div>
+      {showForm ? (
+        <section className="card" aria-labelledby="today-readings">
+          <h2 id="today-readings">Step 3: enter today's readings</h2>
+          <p className="dim" style={{ margin: "var(--sp-1) 0 var(--sp-4)", maxWidth: "72ch" }}>
+            Your wearable already filled the first rows; check them. Press Measure for the devices, or type the number. Your Earth reading is beside each one.
+          </p>
+          <CheckInForm
+            onDone={() => {
+              setEditing(false);
+              document.getElementById("main")?.scrollTo({ top: 0 });
+            }}
+          />
         </section>
-      )}
-
-      <div className="dash-grid">
-        <div className="stack" style={{ gap: "var(--sp-8)" }}>
-          <section className="card" aria-labelledby="today">
-            <h2 id="today">Today</h2>
-            <p className="brief-text" style={{ marginTop: "var(--sp-2)" }}>
-              {h.brief}
-            </p>
-            <div className="row" style={{ marginTop: "var(--sp-4)" }}>
-              {h.due.length > 0 ? (
-                <Link className="btn btn--primary btn--lg" to="/checkin">
-                  <Stethoscope aria-hidden /> Start daily check-in
-                </Link>
-              ) : (
-                <span className="row" style={{ color: "var(--nominal)", fontWeight: 700 }}>
-                  <CheckCircle2 aria-hidden /> Check-in done for today
-                </span>
-              )}
-              {h.due.length > 0 && (
-                <span className="due">
-                  <span className="dim">Still to take:</span>
-                  {h.due.map((d) => (
-                    <Link key={d.id} className="chip" to={`/measure/${d.id}`}>
-                      {d.shortName}
-                    </Link>
-                  ))}
-                </span>
-              )}
+      ) : (
+        <>
+          <section className="results" aria-labelledby="results">
+            <div className="results-body">
+              <div className="body-stage" style={{ height: 520, minHeight: 0 }}>
+                {use3d ? (
+                  <Suspense fallback={<Body2D status={h.regionStatus} selected={sel} onSelect={setSel} reduced />}>
+                    <Body3D status={h.regionStatus} selected={sel} onSelect={setSel} reduced={reduced} />
+                  </Suspense>
+                ) : (
+                  <Body2D status={h.regionStatus} selected={sel} onSelect={setSel} reduced={reduced} />
+                )}
+              </div>
             </div>
-          </section>
-
-          <section className="card" aria-labelledby="readings">
-            <div className="row">
-              <h2 id="readings">Readings</h2>
-              <span className="spacer" />
-              <Link to="/trends" className="btn btn--ghost btn--sm">
-                All trends
-              </Link>
-            </div>
-            <table className="table readings">
-              <thead>
-                <tr>
-                  <th scope="col">Reading</th>
-                  <th scope="col">Latest</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Last 10</th>
-                  <th scope="col">Measured</th>
-                  <th scope="col">
-                    <span className="sr-only">Action</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {INDICATORS.map((ind) => {
-                  const list = h.history[ind.id];
-                  const latest = list[list.length - 1];
-                  const v = formatPrimary(ind, latest?.values, settings);
-                  const s = h.evals[ind.id].status;
-                  return (
-                    <tr key={ind.id} className={`is-${s}`}>
-                      <td>
-                        <Link to={`/trends?ind=${ind.id}`} className="tile-link">
-                          {ind.shortName}
-                        </Link>
-                      </td>
-                      <td className="num">
-                        {v.text}
-                        <span className="unit">{v.unit}</span>
-                      </td>
-                      <td>
-                        <StatusBadge status={s} />
-                      </td>
-                      <td className="spark-cell">
-                        <Sparkline values={list.slice(-10).map((r) => displayValue(ind, r.values[0], settings))} status={s} height={24} />
-                      </td>
-                      <td className="dim">{ago(h.day, latest?.day)}</td>
-                      <td style={{ textAlign: "right" }}>
-                        {dueIds.has(ind.id) ? (
-                          <Link className="btn btn--sm btn--primary" to={`/measure/${ind.id}`}>
-                            Measure
-                          </Link>
-                        ) : (
-                          <Link className="btn btn--sm btn--ghost" to={`/measure/${ind.id}`}>
-                            How to
-                          </Link>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </section>
-        </div>
-
-        <aside className="stack" style={{ gap: "var(--sp-8)" }}>
-          <section className="card" aria-labelledby="others">
-            <h2 id="others">Other alerts</h2>
-            {rest.length === 0 ? (
-              <p className="dim">None.</p>
-            ) : (
-              <ul className="why-list" style={{ marginTop: "var(--sp-2)" }}>
-                {rest.map((a) => (
-                  <li key={a.id}>
-                    <Link to="/recovery" className="tile-link">
-                      <StatusBadge status={a.status} /> {a.title}
-                    </Link>
-                    <span className="dim" title="Safe wait">
-                      {formatDuration(a.tHarmMin)}
-                    </span>
+            <div className="stack" style={{ gap: "var(--sp-4)" }}>
+              <div className="row">
+                <h2 id="results">Step 4: your results</h2>
+                <span className="spacer" />
+                <button className="btn btn--sm" onClick={() => setEditing(true)}>
+                  <Pencil /> Edit readings
+                </button>
+              </div>
+              <p className="brief-text">{h.brief}</p>
+              <ul className="region-list" aria-label="Body regions">
+                {REGIONS.filter((r) => INDICATORS.some((i) => i.bodyRegions.includes(r.id))).map((r) => (
+                  <li key={r.id}>
+                    <button aria-pressed={sel === r.id} onClick={() => setSel(r.id)}>
+                      <span>{r.name}</span>
+                      <StatusBadge status={h.regionStatus[r.id]} />
+                    </button>
                   </li>
                 ))}
               </ul>
-            )}
+              <p className="dim" style={{ fontSize: "var(--fs-sm)" }}>
+                {region.name}: {region.function}{" "}
+                <button className="btn btn--ghost btn--sm" onClick={() => navigate("/body")}>
+                  Open body report
+                </button>
+              </p>
+            </div>
           </section>
 
-          <section className="card" aria-labelledby="routine">
-            <h2 id="routine">Routine</h2>
-            <ul className="why-list" style={{ marginTop: "var(--sp-2)" }}>
-              {patches.map((p) => (
-                <li key={p.id}>
-                  <span className={`patch${p.earned ? " is-earned" : ""}`}>
-                    {p.earned ? <CheckCircle2 aria-hidden style={{ color: "var(--nominal)" }} /> : <Circle aria-hidden />}
-                    {p.label}
-                  </span>
-                  <span className="sr-only">{p.earned ? "earned" : "not yet"}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
+          {top ? (
+            <section className={`block block--${top.status}`} aria-labelledby="top-alert" style={{ margin: "var(--sp-8) 0" }}>
+              <div className="block-head">
+                {top.status === "act" ? <OctagonAlert aria-hidden /> : <TriangleAlert aria-hidden />}
+                {top.status === "act" ? "Warning" : "Caution"}
+              </div>
+              <div className="block-body alert-grid">
+                <div className="stack" style={{ gap: "var(--sp-3)" }}>
+                  <div className="alert-head">
+                    <h3 id="top-alert">{top.title}</h3>
+                    <StatusBadge status={top.status} large />
+                  </div>
+                  <p>{top.reason}</p>
+                  <p className="meta">
+                    <span>
+                      Detector <b>{top.detector}</b>
+                    </span>
+                    <span>
+                      Confidence <b>{top.confidence}</b>
+                    </span>
+                  </p>
+                  <div className="row" style={{ marginTop: "var(--sp-2)" }}>
+                    <Link className={`btn${top.status === "act" ? " btn--danger" : " btn--primary"}`} to="/recovery">
+                      What to do now
+                    </Link>
+                    <Link className="btn" to="/consult">
+                      Send to flight surgeon
+                    </Link>
+                  </div>
+                </div>
+                <DecisionPanel title={top.title} tHarmMin={top.tHarmMin} tHarmSource={top.tHarmSource} assumption={top.assumption} reply={h.link.reply} verdict={top.verdict} compact />
+              </div>
+            </section>
+          ) : (
+            <div className="banner banner--info" style={{ margin: "var(--sp-8) 0" }}>
+              <CheckCircle2 style={{ color: "var(--nominal)" }} aria-hidden />
+              <span>All readings are within your Earth normal. Keep your routine.</span>
+            </div>
+          )}
 
-          <section className="card" aria-labelledby="packets">
-            <h2 id="packets">Consult Packets</h2>
-            <Link to="/consult" className="row tile-link" style={{ marginTop: "var(--sp-2)" }}>
-              <Satellite width={18} aria-hidden />
-              {outbox.length === 0 ? "None sent yet" : `${outbox.length} in the outbox`}
-            </Link>
-          </section>
-        </aside>
-      </div>
+          <div className="dash-grid">
+            <section className="card" aria-labelledby="readings">
+              <div className="row">
+                <h2 id="readings">Readings</h2>
+                <span className="spacer" />
+                <Link to="/trends" className="btn btn--ghost btn--sm">
+                  All trends
+                </Link>
+              </div>
+              <table className="table readings">
+                <thead>
+                  <tr>
+                    <th scope="col">Reading</th>
+                    <th scope="col">Today</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Last 10</th>
+                    <th scope="col">Measured</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {INDICATORS.map((ind) => {
+                    const list = h.history[ind.id];
+                    const latest = list[list.length - 1];
+                    const v = formatPrimary(ind, latest?.values, settings);
+                    const s = h.evals[ind.id].status;
+                    return (
+                      <tr key={ind.id} className={`is-${s}`}>
+                        <td>
+                          <Link to={`/trends?ind=${ind.id}`} className="tile-link">
+                            {ind.shortName}
+                          </Link>
+                        </td>
+                        <td className="num">
+                          {v.text}
+                          <span className="unit">{v.unit}</span>
+                        </td>
+                        <td>
+                          <StatusBadge status={s} />
+                        </td>
+                        <td className="spark-cell">
+                          <Sparkline values={list.filter((r) => r.day > 0).slice(-10).map((r) => displayValue(ind, r.values[0], settings))} status={s} height={24} />
+                        </td>
+                        <td className="dim">{ago(h.day, latest?.day)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </section>
+            <aside className="card" aria-labelledby="others">
+              <h2 id="others">Other alerts</h2>
+              {rest.length === 0 ? (
+                <p className="dim">None.</p>
+              ) : (
+                <ul className="why-list" style={{ marginTop: "var(--sp-2)" }}>
+                  {rest.map((a) => (
+                    <li key={a.id}>
+                      <Link to="/recovery" className="tile-link">
+                        <StatusBadge status={a.status} /> {a.title}
+                      </Link>
+                      <span className="dim" title="Safe wait">
+                        {formatDuration(a.tHarmMin)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </aside>
+          </div>
+        </>
+      )}
     </div>
   );
 }

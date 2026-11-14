@@ -11,7 +11,6 @@ import { profileById } from "../engine/profiles";
 import { dueIndicators, readiness } from "../engine/readiness";
 import { buildHistory } from "../engine/simulation";
 import { earthReply, ENV_TO_MISSION, formatDuration, MISSIONS, type Verdict } from "../engine/missions";
-import { BASELINE_DAYS } from "../engine/detectors";
 import { useMission } from "./mission";
 
 export interface AlertWithVerdict extends Alert {
@@ -73,7 +72,7 @@ export function useHealth() {
       brief: parts.join(" "),
       regionStatus,
       day,
-      learning: day <= BASELINE_DAYS,
+      learning: false,
       link,
     };
   }, [profileId, environment, day, userReadings, link]);

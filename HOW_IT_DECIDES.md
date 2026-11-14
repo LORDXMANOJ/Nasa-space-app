@@ -57,7 +57,7 @@ Indicator limits live in `src/data/indicators.json`. **Act** limits always fire.
 
 ## 3. Personal baseline + three detectors (`src/engine/detectors.ts`)
 
-Mission days 1–10 teach each astronaut's own normal for the 7 core readings: systolic BP, diastolic BP, heart rate, glucose, temperature, sleep hours, mood.
+The 10 pre-flight days on Earth (days −9 to 0) teach each astronaut's own normal for the 7 core readings: systolic BP, diastolic BP, heart rate, glucose, temperature, sleep hours, mood.
 
 **Unusual day (multivariate).**
 `D² = (x − μ)ᵀ Σ⁻¹ (x − μ)`, flagged when `D² > χ²(0.99, k)` (18.475 for all 7 readings; k = readings present).
@@ -80,12 +80,12 @@ SpO₂, HRV, radiation and body mass use rules plus single-metric baseline and t
 
 | Measure | Result |
 |---|---|
-| Unusual-day false alarms per normal day | **0.92 %** |
-| Any alert on a normal day (rules + detectors) | **7.1 %** (known weakness) |
+| Unusual-day false alarms per normal day | **1.28 %** |
+| Any alert on a normal day (rules + detectors) | **9.3 %** (known weakness) |
 | Full fevers caught on day one | **100 %** |
-| Early mild fevers caught (a day before rules could fire) | **73 %** |
+| Early mild fevers caught (a day before rules could fire) | **76 %** |
 | Slow BP climbs (+1 mmHg/day) caught within 20 days | **99 %**, median **12 days** |
-| Steady astronauts with a false drift flag within 20 days | **1.3 %** |
+| Steady astronauts with a false drift flag within 20 days | **1.7 %** |
 
 These numbers check the **method on simulated people**. They say nothing about clinical accuracy.
 

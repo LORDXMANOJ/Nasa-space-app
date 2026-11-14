@@ -28,18 +28,18 @@ p {
   margin: 0;
 }
 h1 {
+  font-family: var(--font-display);
   font-size: var(--fs-2xl);
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   line-height: 1.15;
   text-wrap: balance;
 }
-/* Procedure section heading: bold caps, ruled. */
+/* Section heading: DynaPuff, sentence case, ruled above. */
 h2 {
-  font-size: var(--fs-md);
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: 600;
   line-height: 1.25;
 }
 h3 {
@@ -161,6 +161,7 @@ html {
   box-shadow: 0 1px 0 var(--border-strong);
   padding: var(--sp-8) var(--sp-10) var(--sp-12);
   min-height: 100%;
+  border-radius: var(--r-xl);
 }
 .page-head {
   display: flex;

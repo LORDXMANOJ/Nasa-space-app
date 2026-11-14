@@ -124,8 +124,8 @@ export function Settings() {
           <Toggle checked={st.settings.reducedMotion} onChange={(v) => set({ reducedMotion: v })} label="Reduce motion" hint="No pulsing or sliding." />
           <hr className="divider" />
           <div className="row">
-            <button className="btn" onClick={st.replayOnboarding}>
-              Replay the intro
+            <button className="btn" onClick={st.signOut}>
+              Switch crew member
             </button>
             <button
               className="btn btn--danger"

@@ -110,7 +110,7 @@ describe("helpers", () => {
 describe("Day 120 scenario (integration)", () => {
   const profile = profileById("vega");
   const evalAll = (day: number) => {
-    const h = buildHistory(profile, "spacecraft", day, [], 1, true);
+    const h = buildHistory(profile, "spacecraft", day, [], -9, true);
     return Object.fromEntries(Object.entries(h).map(([id, list]) => [id, evaluate(indicatorById(id), list, profile.baselines, day)]));
   };
 

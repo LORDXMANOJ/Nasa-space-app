@@ -5,7 +5,7 @@
 import { lazy, Suspense, useEffect } from "react";
 import { HashRouter, Route, Routes, useLocation } from "react-router-dom";
 import { Shell } from "./layout/Shell";
-import { Onboarding } from "./layout/Onboarding";
+import { WhoAreYou } from "./screens/WhoAreYou";
 import { useMission } from "./store/mission";
 import { Dashboard } from "./screens/Dashboard";
 import { MeasureList, MeasureFlow } from "./screens/Measure";
@@ -43,8 +43,9 @@ function useHtmlAttributes() {
 export function App() {
   useHtmlAttributes();
   const hydrated = useMission((s) => s.hydrated);
-  const onboarded = useMission((s) => s.onboarded);
+  const identified = useMission((s) => s.identified);
   if (!hydrated) return null;
+  if (!identified) return <WhoAreYou />;
   return (
     <HashRouter>
       <ScrollTop />
@@ -69,7 +70,6 @@ export function App() {
           </Routes>
         </Suspense>
       </Shell>
-      {!onboarded && <Onboarding />}
     </HashRouter>
   );
 }

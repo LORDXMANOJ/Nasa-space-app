@@ -102,7 +102,7 @@ function build(q: string, ctx: AssistantContext): Answer {
 
   if (/how (does|do) (it|this|you) (work|decide)|detector|baseline|mahalanobis|cusum/.test(q)) {
     return {
-      text: "Three checks run on your daily readings: fixed safety rules from the condition cards; an 'unusual day' check that compares today with your own normal from mission days 1 to 10; and a slow-drift check that spots readings creeping in one direction. Then it compares how long the problem can safely wait with how long Earth takes to answer.",
+      text: "Three checks run on your daily readings: fixed safety rules from the condition cards; an 'unusual day' check that compares today with your own normal from the 10 days of readings on Earth before launch; and a slow-drift check that spots readings creeping in one direction. Then it compares how long the problem can safely wait with how long Earth takes to answer.",
       kind: "answer",
       basis: "The 'How it decides' page.",
     };

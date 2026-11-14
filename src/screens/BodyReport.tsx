@@ -79,11 +79,13 @@ export default function BodyReport() {
           ) : (
             <Body2D status={h.regionStatus} selected={sel} onSelect={setSel} reduced={reduced} />
           )}
-          <div className="legend" aria-hidden>
-            {(["nominal", "watch", "act", "stale"] as Status[]).map((s) => (
-              <StatusBadge key={s} status={s} />
-            ))}
-          </div>
+          {use3d && (
+            <div className="legend" aria-hidden>
+              {(["nominal", "watch", "act", "stale"] as Status[]).map((s) => (
+                <StatusBadge key={s} status={s} />
+              ))}
+            </div>
+          )}
         </div>
 
         <aside className="card stack region-panel drawer" key={sel} aria-live="polite" aria-label={`${region.name} details`}>

@@ -71,7 +71,7 @@ describe("drift detectors", () => {
 
 const story = (id: string) => {
   const p = profileById(id);
-  const historyAt = (day: number) => buildHistory(p, "spacecraft", day, [], 1, true);
+  const historyAt = (day: number) => buildHistory(p, "spacecraft", day, [], -9, true);
   return { p, at: (day: number) => assessDay(historyAt(day), day) };
 };
 

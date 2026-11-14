@@ -5,8 +5,8 @@
   flex-direction: column;
   align-items: stretch;
   padding: 0 0 var(--sp-3);
-  background: var(--surface-0);
-  border-right: var(--bw) solid var(--border-strong);
+  background: var(--brand);
+  border-right: 0;
   overflow-y: auto;
 }
 .rail-brand {
@@ -14,8 +14,8 @@
   place-items: center;
   height: var(--bar-h);
   margin-bottom: var(--sp-2);
-  border-bottom: var(--bw-strong) solid var(--rule);
-  color: var(--text);
+  border-bottom: var(--bw) solid rgba(218, 215, 205, 0.25);
+  color: var(--brand-ink);
 }
 .rail a {
   position: relative;
@@ -26,9 +26,9 @@
   padding: var(--sp-2) 4px;
   min-height: 58px;
   justify-content: center;
-  color: var(--text-dim);
+  color: rgba(218, 215, 205, 0.82);
   text-decoration: none;
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-weight: 600;
   text-align: center;
   line-height: 1.15;
@@ -43,14 +43,14 @@
   stroke-width: 1.75;
 }
 .rail a:hover {
-  background: var(--surface-2);
-  color: var(--text);
+  background: rgba(218, 215, 205, 0.1);
+  color: #ffffff;
 }
 .rail a.active {
-  border-left-color: var(--text);
-  background: var(--surface-2);
-  color: var(--text);
-  font-weight: 800;
+  border-left-color: var(--p-sage);
+  background: var(--p-hunter);
+  color: #ffffff;
+  font-weight: 700;
 }
 .rail .dot {
   position: absolute;
@@ -58,7 +58,8 @@
   right: 18px;
   width: 9px;
   height: 9px;
-  background: var(--act);
+  background: var(--watch-fill);
+  border-radius: 50%;
 }
 
 /* Title block: ruled cells, like the header strip of a procedure page. */

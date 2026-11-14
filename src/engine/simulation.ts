@@ -12,7 +12,7 @@ export interface Reading {
   indicatorId: string;
   day: number;
   values: number[]; // one per metric, in indicator.metrics order
-  source: "sim" | "auto" | "user";
+  source: "sim" | "auto" | "user" | "earth";
 }
 
 export const SCENARIO = {
@@ -159,7 +159,7 @@ export function buildHistory(
   env: EnvironmentId,
   currentDay: number,
   userReadings: Reading[],
-  firstDay = 1,
+  firstDay = -9, // pre-flight days on Earth: -9..0
   /** Include every indicator on the current day (as if the full check-in were done). Used by tests and validation. */
   completeToday = false,
 ): Record<string, Reading[]> {
@@ -168,13 +168,14 @@ export function buildHistory(
     const list: Reading[] = [];
     for (let d = firstDay; d <= currentDay; d++) {
       const today = d === currentDay;
+      const source: Reading["source"] = d <= 0 ? "earth" : today ? "auto" : "sim";
       if (today && !ind.autoLogged && !completeToday) continue;
       if (!isScheduled(ind, d) && !(today && (ind.autoLogged || completeToday))) continue;
       list.push({
         indicatorId: ind.id,
         day: d,
         values: simulateReading(ind, d, profile, env),
-        source: today ? "auto" : "sim",
+        source,
       });
     }
     for (const u of userReadings) {

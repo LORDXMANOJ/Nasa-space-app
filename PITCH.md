@@ -33,7 +33,7 @@ Use presenter controls (`Ctrl+Shift+D`).
 | 0:55 | Recovery screen: red flags, checklist, CMO escalation | "The crew gets red-flag signs anyone can recognise, drug-free steps, and the Crew Medical Officer decides. No doses, no diagnosis." |
 | 1:05 | Consult → Send; toggle Solar conjunction → packet stays Queued | "One complete message to the flight surgeon, with privacy toggles. During solar conjunction it waits on board until contact returns." |
 | 1:15 | Switch crew to Mikael (HR 52), then Hana (BP drift) | "Mikael's heart rate of 52 is normal for him, so it's never flagged. Hana's pressure creeps up a millimetre a day; only the drift detector sees it, and the forecast says two weeks, so it can wait." |
-| 1:25 | How it decides → measured results | "300 simulated astronauts, measured live: under 1% false alarms. Everything runs on board. Nothing waits for Earth." |
+| 1:25 | How it decides → measured results | "300 simulated astronauts, measured live: about 1% false alarms. Everything runs on board. Nothing waits for Earth." |
 
 ## Q&A
 
@@ -41,7 +41,7 @@ Use presenter controls (`Ctrl+Shift+D`).
 - **Where do the limits come from?** AHA, ADA, MedlinePlus and AASM references, and NASA-STD-3001 for the radiation career limit. Everything else is labelled ASSUMPTION, including all safe-wait times.
 - **Is the data real?** No. All crew and readings are simulated and seeded, so the demo is identical every time.
 - **Why not deep learning?** Ten days of baseline data per person is far too little. Classical statistics are explainable: every alert says which check fired and why.
-- **How accurate is it?** On simulated people: unusual-day false alarms 0.92% per day, 100% of fevers on day one, 73% of early mild fevers, 99% of slow BP climbs (median 12 days). That checks the method, not clinical accuracy.
+- **How accurate is it?** On simulated people: unusual-day false alarms 1.28% per day, 100% of fevers on day one, 76% of early mild fevers, 99% of slow BP climbs (median 12 days). That checks the method, not clinical accuracy.
 - **What's the weak spot?** About 7% of normal days still get some alert, mostly single readings past a clinical limit. Real data would be needed to tune this.
 - **Does this already exist at NASA?** Not as one tool. ISS crews have a private medical conference with flight surgeons, usually weekly, and devices like the Bio-Monitor shirt, rHEALTH ONE and SLAMMD have been tested in orbit. NASA's Exploration Medical Capability team is researching decision support for Earth-independent medical care, and the Reaction Self Test showed short sleep slows astronauts' reactions. Our prototype brings these together and adds the "can it wait for Earth?" decision. We don't claim the ISS does daily checks like this.
 - **Does it need the internet?** No. It runs fully offline; packets queue until contact.

@@ -6,13 +6,13 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { CartesianGrid, Legend, Line, LineChart, ReferenceArea, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { INDICATORS, indicatorById } from "../data";
-import { BASELINE_DAYS, learnMetricBaselines } from "../engine/detectors";
+import { learnMetricBaselines } from "../engine/detectors";
 import { displayValue } from "../lib/format";
 import { StatusBadge } from "../components/status";
 import { useHealth } from "../store/health";
 import { useMission } from "../store/mission";
 
-const COLORS = ["#101318", "#0b4f9c"];
+const COLORS = ["#344e41", "#588157"];
 
 export default function Trends() {
   const h = useHealth();
@@ -46,7 +46,7 @@ export default function Trends() {
       <div className="page-head">
         <div>
           <h1>{ind.name} trend</h1>
-          <p className="lede">The shaded band is your normal, learned on mission days 1 to {BASELINE_DAYS}. Dashed lines are the fixed safety limits.</p>
+          <p className="lede">The shaded band is your normal, from your readings on Earth before launch (days -9 to 0). Dashed lines are the fixed safety limits.</p>
         </div>
         <StatusBadge status={h.evals[ind.id].status} large />
       </div>
@@ -107,16 +107,16 @@ export default function Trends() {
           <div style={{ height: 440 }} role="img" aria-label={`${ind.name} over ${rows.length} readings. Latest status ${h.evals[ind.id].status}.`}>
             <ResponsiveContainer>
               <LineChart data={rows} margin={{ top: 16, right: 56, bottom: 8, left: 8 }}>
-                <CartesianGrid stroke="#dde1e6" strokeDasharray="0" vertical={false} />
-                <XAxis dataKey="day" type="number" domain={["dataMin", "dataMax"]} stroke="#4d5562" tick={{ fontFamily: "Public Sans", fontSize: 12, fill: "#4d5562" }} label={{ value: "Mission day", position: "insideBottomRight", offset: -4, fill: "#4d5562", fontSize: 12 }} />
-                <YAxis stroke="#4d5562" tick={{ fontFamily: "Public Sans", fontSize: 12, fill: "#4d5562" }} domain={["auto", "auto"]} width={56} />
-                <Tooltip contentStyle={{ background: "#ffffff", border: "2px solid #101318", borderRadius: 0, fontFamily: "Public Sans" }} labelFormatter={(d) => `Day ${d}`} />
-                {first <= BASELINE_DAYS && <ReferenceArea x1={first} x2={BASELINE_DAYS} fill="#e9ecef" fillOpacity={0.9} label={{ value: "learning your normal", fill: "#4d5562", fontSize: 11, position: "insideTop" }} />}
-                {b0 && !m0.cumulative && <ReferenceArea y1={conv(b0.mean - b0.sd)} y2={conv(b0.mean + b0.sd)} fill="#1d6b43" fillOpacity={0.1} ifOverflow="extendDomain" />}
+                <CartesianGrid stroke="#cfcbbf" strokeDasharray="0" vertical={false} />
+                <XAxis dataKey="day" type="number" domain={["dataMin", "dataMax"]} stroke="#4e5f55" tick={{ fontFamily: "Shantell Sans", fontSize: 12, fill: "#4e5f55" }} label={{ value: "Mission day", position: "insideBottomRight", offset: -4, fill: "#4e5f55", fontSize: 12 }} />
+                <YAxis stroke="#4e5f55" tick={{ fontFamily: "Shantell Sans", fontSize: 12, fill: "#4e5f55" }} domain={["auto", "auto"]} width={56} />
+                <Tooltip contentStyle={{ background: "#ffffff", border: "2px solid #344e41", borderRadius: 10, fontFamily: "Shantell Sans" }} labelFormatter={(d) => `Day ${d}`} />
+                {first <= 0 && <ReferenceArea x1={first} x2={0} fill="#dad7cd" fillOpacity={0.7} label={{ value: "on Earth", fill: "#4e5f55", fontSize: 12, position: "insideTop" }} />}
+                {b0 && !m0.cumulative && <ReferenceArea y1={conv(b0.mean - b0.sd)} y2={conv(b0.mean + b0.sd)} fill="#588157" fillOpacity={0.15} ifOverflow="extendDomain" />}
                 {lines.map((l, i) => (
                   <ReferenceLine key={i} y={conv(l.y)} stroke={l.c} strokeDasharray="6 5" ifOverflow="extendDomain" label={{ value: l.label, fill: l.c, position: "right", fontSize: 12 }} />
                 ))}
-                <ReferenceLine x={h.day} stroke="#101318" strokeOpacity={0.5} label={{ value: "today", fill: "#4d5562", fontSize: 11, position: "top" }} />
+                <ReferenceLine x={h.day} stroke="#344e41" strokeOpacity={0.5} label={{ value: "today", fill: "#4e5f55", fontSize: 11, position: "top" }} />
                 {metrics.map((m, i) => (
                   <Line key={m.key} type="monotone" dataKey={m.key} name={m.label} stroke={COLORS[i]} strokeWidth={2.2} dot={{ r: 2.5 }} activeDot={{ r: 5 }} isAnimationActive={!settings.lowPower && !settings.reducedMotion} connectNulls />
                 ))}

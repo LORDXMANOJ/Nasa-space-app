@@ -23,10 +23,11 @@ It runs fully offline: a strict Content-Security-Policy, bundled fonts and icons
 
 | Screen | What it does |
 |---|---|
-| Dashboard | Today's brief, readiness score with "Why?", the most urgent alert with its **Decision Panel** (safe wait vs Earth reply), nine indicator tiles |
+| Who are you? | Opens the app: pick yourself from the crew and see the readings you took on Earth before launch (your normal) |
+| Dashboard | A 4-step flow: you → Earth readings → enter today's readings right here → results on the 3D body, then the most urgent alert with its **Decision Panel** (safe wait vs Earth reply) and the readings log |
 | Check-in | About one minute. Wearables auto-fill sleep, heart rate, temperature and radiation; you start BP, SpO₂, glucose and body mass; you enter mood, symptoms and pain |
 | Measure | Guided 4-step flow per indicator: why it matters in space → how-to step cards → simulated device reading or manual entry → result with "Why this status?" |
-| Body | 3D procedural body (2D fallback, low-power aware) with a keyboard-accessible region list and region panel |
+| Body | 3D body ("Rigged Figure", CC-BY 4.0) with glowing hotspots, and a Hairline line-drawing 2D body that marks damage with arrows (low-power aware) with a keyboard-accessible region list and region panel |
 | Recovery | Red flags, drug-free on-board checklist, Crew Medical Officer escalation, decision panel per alert |
 | Trends | Personal baseline band, Watch/Act limits, data-table alternative |
 | Hazards | The five NASA hazards linked to live indicators |
@@ -39,11 +40,11 @@ It runs fully offline: a strict Content-Security-Policy, bundled fonts and icons
 
 ## How it decides (short)
 
-- Rules (condition cards as JSON) + personal baseline (days 1–10) + three detectors: unusual day, slow drift, and a forecast.
+- Rules (condition cards as JSON) + personal baseline (10 pre-flight days on Earth) + three detectors: unusual day, slow drift, and a forecast.
 - Then **T_reply > T_harm → act on board now**, otherwise ask Earth.
 
 Measured on 300 simulated astronauts:
-- 0.92 % false unusual-day flags;
+- 1.28 % false unusual-day flags;
 - 100 % of fevers caught on day one;
 - 99 % of slow BP climbs caught (median 12 days).
 

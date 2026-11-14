@@ -7,7 +7,7 @@ import { buildHistory } from "./simulation";
 import { earthReply } from "./missions";
 
 const ctxFor = (id: string, day: number) => {
-  const a = assessDay(buildHistory(profileById(id), "spacecraft", day, [], 1, true), day);
+  const a = assessDay(buildHistory(profileById(id), "spacecraft", day, [], -9, true), day);
   const reply = earthReply({ mission: "mars-transit", oneWayMin: 22 });
   return { alerts: a.alerts.map((x) => ({ ...x, verdict: verdictFor(x, reply.totalMin) })), evals: a.evals, replyMin: reply.totalMin, noContact: false };
 };

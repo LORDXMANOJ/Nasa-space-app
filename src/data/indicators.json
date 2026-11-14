@@ -874,7 +874,8 @@
             "max": 500
           },
           "amber": {},
-          "red": {}
+          "red": {},
+          "limitsOnly": true
         },
         {
           "key": "change",

@@ -1,0 +1,5 @@
+rigged-figure.glb: "Rigged Figure" by Cesium (2017), from the Khronos glTF-Sample-Assets repository,
+https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/RiggedFigure
+Licensed under Creative Commons Attribution 4.0 International (CC-BY-4.0):
+https://creativecommons.org/licenses/by/4.0/legalcode
+Changes: recoloured and rendered translucent, scaled to 1.75 m; no logos or trademarks used.

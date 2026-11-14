@@ -13,7 +13,7 @@ The teammate's source wasn't available, so all logic was re-implemented from the
   - CUSUM z uses sd ×1.3, k = 0.75, h = 6;
   - sd floors per metric.
 
-  Results: unusual-day false alarms 0.92 %/day, steady false drift 1.3 %, mild fevers 73 %, slow climbs 99 % (median 12 d).
+  Results (baseline from 10 pre-flight Earth days): unusual-day false alarms 1.28 %/day, steady false drift 1.7 %, mild fevers 76 %, slow climbs 99 % (median 12 d).
 - **Heart rate** is an automatic wearable feed (Bio-Monitor). **Sleep Watch** is < 6 h (demo assumption); < 7 h flagged steady crew too often.
 - **Crew:** the brief's four crew (Okafor, Lindqvist, Raman, Sato) replace my three invented ones; Day 120 stays as story 5 (Mira Vega). Priya's story text was corrected to what the system actually does: the personal-gated sleep rule fires on day 22, and detectors confirm by day 24.
 - **Ground Link → Consult Packet.** PDF is the browser's print-to-PDF (no extra library).
@@ -29,8 +29,10 @@ The teammate's source wasn't available, so all logic was re-implemented from the
   Report turnaround is set per environment in days (`commDelayDays`: 14 in Mars transit, which covers relay scheduling and blackouts such as solar conjunction). The data model's `escalationRule` became `{ afterHours, redFlags[], onboard, earth }`. The footer still says "Consult the flight surgeon", plus the CMO.
 - **Body mass added as a 9th indicator** (user direction). Shown as kg plus % change since launch. Watch at ±5 %, Act at ±10 % (clinical rule of thumb for unintended weight change). Weekly cadence. Maps to gut/metabolism and bones & muscles, which also covers the nutrition and muscle/bone-loss hazards the court pointed out. The device name is generic until the ISS device name (SLAMMD) is verified.
 - **Web first, Electron later** (user direction). Vite `base: "./"` and a hash router keep the build loadable from `file://`, so wrapping it later is a packaging task, not a rewrite.
-- **3D body is procedural** (capsules and spheres), not a downloaded anatomy model. There's no licence risk, nothing to attribute, it stays light, and the brief allows this fallback. A licensed GLB can replace it later.
-- **Fonts:** Public Sans (UI, the U.S. government document typeface) + IBM Plex Mono (JSON preview only) via `@fontsource` (OFL, bundled locally). Icons: lucide-react (ISC), bundled.
+- **3D body: "Rigged Figure" by Cesium** (CC-BY 4.0, Khronos glTF Sample Assets, 50 KB, bundled in `public/models/`), recoloured sage and scaled to 1.75 m, with glowing region hotspots (user direction, 2026-11-14: "take some free 3D models from the internet"). It is uncompressed, so drei loads it with Draco and Meshopt off: no WASM, no CDN, CSP unchanged.
+- **2D body in the Hairline style** (user direction): drawn with the unmodified Hairline kernel (`public/hairline/kernel.js`). Damage is shown with **arrows, not colour**, at the user's request: a doubled arrow for Act, a dashed arrow for Watch. This overrides Hairline's own "no words, no arrows" rule. The status words in colour sit in the box under the drawing.
+- **Fonts and palette (user choice, 2026-11-14):** Shantell Sans for all text, DynaPuff for big headings, IBM Plex Mono for the JSON preview, via `@fontsource` (OFL, bundled). Palette: Dust Grey #DAD7CD, Dry Sage #A3B18A, Fern #588157, Hunter Green #3A5A40, Pine Teal #344E41. Amber (Watch) and red (Act) stay for status. Soft radii (6–16 px). Icons: lucide-react (ISC), bundled.
+- **Baseline comes from Earth** (user direction): each astronaut's normal is learned from 10 pre-flight days on the ground (days −9 to 0). The app opens with "Who are you?", shows that person's Earth readings, then asks for today's readings on the dashboard and shows the result on the 3D body. Detectors run from mission day 1.
 - **Redesign (2026-11-14):** light "crew procedure sheet" world chosen by the user from an impeccable seeded direction round; see DESIGN.md and PRODUCT.md.
 - **Status vocabulary:** Nominal / Watch / Act / Stale, each with its own shape (circle / triangle / octagon / dashed circle) so colour is never the only signal.
 

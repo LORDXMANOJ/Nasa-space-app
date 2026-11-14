@@ -1,7 +1,7 @@
 /**
  * Simulated crew and their seeded demo stories. No real people; every value is invented.
  * `baselines` are the TRUE values the simulator draws around; the detectors never see them —
- * they learn each astronaut's normal from mission days 1–10, like a real deployment would.
+ * they learn each astronaut's normal from 10 pre-flight days on Earth, like a real deployment would.
  */
 export interface MetricBaseline {
   mean: number;
@@ -48,7 +48,7 @@ export const PROFILES: CrewProfile[] = [
     storyTitle: "Fever with a fast heart rate",
     storySummary:
       "On day 22 several readings are each slightly off. The unusual-day detector flags it a day before any fixed rule fires. On day 23 the fever card fires: on the ISS it can wait for Earth; far out toward Mars it cannot.",
-    days: { min: 11, max: 30, focus: 23 },
+    days: { min: 1, max: 30, focus: 23 },
     baselines: base({ "temp.temp": { mean: 36.6, sd: 0.15 }, "hr.hr": { mean: 66, sd: 3.5 }, "weight.mass": { mean: 71.5, sd: 0.4 } }),
   },
   {
@@ -60,7 +60,7 @@ export const PROFILES: CrewProfile[] = [
     storyTitle: "A resting heart rate of 52 is normal for him",
     storySummary:
       "A fixed 60-100 bpm rule would flag Mikael almost every day. His personal baseline knows 52 is his normal, so nothing is flagged. This is what the baseline is for.",
-    days: { min: 11, max: 30, focus: 20 },
+    days: { min: 1, max: 30, focus: 20 },
     baselines: base({ "hr.hr": { mean: 52, sd: 3 }, "hr.hrv": { mean: 78, sd: 9 }, "bp.systolic": { mean: 114, sd: 5 }, "weight.mass": { mean: 79, sd: 0.4 } }),
   },
   {
@@ -72,7 +72,7 @@ export const PROFILES: CrewProfile[] = [
     storyTitle: "Sleep and mood slip over five days",
     storySummary:
       "From day 21 Priya sleeps less and her mood drops a little each day (isolation hazard). On day 22 the sleep Watch rule flags it (short sleep that is also unusual for her); by day 24 both detectors confirm the slide, and on day 25 the sleep-loss card asks for action.",
-    days: { min: 11, max: 30, focus: 25 },
+    days: { min: 1, max: 30, focus: 25 },
     baselines: base({ "sleep.hours": { mean: 7.2, sd: 0.4 }, "mood.mood": { mean: 7.2, sd: 0.7 }, "weight.mass": { mean: 58.5, sd: 0.4 } }),
   },
   {
@@ -84,7 +84,7 @@ export const PROFILES: CrewProfile[] = [
     storyTitle: "Blood pressure creeping up slowly",
     storySummary:
       "Hana's systolic pressure rises about 1 mmHg a day. No rule fires and no single day is unusual, but the drift detector catches it and the forecast says it reaches 140 in about two weeks: it can wait for Earth.",
-    days: { min: 11, max: 30, focus: 25 },
+    days: { min: 1, max: 30, focus: 25 },
     baselines: base({ "bp.systolic": { mean: 114, sd: 4 }, "bp.diastolic": { mean: 73, sd: 3 }, "weight.mass": { mean: 62, sd: 0.4 } }),
   },
   {

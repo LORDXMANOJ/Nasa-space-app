@@ -8,7 +8,7 @@
  */
 import { indicatorById } from "../data";
 import { badDirection } from "./alerts";
-import { CHI2_99, columnStats, covFromCorr, mahalanobis2, median, shrunkCorrelation, subMatrix, type Matrix } from "./linalg";
+import { CHI2_99, cholesky, columnStats, covFromCorr, mahalanobis2, median, shrunkCorrelation, subMatrix, type Matrix } from "./linalg";
 import type { Reading } from "./simulation";
 
 export const CORE_KEYS = ["bp.systolic", "bp.diastolic", "hr.hr", "glucose.glucose", "temp.temp", "sleep.hours", "mood.mood"] as const;
@@ -23,8 +23,11 @@ export const CORE_LABEL: Record<CoreKey, string> = {
   "mood.mood": "mood",
 };
 
-/** Days 1..BASELINE_DAYS teach each astronaut's own normal. */
-export const BASELINE_DAYS = 10;
+/** Pre-flight readings on Earth (mission days PREFLIGHT_START..0) teach each astronaut's own normal. */
+export const PREFLIGHT_DAYS = 10;
+export const PREFLIGHT_START = 1 - PREFLIGHT_DAYS; // -9
+/** Kept for older call sites: the number of baseline days. */
+export const BASELINE_DAYS = PREFLIGHT_DAYS;
 /** Minimum standard deviations, so tiny day-to-day wobbles are not treated as "unusual" (ASSUMPTION, tuned by Monte Carlo). */
 export const SD_FLOOR: Record<string, number> = {
   "bp.systolic": 4,
@@ -80,11 +83,21 @@ export function coreRow(history: Record<string, Reading[]>, day: number): number
 
 export function learnCoreBaseline(history: Record<string, Reading[]>): CoreBaseline {
   const rows: number[][] = [];
-  for (let d = 1; d <= BASELINE_DAYS; d++) rows.push(coreRow(history, d));
+  for (let d = PREFLIGHT_START; d <= 0; d++) rows.push(coreRow(history, d));
   const { mean, sd } = columnStats(rows, CORE_KEYS.length);
   const sdF = sd.map((s, i) => Math.max(Number.isFinite(s) ? s : 0, SD_FLOOR[CORE_KEYS[i]]));
   const { R, lambda } = shrunkCorrelation(rows, mean, sdF);
-  const cov = covFromCorr(R, sdF).map((row) => row.map((v) => v * TUNING.covScale));
+  let cov = covFromCorr(R, sdF).map((row) => row.map((v) => v * TUNING.covScale));
+  // Pairwise-complete correlations (glucose has few pre-flight readings) are not guaranteed to be positive
+  // definite. If Cholesky fails, shrink the off-diagonal further toward the identity until it succeeds.
+  for (let k = 0; k < 12; k++) {
+    try {
+      cholesky(cov);
+      break;
+    } catch {
+      cov = cov.map((row, i) => row.map((v, j) => (i === j ? v : v * 0.7)));
+    }
+  }
   return { keys: CORE_KEYS, mean, sd: sdF, R, cov, lambda, days: BASELINE_DAYS };
 }
 
@@ -95,10 +108,10 @@ export function learnMetricBaselines(history: Record<string, Reading[]>): Record
     const ind = indicatorById(indId);
     ind.metrics.forEach((m, i) => {
       const key = `${indId}.${m.key}`;
-      const vals = list.filter((r) => r.day <= BASELINE_DAYS).map((r) => r.values[i]);
-      if (vals.length < 2) return;
+      const vals = list.filter((r) => r.day <= 0).map((r) => r.values[i]);
+      if (vals.length < 1) return;
       const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
-      const sd = Math.sqrt(vals.reduce((a, b) => a + (b - mean) ** 2, 0) / (vals.length - 1));
+      const sd = vals.length > 1 ? Math.sqrt(vals.reduce((a, b) => a + (b - mean) ** 2, 0) / (vals.length - 1)) : 0;
       out[key] = { mean, sd: Math.max(sd, SD_FLOOR[key] ?? 0.01 * Math.abs(mean) + 1e-6) };
     });
   }
@@ -197,14 +210,14 @@ export interface DetectorRun {
 
 /** Run all three detectors for mission day `day`. Before day 11 the baseline is still learning: no detector output. */
 export function runDetectors(history: Record<string, Reading[]>, day: number): DetectorRun | null {
-  if (day <= BASELINE_DAYS) return null;
+  if (day < 1 || !Object.values(history).some((l) => l.some((r) => r.day <= 0))) return null;
   const base = learnCoreBaseline(history);
   const unusual = unusualDay(base, coreRow(history, day));
   const drift: DriftFinding[] = [];
   CORE_KEYS.forEach((key, i) => {
     const zs: { day: number; z: number }[] = [];
     const pts: { x: number; y: number }[] = [];
-    for (let d = BASELINE_DAYS + 1; d <= day; d++) {
+    for (let d = 1; d <= day; d++) {
       const v = valueOn(history, key, d);
       zs.push({ day: d, z: (v - base.mean[i]) / (base.sd[i] * TUNING.zScale) });
       if (Number.isFinite(v) && d > day - 14) pts.push({ x: d, y: v });

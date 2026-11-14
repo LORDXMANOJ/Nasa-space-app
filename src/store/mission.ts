@@ -37,6 +37,10 @@ export interface Settings {
 
 interface MissionState {
   hydrated: boolean;
+  /** Asked on every launch: who is using the app right now (not persisted). */
+  identified: boolean;
+  /** `${profileId}:${day}` -> today's check-in submitted. */
+  checkedIn: Record<string, boolean>;
   onboarded: boolean;
   profileId: string;
   environment: EnvironmentId;
@@ -53,6 +57,9 @@ interface MissionState {
   presenterOpen: boolean;
 
   setDay: (d: number) => void;
+  identify: (profileId: string) => void;
+  signOut: () => void;
+  markCheckedIn: () => void;
   setProfile: (id: string) => void;
   setEnvironment: (id: EnvironmentId) => void;
   setMarsDelay: (min: number) => void;
@@ -96,18 +103,29 @@ const initial = {
   symptoms: {} as Record<number, string[]>,
   completions: {} as Record<string, number>,
   checks: {} as Record<string, boolean>,
+  checkedIn: {} as Record<string, boolean>,
   outbox: [] as ConsultPacket[],
   demoSpeed: 60,
 };
 
-const clearPerDay = { userReadings: [] as Reading[], symptoms: {}, checks: {} };
+const clearPerDay = { userReadings: [] as Reading[], symptoms: {}, checks: {}, checkedIn: {} };
 
 export const useMission = create<MissionState>()(
   persist(
     (set) => ({
       ...initial,
       hydrated: false,
+      identified: false,
       presenterOpen: false,
+
+      identify: (id) =>
+        set((st) => {
+          if (st.profileId === id) return { identified: true };
+          const p = profileById(id);
+          return { identified: true, profileId: p.id, day: p.story === "fever" ? p.days.focus - 1 : p.days.focus, ...clearPerDay };
+        }),
+      signOut: () => set({ identified: false }),
+      markCheckedIn: () => set((st) => ({ checkedIn: { ...st.checkedIn, [`${st.profileId}:${st.day}`]: true } })),
 
       setDay: (d) =>
         set((st) => {
@@ -158,7 +176,7 @@ export const useMission = create<MissionState>()(
       storage: createJSONStorage(() => dexieStorage),
       partialize: (s) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { hydrated, presenterOpen, ...rest } = s;
+        const { hydrated, presenterOpen, identified, ...rest } = s;
         return Object.fromEntries(Object.entries(rest).filter(([, v]) => typeof v !== "function"));
       },
       onRehydrateStorage: () => () => useMission.setState({ hydrated: true }),

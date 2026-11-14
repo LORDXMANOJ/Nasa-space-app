@@ -52,7 +52,7 @@ export function HowItDecides() {
             <i>→</i>
             <span>Safety rules (condition cards)</span>
             <i>+</i>
-            <span>Your normal (days 1 to {BASELINE_DAYS})</span>
+            <span>Your normal (readings on Earth before launch)</span>
             <i>→</i>
             <span>Unusual day · Slow drift · Forecast</span>
             <i>→</i>
@@ -111,7 +111,7 @@ export function HowItDecides() {
           <h3>2 · Unusual day</h3>
           <code className="formula">D² = (x − μ)ᵀ Σ⁻¹ (x − μ),  flag if D² &gt; χ²(0.99, k)  (18.475 for all 7 readings)</code>
           <p>
-            μ and Σ come from mission days 1 to {BASELINE_DAYS}. With so few days, the correlation matrix is shrunk toward the identity (Schäfer-Strimmer, intensity
+            μ and Σ come from the {BASELINE_DAYS} pre-flight days on Earth. With so few days, the correlation matrix is shrunk toward the identity (Schäfer-Strimmer, intensity
             estimated from the data), standard deviations have floors (e.g. temperature {SD_FLOOR["temp.temp"]} °C, heart rate {SD_FLOOR["hr.hr"]} bpm), Σ is
             inflated ×{TUNING.covScale} for estimation error, and solved with a Cholesky factorisation Σ = L Lᵀ, never inverted directly. k = readings present today.
           </p>
@@ -166,7 +166,7 @@ export function HowItDecides() {
             <p>Running…</p>
           )}
           <p className="dim">
-            Known weakness: about {res ? pct(res.anyAlertFalseRate) : "7 %"} of normal days still get some alert, mostly single readings that cross a clinical limit and
+            Known weakness: about {res ? pct(res.anyAlertFalseRate) : "9 %"} of normal days still get some alert, mostly single readings that cross a clinical limit and
             are also far from that person's normal. A real system would need real data to tune this.
           </p>
         </section>
@@ -247,8 +247,9 @@ export function HowItDecides() {
           </ul>
           <h3>Software and assets</h3>
           <p className="dim">
-            React, React Router, Zustand, Recharts, three.js, @react-three/fiber, @react-three/drei, Zod (MIT); Dexie (Apache-2.0); lucide-react icons (ISC); Public Sans and
-            IBM Plex Mono fonts (SIL Open Font License 1.1, bundled). The 3D body is procedural (no third-party model). Full list with licences in REFERENCES.md.
+            React, React Router, Zustand, Recharts, three.js, @react-three/fiber, @react-three/drei, Zod (MIT); Dexie (Apache-2.0); lucide-react icons (ISC); Shantell Sans, DynaPuff and
+            IBM Plex Mono fonts (SIL Open Font License 1.1, bundled). 3D body: "Rigged Figure" by Cesium, CC-BY 4.0, from the Khronos glTF Sample Assets. 2D body
+            drawn with the Hairline kernel by Lucas Markes. Full list with licences in REFERENCES.md.
           </p>
         </section>
       </div>

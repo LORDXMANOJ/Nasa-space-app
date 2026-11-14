@@ -1,18 +1,20 @@
 /**
- * Procedural 3D body (capsules + spheres, no external model, nothing to license) with glowing region hotspots.
+ * 3D body: "Rigged Figure" by Cesium (CC-BY 4.0, Khronos glTF sample assets), bundled locally in public/models,
+ * scaled to 1.75 m, rendered as a translucent sage figure with glowing region hotspots.
  * Render-on-demand: the GPU idles unless a region is at Act and motion is allowed (slow pulse).
  * Camera presets Front / Side / Back; drag to rotate, scroll to zoom within bounds; click a hotspot to select.
  */
-import { useEffect, useRef } from "react";
+import { Suspense, useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { REGIONS, type RegionId } from "../../data";
 import type { Status } from "../../engine/alerts";
 
-const HEX: Record<Status, string> = { nominal: "#1d6b43", watch: "#f2b13c", act: "#b3261e", stale: "#9aa1ab" };
-const SKIN = new THREE.MeshStandardMaterial({ color: "#8b94a3", transparent: true, opacity: 0.32, roughness: 0.8, metalness: 0, depthWrite: false });
+export const MODEL_URL = "./models/rigged-figure.glb";
+const HEX: Record<Status, string> = { nominal: "#2e6b3f", watch: "#d9952b", act: "#b3261e", stale: "#9aa094" };
+const SKIN = new THREE.MeshStandardMaterial({ color: "#a3b18a", transparent: true, opacity: 0.55, roughness: 0.85, metalness: 0, depthWrite: false });
 
 interface Props {
   status: Record<RegionId, Status>;
@@ -21,42 +23,48 @@ interface Props {
   reduced: boolean;
 }
 
-function Part({ pos, rot = [0, 0, 0], r, len, scale = [1, 1, 1] }: { pos: [number, number, number]; rot?: [number, number, number]; r: number; len: number; scale?: [number, number, number] }) {
-  return (
-    <mesh position={pos} rotation={rot} scale={scale} material={SKIN}>
-      {len > 0 ? <capsuleGeometry args={[r, len, 6, 16]} /> : <sphereGeometry args={[r, 24, 16]} />}
-    </mesh>
-  );
-}
-
+/** Loads the figure, recolours it, and fits it to 1.75 m with the feet on the floor. */
 function Figure() {
+  const gltf = useGLTF(MODEL_URL, false, false); // no Draco / Meshopt: the model is uncompressed, and decoders would need WASM or a CDN
+  const object = useMemo(() => {
+    const root = gltf.scene.clone(true);
+    root.traverse((o) => {
+      const m = o as THREE.Mesh;
+      if (m.isMesh) {
+        m.material = SKIN;
+        m.frustumCulled = false;
+      }
+    });
+    const box = new THREE.Box3().setFromObject(root);
+    const size = box.getSize(new THREE.Vector3());
+    if (size.z > size.y) root.rotation.x = -Math.PI / 2; // stand a Z-up export upright
+    const box2 = new THREE.Box3().setFromObject(root);
+    root.scale.multiplyScalar(1.75 / box2.getSize(new THREE.Vector3()).y);
+    const box3 = new THREE.Box3().setFromObject(root);
+    const c = box3.getCenter(new THREE.Vector3());
+    root.position.set(-c.x, -box3.min.y, -c.z);
+    return root;
+  }, [gltf]);
   return (
     <group>
-      <Part pos={[0, 1.62, 0]} r={0.12} len={0} scale={[0.95, 1.12, 1]} />
-      <Part pos={[0, 1.46, 0]} r={0.05} len={0.06} />
-      <Part pos={[0, 1.16, 0]} r={0.17} len={0.36} scale={[1.18, 1, 0.72]} />
-      <Part pos={[0, 0.88, 0]} r={0.16} len={0} scale={[1.05, 0.62, 0.78]} />
-      <Part pos={[-0.29, 1.12, 0]} rot={[0, 0, 0.12]} r={0.045} len={0.56} />
-      <Part pos={[0.29, 1.12, 0]} rot={[0, 0, -0.12]} r={0.045} len={0.56} />
-      <Part pos={[-0.1, 0.42, 0]} r={0.065} len={0.7} />
-      <Part pos={[0.1, 0.42, 0]} r={0.065} len={0.7} />
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
-        <ringGeometry args={[0.45, 0.47, 64]} />
-        <meshBasicMaterial color="#c7ccd3" />
+      <primitive object={object} />
+      <mesh rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[0.45, 0.465, 64]} />
+        <meshBasicMaterial color="#588157" />
       </mesh>
     </group>
   );
 }
+useGLTF.preload(MODEL_URL, false, false);
 
 function Hotspot({ id, s, selected, onSelect, reduced }: { id: RegionId; s: Status; selected: boolean; onSelect: (id: RegionId) => void; reduced: boolean }) {
   const r = REGIONS.find((x) => x.id === id)!;
   const ref = useRef<THREE.Mesh>(null);
   useFrame(({ clock }) => {
     if (!ref.current || s !== "act" || reduced) return;
-    const k = 1 + Math.sin(clock.elapsedTime * 2.6) * 0.12;
-    ref.current.scale.setScalar(k);
+    ref.current.scale.setScalar(1 + Math.sin(clock.elapsedTime * 2.6) * 0.12);
   });
-  const opacity = s === "act" ? 0.85 : s === "watch" ? 0.8 : s === "nominal" ? 0.35 : 0.18;
+  const opacity = s === "act" ? 0.85 : s === "watch" ? 0.8 : s === "nominal" ? 0.4 : 0.2;
   return (
     <group position={r.pos3d}>
       <mesh
@@ -68,13 +76,13 @@ function Hotspot({ id, s, selected, onSelect, reduced }: { id: RegionId; s: Stat
         onPointerOver={() => (document.body.style.cursor = "pointer")}
         onPointerOut={() => (document.body.style.cursor = "")}
       >
-        <sphereGeometry args={[r.radius * 0.72, 24, 16]} />
+        <sphereGeometry args={[r.radius * 0.7, 24, 16]} />
         <meshBasicMaterial color={HEX[s]} transparent opacity={opacity} depthWrite={false} />
       </mesh>
       {selected && (
         <mesh>
-          <torusGeometry args={[r.radius * 0.72 + 0.035, 0.007, 8, 48]} />
-          <meshBasicMaterial color="#101318" />
+          <torusGeometry args={[r.radius * 0.7 + 0.035, 0.008, 8, 48]} />
+          <meshBasicMaterial color="#344e41" />
         </mesh>
       )}
     </group>
@@ -124,9 +132,11 @@ export default function Body3D({ status, selected, onSelect, reduced }: Props) {
         gl={{ antialias: true, powerPreference: "low-power" }}
         aria-label="3D body. Use the region list for keyboard access."
       >
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[2, 3, 2]} intensity={1.1} />
-        <Figure />
+        <ambientLight intensity={0.9} />
+        <directionalLight position={[2, 3, 2]} intensity={1.2} />
+        <Suspense fallback={null}>
+          <Figure />
+        </Suspense>
         {REGIONS.map((r) => (
           <Hotspot key={r.id} id={r.id} s={status[r.id]} selected={selected === r.id} onSelect={onSelect} reduced={reduced} />
         ))}

@@ -56,10 +56,11 @@ Body-mass ±5 % / ±10 % limits: **demo assumption**. A MedlinePlus "5 % uninten
 
 | Asset | Licence |
 |---|---|
-| Public Sans 5.3.0 (UI), IBM Plex Mono 5.3.0 (data preview only) via @fontsource | SIL Open Font License 1.1 |
+| Shantell Sans 5.3.0 (all text), DynaPuff 5.3.0 (headings), IBM Plex Mono 5.3.0 (data preview only) via @fontsource | SIL Open Font License 1.1 |
 | lucide-react 1.73.0 icons | ISC |
 | App icon (`public/icon.svg`) | Original, made for this project |
-| 3D body | Procedural (three.js capsules and spheres), original; no third-party model |
+| 3D body: "Rigged Figure" (`public/models/rigged-figure.glb`) | © 2017 Cesium, **CC-BY 4.0**, from the Khronos glTF Sample Assets: https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/RiggedFigure. Recoloured and scaled; credited in the app (How it decides) and in `public/models/CREDITS.txt` |
+| 2D body: Hairline kernel (`public/hairline/kernel.js`) | From the `@lucasmarkes/hairline` figure engine via the hairline-create skill, copied unchanged. ◻ Confirm its licence before publishing |
 
 ## Libraries (runtime)
 

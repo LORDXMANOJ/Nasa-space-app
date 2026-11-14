@@ -118,7 +118,7 @@ function evaluateMetric(
     });
   }
 
-  if (baseline && baseline.sd > 0 && !m.cumulative && !skipStats) {
+  if (baseline && baseline.sd > 0 && !m.cumulative && !m.limitsOnly && !skipStats) {
     const z = (v - baseline.mean) / baseline.sd;
     const bad = dir === "both" ? Math.abs(z) : dir === "high" ? z : -z;
     if (bad >= Z_LIMIT) {
