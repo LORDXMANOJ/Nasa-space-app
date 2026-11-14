@@ -5,6 +5,7 @@
 import { lazy, Suspense, useEffect } from "react";
 import { HashRouter, Route, Routes, useLocation } from "react-router-dom";
 import { Shell } from "./layout/Shell";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { WhoAreYou } from "./screens/WhoAreYou";
 import { useMission } from "./store/mission";
 import { Dashboard } from "./screens/Dashboard";
@@ -50,26 +51,34 @@ export function App() {
     <HashRouter>
       <ScrollTop />
       <Shell>
-        <Suspense fallback={<div className="page dim">Loading…</div>}>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/measure" element={<MeasureList />} />
-            <Route path="/measure/:id" element={<MeasureFlow />} />
-            <Route path="/body" element={<BodyReport />} />
-            <Route path="/recovery" element={<Recovery />} />
-            <Route path="/trends" element={<Trends />} />
-            <Route path="/hazards" element={<Hazards />} />
-            <Route path="/checkin" element={<CheckIn />} />
-            <Route path="/consult" element={<Consult />} />
-            <Route path="/how" element={<HowItDecides />} />
-            <Route path="/sources" element={<HowItDecides />} />
-            <Route path="/assistant" element={<Assistant />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/dev/components" element={<DevComponents />} />
-            <Route path="*" element={<Dashboard />} />
-          </Routes>
-        </Suspense>
+        <ScreenBoundary>
+          <Suspense fallback={<div className="page dim">Loading…</div>}>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/measure" element={<MeasureList />} />
+              <Route path="/measure/:id" element={<MeasureFlow />} />
+              <Route path="/body" element={<BodyReport />} />
+              <Route path="/recovery" element={<Recovery />} />
+              <Route path="/trends" element={<Trends />} />
+              <Route path="/hazards" element={<Hazards />} />
+              <Route path="/checkin" element={<CheckIn />} />
+              <Route path="/consult" element={<Consult />} />
+              <Route path="/how" element={<HowItDecides />} />
+              <Route path="/sources" element={<HowItDecides />} />
+              <Route path="/assistant" element={<Assistant />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/dev/components" element={<DevComponents />} />
+              <Route path="*" element={<Dashboard />} />
+            </Routes>
+          </Suspense>
+        </ScreenBoundary>
       </Shell>
     </HashRouter>
   );
+}
+
+/** One error boundary per screen: a crash shows a plain message with a way forward, and moving to another screen clears it. */
+function ScreenBoundary({ children }: { children: React.ReactNode }) {
+  const loc = useLocation();
+  return <ErrorBoundary resetKey={loc.pathname}>{children}</ErrorBoundary>;
 }

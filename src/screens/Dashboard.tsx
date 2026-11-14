@@ -6,8 +6,9 @@
  */
 import { lazy, Suspense, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Check, CheckCircle2, ChevronDown, OctagonAlert, Pencil, TriangleAlert } from "lucide-react";
+import { Check, ChevronDown, OctagonAlert, Pencil, TriangleAlert } from "lucide-react";
 import { INDICATORS, REGIONS, type RegionId } from "../data";
+import { AllClear } from "../components/AllClear";
 import { CheckInForm } from "../components/CheckInForm";
 import { DecisionPanel } from "../components/DecisionPanel";
 import { StatusBadge } from "../components/status";
@@ -249,10 +250,21 @@ export function Dashboard() {
               </div>
             </section>
           ) : (
-            <div className="banner banner--info" style={{ margin: "var(--sp-8) 0" }}>
-              <CheckCircle2 style={{ color: "var(--nominal)" }} aria-hidden />
-              <span>All readings are within your Earth normal. Keep your routine.</span>
-            </div>
+            <AllClear
+              kicker="Today's goal reached"
+              title={`All clear today, ${firstName}`}
+              action={
+                <Link className="btn" to="/trends">
+                  See your trends
+                </Link>
+              }
+            >
+              <p>
+                Every reading is within your normal from Earth. Nothing to do on board, and nothing to send to
+                Earth.
+              </p>
+              <p className="dim">Keep your routine. Next check-in: tomorrow, day {h.day + 1}.</p>
+            </AllClear>
           )}
 
           <button

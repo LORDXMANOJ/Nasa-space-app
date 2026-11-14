@@ -14,7 +14,7 @@ import { learnMetricBaselines } from "../engine/detectors";
 import { isScheduled, simulateReading, type Reading } from "../engine/simulation";
 import { useHealth } from "../store/health";
 import { useMission } from "../store/mission";
-import { toast } from "../store/toast";
+import { toastWhenSaved } from "../store/toast";
 import { ActionButton } from "./Feedback";
 import { NumberField } from "./NumberField";
 import { IndicatorIcon } from "./ui";
@@ -57,14 +57,41 @@ const RANGE: Record<string, [number, number]> = {
   "glucose.glucose": [20, 600],
   "weight.mass": [30, 200],
 };
-const SYMPTOMS = ["Feeling hot or shivery", "Headache", "Cough or sore throat", "Nausea", "Dizziness", "Chest pain", "Short of breath", "Aches", "Rash", "None"];
-const STEP_TITLE: Record<StepId, string> = { wearable: "Your wearable", devices: "Measure", feel: "How you feel" };
+const SYMPTOMS = [
+  "Feeling hot or shivery",
+  "Headache",
+  "Cough or sore throat",
+  "Nausea",
+  "Dizziness",
+  "Chest pain",
+  "Short of breath",
+  "Aches",
+  "Rash",
+  "None",
+];
+const STEP_TITLE: Record<StepId, string> = {
+  wearable: "Your wearable",
+  devices: "Measure",
+  feel: "How you feel",
+};
 const STEP_HINT: Record<StepId, string> = {
   wearable: "Your wearable already sent these. Check they look right; use − and + to fix one.",
   devices: "Press Measure and hold still. The number fills in by itself.",
   feel: "Only you can tell us this part.",
 };
 const MOOD_ID = "mood.mood";
+/** Simulated measuring time per device (a real cuff takes 30 to 40 s; shortened for the demo) and the words shown meanwhile. */
+const MEASURE: Record<string, { ms: number; steps: [number, string][] }> = {
+  bp: {
+    ms: 4200,
+    steps: [
+      [1200, "Cuff filling… hold still"],
+      [2600, "Reading your pulse…"],
+      [3600, "Almost done…"],
+    ],
+  },
+  default: { ms: 2200, steps: [[1100, "Almost done…"]] },
+};
 const wait = (ms: number) => new Promise((r) => window.setTimeout(r, ms));
 
 export function CheckInForm({ onDone }: { onDone?: () => void }) {
@@ -85,11 +112,23 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
       fields: metricIdx.map((i) => {
         const m = ind.metrics[i];
         const key = `${id}.${m.key}`;
-        return { key, label: id === "bp" ? (i === 0 ? "Top number" : "Bottom number") : m.label, idx: i, unit: m.unit, decimals: m.decimals, min: RANGE[key]?.[0] ?? 0, max: RANGE[key]?.[1] ?? 1e6 };
+        return {
+          key,
+          label: id === "bp" ? (i === 0 ? "Top number" : "Bottom number") : m.label,
+          idx: i,
+          unit: m.unit,
+          decimals: m.decimals,
+          min: RANGE[key]?.[0] ?? 0,
+          max: RANGE[key]?.[1] ?? 1e6,
+        };
       }),
     };
   }).filter((r) => r.mode === "auto" || isScheduled(r.ind, h.day) || h.due.some((d) => d.id === r.ind.id));
-  const byStep: Record<StepId, Row[]> = { wearable: rows.filter((r) => r.mode === "auto"), devices: rows.filter((r) => r.mode === "device"), feel: [] };
+  const byStep: Record<StepId, Row[]> = {
+    wearable: rows.filter((r) => r.mode === "auto"),
+    devices: rows.filter((r) => r.mode === "device"),
+    feel: [],
+  };
   const steps: StepId[] = byStep.devices.length ? ["wearable", "devices", "feel"] : ["wearable", "feel"];
 
   const sim = (ind: Indicator) => simulateReading(ind, h.day, h.profile, env);
@@ -106,9 +145,14 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
   const [mood, setMood] = useState<number | null>(null);
   const [symptoms, setSym] = useState<string[]>([]);
   const [pain, setPain] = useState(0);
-  const [tried, setTried] = useState<Record<StepId, boolean>>({ wearable: false, devices: false, feel: false });
+  const [tried, setTried] = useState<Record<StepId, boolean>>({
+    wearable: false,
+    devices: false,
+    feel: false,
+  });
   const [shake, setShake] = useState<{ key: string; n: number } | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const cur = steps[step];
 
   const err = (f: Field) => {
@@ -116,7 +160,8 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
     if (raw === undefined || raw === "") return "Needed. Press Measure or tap the box to type it.";
     const n = Number(raw);
     if (Number.isNaN(n)) return "Numbers only";
-    if (n < f.min || n > f.max) return `That looks wrong. Expected ${f.min} to ${f.max} ${f.unit}.`;
+    if (n < f.min || n > f.max)
+      return `${raw} ${f.unit} can't be right: a person reads ${f.min} to ${f.max} ${f.unit}. Check the number and enter it again.`;
     return "";
   };
   const firstProblem = (s: StepId): string | null => {
@@ -124,7 +169,8 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
     for (const r of byStep[s]) for (const f of r.fields) if (err(f)) return f.key;
     return null;
   };
-  const missingIn = (s: StepId) => (s === "feel" ? (mood === null ? 1 : 0) : byStep[s].flatMap((r) => r.fields.filter((f) => err(f))).length);
+  const missingIn = (s: StepId) =>
+    s === "feel" ? (mood === null ? 1 : 0) : byStep[s].flatMap((r) => r.fields.filter((f) => err(f))).length;
   const missingAll = steps.reduce((n, s) => n + missingIn(s), 0);
 
   // after a step change caused by validation, bring the problem field into view, focus it and jiggle it
@@ -171,12 +217,12 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
     addReadings(rs);
     setSymptoms(h.day, symptoms.filter((s) => s !== "None").concat(pain > 0 ? [`Pain ${pain}/10`] : []));
     markCheckedIn();
-    toast("Check-in saved. Here are your results.");
+    toastWhenSaved("Check-in saved. Here are your results.");
     onDone?.();
   };
 
   const measure = (r: Row) =>
-    wait(1200).then(() => {
+    wait((MEASURE[r.ind.id] ?? MEASURE.default).ms).then(() => {
       const s = sim(r.ind);
       setVals((v) => {
         const n = { ...v };
@@ -185,7 +231,9 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
       });
     });
 
-  const earthText = (r: Row) => r.fields.map((f) => (earth[f.key] ? earth[f.key].mean.toFixed(f.decimals) : "none")).join("/") + ` ${r.fields[0].unit}`;
+  const earthText = (r: Row) =>
+    r.fields.map((f) => (earth[f.key] ? earth[f.key].mean.toFixed(f.decimals) : "none")).join("/") +
+    ` ${r.fields[0].unit}`;
 
   const renderRow = (r: Row) => (
     <li key={r.ind.id} className="ci-card">
@@ -194,13 +242,14 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
         <div>
           <strong>{r.ind.shortName}</strong>
           <span className="dim">
-            {r.mode === "auto" ? <Radio width={14} aria-hidden /> : <Cpu width={14} aria-hidden />} On Earth: <span className="num">{earthText(r)}</span>
+            {r.mode === "auto" ? <Radio width={14} aria-hidden /> : <Cpu width={14} aria-hidden />} On Earth:{" "}
+            <span className="num">{earthText(r)}</span>
           </span>
         </div>
       </div>
       <div className="ci-card-body">
         {r.fields.map((f) => {
-          const e = tried[cur] ? err(f) : "";
+          const e = tried[cur] || touched[f.key] ? err(f) : "";
           return (
             <div key={f.key} className="ci-numfield">
               {r.fields.length > 1 && <span className="ci-sub">{f.label}</span>}
@@ -209,7 +258,10 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
                 label={`${r.ind.shortName}${r.fields.length > 1 ? ` ${f.label}` : ""}`}
                 unit={f.unit}
                 value={vals[f.key] ?? ""}
-                onChange={(v) => setVals((cur) => ({ ...cur, [f.key]: v }))}
+                onChange={(v) => {
+                  setVals((c) => ({ ...c, [f.key]: v }));
+                  setTouched((t) => ({ ...t, [f.key]: true }));
+                }}
                 decimals={f.decimals}
                 min={f.min}
                 max={f.max}
@@ -222,7 +274,14 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
           );
         })}
         {r.mode === "device" && (
-          <ActionButton className="btn btn--primary ci-measure" onAction={() => measure(r)} workingLabel="Measuring…" doneLabel="Measured" minWorkMs={0}>
+          <ActionButton
+            className="btn btn--primary ci-measure"
+            onAction={() => measure(r)}
+            workingLabel={r.ind.id === "bp" ? "Starting the cuff…" : "Hold still…"}
+            steps={(MEASURE[r.ind.id] ?? MEASURE.default).steps}
+            expectedMs={(MEASURE[r.ind.id] ?? MEASURE.default).ms}
+            doneLabel="Measured"
+          >
             {vals[r.fields[0].key] ? "Measure again" : "Measure"}
           </ActionButton>
         )}
@@ -243,7 +302,11 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
     >
       <ol className="ci-steps" aria-label="Check-in steps">
         {steps.map((s, i) => (
-          <li key={s} className={i < step ? "is-done" : i === step ? "is-now" : ""} aria-current={i === step ? "step" : undefined}>
+          <li
+            key={s}
+            className={i < step ? "is-done" : i === step ? "is-now" : ""}
+            aria-current={i === step ? "step" : undefined}
+          >
             <span className="k">{i < step ? <Check width={16} aria-label="done" /> : i + 1}</span>
             {STEP_TITLE[s]}
           </li>
@@ -260,11 +323,23 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
           <ul className="ci-cards">{byStep[cur].map(renderRow)}</ul>
         ) : (
           <div className="stack" style={{ gap: "var(--sp-6)" }}>
-            <fieldset className={`ci-mood${shake?.key === MOOD_ID && !reduced ? " jiggle" : ""}`} key={shake?.key === MOOD_ID ? shake.n : 0}>
+            <fieldset
+              className={`ci-mood${shake?.key === MOOD_ID && !reduced ? " jiggle" : ""}`}
+              key={shake?.key === MOOD_ID ? shake.n : 0}
+            >
               <legend>
-                Mood today <span className="dim">(1 very low, 10 great; on Earth: {earth[MOOD_ID] ? earth[MOOD_ID].mean.toFixed(0) : "none"})</span>
+                Mood today <span className="req">Required</span>{" "}
+                <span className="dim">
+                  (1 very low, 10 great; on Earth: {earth[MOOD_ID] ? earth[MOOD_ID].mean.toFixed(0) : "none"})
+                </span>
               </legend>
-              <div id="mood-scale" className="mood-scale" role="group" aria-label="Mood from 1 (very low) to 10 (great)" aria-invalid={tried.feel && mood === null}>
+              <div
+                id="mood-scale"
+                className="mood-scale"
+                role="group"
+                aria-label="Mood from 1 (very low) to 10 (great)"
+                aria-invalid={tried.feel && mood === null}
+              >
                 {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
                   <button type="button" key={n} aria-pressed={mood === n} onClick={() => setMood(n)}>
                     {n}
@@ -285,7 +360,15 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
                       type="checkbox"
                       checked={symptoms.includes(s)}
                       onChange={(e) =>
-                        setSym((c) => (s === "None" ? (e.target.checked ? ["None"] : []) : e.target.checked ? [...c.filter((x) => x !== "None"), s] : c.filter((x) => x !== s)))
+                        setSym((c) =>
+                          s === "None"
+                            ? e.target.checked
+                              ? ["None"]
+                              : []
+                            : e.target.checked
+                              ? [...c.filter((x) => x !== "None"), s]
+                              : c.filter((x) => x !== s),
+                        )
                       }
                     />
                     <span className="sym-box" aria-hidden>
@@ -299,9 +382,16 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
 
             <label className="field ci-pain">
               <span>
-                Pain right now: <strong className="num">{pain}</strong>/10 <span className="dim">(optional)</span>
+                Pain right now: <strong className="num">{pain}</strong>/10{" "}
+                <span className="dim">(optional)</span>
               </span>
-              <input type="range" min={0} max={10} value={pain} onChange={(e) => setPain(Number(e.target.value))} />
+              <input
+                type="range"
+                min={0}
+                max={10}
+                value={pain}
+                onChange={(e) => setPain(Number(e.target.value))}
+              />
             </label>
           </div>
         )}
@@ -309,7 +399,12 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
 
       <div className="ci-bar">
         {step > 0 ? (
-          <button type="button" className="btn btn--lg" onClick={() => setStep((i) => i - 1)} disabled={submitting}>
+          <button
+            type="button"
+            className="btn btn--lg"
+            onClick={() => setStep((i) => i - 1)}
+            disabled={submitting}
+          >
             <ArrowLeft aria-hidden /> Back
           </button>
         ) : (
@@ -323,7 +418,12 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
             Next <ArrowRight aria-hidden />
           </button>
         ) : (
-          <button type="submit" className={`btn btn--primary btn--lg ci-go${submitting ? " is-working" : ""}`} disabled={submitting} aria-busy={submitting}>
+          <button
+            type="submit"
+            className={`btn btn--primary btn--lg ci-go${submitting ? " is-working" : ""}`}
+            disabled={submitting}
+            aria-busy={submitting}
+          >
             {submitting ? (
               <>
                 <Loader2 className="spin" aria-hidden /> Checking your readings…

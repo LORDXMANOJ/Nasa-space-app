@@ -16,7 +16,12 @@ import { DecisionPanel } from "../components/DecisionPanel";
 import { useHealth } from "../store/health";
 import { useMission } from "../store/mission";
 
-const MODE: Record<string, string> = { manual: "Manual", "sensor-sim": "Device (simulated)", "camera-sim": "Camera (simulated)", file: "File" };
+const MODE: Record<string, string> = {
+  manual: "Manual",
+  "sensor-sim": "Device (simulated)",
+  "camera-sim": "Camera (simulated)",
+  file: "File",
+};
 
 export function MeasureList() {
   const h = useHealth();
@@ -25,7 +30,9 @@ export function MeasureList() {
       <div className="page-head">
         <div>
           <h1>Guided measurements</h1>
-          <p className="lede">Each one explains why it matters in space, shows how to do it, then reads the (simulated) device.</p>
+          <p className="lede">
+            Each one explains why it matters in space, shows how to do it, then reads the (simulated) device.
+          </p>
         </div>
         <Link className="btn btn--primary" to="/checkin">
           Quick daily check-in
@@ -39,7 +46,8 @@ export function MeasureList() {
               <strong style={{ color: "var(--text)" }}>{ind.name}</strong>
             </div>
             <span className="dim" style={{ fontSize: "var(--fs-sm)" }}>
-              {ind.deviceName} · {MODE[ind.inputType]} · every {ind.cadenceHours >= 48 ? `${Math.round(ind.cadenceHours / 24)} days` : "day"}
+              {ind.deviceName} · {MODE[ind.inputType]} · every{" "}
+              {ind.cadenceHours >= 48 ? `${Math.round(ind.cadenceHours / 24)} days` : "day"}
             </span>
             <div className="tile-foot">
               <StatusBadge status={h.evals[ind.id].status} />
@@ -81,8 +89,14 @@ export function MeasureFlow() {
         <ol className="stepper" aria-label="Steps">
           {STEPS.map((s, i) => (
             <li key={s} className={i < step ? "done" : ""}>
-              <button aria-current={i === step ? "step" : undefined} onClick={() => i <= 2 && setStep(i)} disabled={i === 3 && step < 3}>
-                <span className="k">{i < step ? <Check width={16} height={16} aria-label="done" /> : i + 1}</span>
+              <button
+                aria-current={i === step ? "step" : undefined}
+                onClick={() => i <= 2 && setStep(i)}
+                disabled={i === 3 && step < 3}
+              >
+                <span className="k">
+                  {i < step ? <Check width={16} height={16} aria-label="done" /> : i + 1}
+                </span>
                 {s}
               </button>
             </li>
@@ -114,8 +128,16 @@ function Why({ ind, onNext }: { ind: Indicator; onNext: () => void }) {
       </div>
       <div className="row dim" style={{ fontSize: "var(--fs-sm)" }}>
         {ind.deviceVerified ? <BadgeCheck width={16} aria-hidden /> : <CircleHelp width={16} aria-hidden />}
-        {ind.deviceVerified ? "Device name confirmed in a public source." : "Generic device name; this reading is simulated."} Limits:{" "}
-        {ind.thresholdSource === "demo-assumption" ? "demo assumption" : ind.thresholdSource === "NASA" ? "NASA standard" : "clinical reference"}.
+        {ind.deviceVerified
+          ? "Device name confirmed in a public source."
+          : "Generic device name; this reading is simulated."}{" "}
+        Limits:{" "}
+        {ind.thresholdSource === "demo-assumption"
+          ? "demo assumption"
+          : ind.thresholdSource === "NASA"
+            ? "NASA standard"
+            : "clinical reference"}
+        .
       </div>
       <div className="row">
         <button className="btn btn--primary btn--lg" onClick={onNext}>
@@ -140,7 +162,11 @@ function HowTo({ ind, onNext }: { ind: Indicator; onNext: () => void }) {
     <section className="card stack reveal">
       <div className="howto">
         <div>
-          <div className="stepcard" role="img" aria-label={`Step ${i + 1} of ${n}: ${ind.howToSteps[i].text}`}>
+          <div
+            className="stepcard"
+            role="img"
+            aria-label={`Step ${i + 1} of ${n}: ${ind.howToSteps[i].text}`}
+          >
             <span className="big">{String(i + 1).padStart(2, "0")}</span>
             <p className="cap" key={i}>
               {ind.howToSteps[i].text}
@@ -148,13 +174,21 @@ function HowTo({ ind, onNext }: { ind: Indicator; onNext: () => void }) {
             <span className="progress" style={{ width: `${((i + 1) / n) * 100}%` }} />
           </div>
           <div className="row" style={{ marginTop: "var(--sp-3)" }}>
-            <button className="btn btn--sm" onClick={() => setI((x) => Math.max(0, x - 1))} aria-label="Previous step">
+            <button
+              className="btn btn--sm"
+              onClick={() => setI((x) => Math.max(0, x - 1))}
+              aria-label="Previous step"
+            >
               <ArrowLeft />
             </button>
             <button className="btn btn--sm" onClick={() => setPlaying((p) => !p)}>
               {playing ? <Pause /> : <Play />} {playing ? "Pause" : "Play"}
             </button>
-            <button className="btn btn--sm" onClick={() => setI((x) => Math.min(n - 1, x + 1))} aria-label="Next step">
+            <button
+              className="btn btn--sm"
+              onClick={() => setI((x) => Math.min(n - 1, x + 1))}
+              aria-label="Next step"
+            >
               <ArrowRight />
             </button>
             <span className="dim" style={{ fontSize: "var(--fs-sm)" }}>
@@ -214,13 +248,21 @@ function Capture({ ind, onDone }: { ind: Indicator; onDone: () => void }) {
     <section className="card stack reveal">
       <div className="capture" aria-live="polite">
         <Wave kind={ind.id} progress={progress} />
-        <div className="readout">{phase === "running" ? (ind.id === "bp" ? `${shown[0]}/${shown[1]}` : shown[0]) : "Ready"}</div>
+        <div className="readout">
+          {phase === "running" ? (ind.id === "bp" ? `${shown[0]}/${shown[1]}` : shown[0]) : "Ready"}
+        </div>
         <div className="dim">
-          {phase === "running" ? `Reading from ${ind.deviceName}…` : `Simulated reading from ${ind.deviceName}. Stay still once you press start.`}
+          {phase === "running"
+            ? `Reading from ${ind.deviceName}…`
+            : `Simulated reading from ${ind.deviceName}. Stay still once you press start.`}
         </div>
       </div>
       <div className="row">
-        <button className="btn btn--primary btn--lg" onClick={() => setPhase("running")} disabled={phase === "running"}>
+        <button
+          className="btn btn--primary btn--lg"
+          onClick={() => setPhase("running")}
+          disabled={phase === "running"}
+        >
           {phase === "running" ? "Measuring…" : "Start measurement"}
         </button>
         <button className="btn" onClick={() => setPhase("manual")} disabled={phase === "running"}>
@@ -236,8 +278,22 @@ function Wave({ kind, progress }: { kind: string; progress: number }) {
     const c = Math.PI * 90;
     return (
       <svg viewBox="0 0 220 120" className="wave" aria-hidden>
-        <path d="M20 110 A90 90 0 0 1 200 110" fill="none" stroke="var(--border)" strokeWidth="14" strokeLinecap="round" />
-        <path d="M20 110 A90 90 0 0 1 200 110" fill="none" stroke="var(--accent)" strokeWidth="14" strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c * (1 - progress)} />
+        <path
+          d="M20 110 A90 90 0 0 1 200 110"
+          fill="none"
+          stroke="var(--border)"
+          strokeWidth="14"
+          strokeLinecap="round"
+        />
+        <path
+          d="M20 110 A90 90 0 0 1 200 110"
+          fill="none"
+          stroke="var(--accent)"
+          strokeWidth="14"
+          strokeLinecap="round"
+          strokeDasharray={c}
+          strokeDashoffset={c * (1 - progress)}
+        />
       </svg>
     );
   }
@@ -247,29 +303,57 @@ function Wave({ kind, progress }: { kind: string; progress: number }) {
   for (let i = 0; i <= upto; i++) {
     const x = (i / N) * 560;
     const ph = (i % 30) / 30;
-    const ecg = kind === "hr" ? (ph > 0.45 && ph < 0.5 ? -50 : ph > 0.5 && ph < 0.55 ? 30 : Math.sin(ph * 6.28) * 6) : Math.sin(ph * 6.28) * 28;
+    const ecg =
+      kind === "hr"
+        ? ph > 0.45 && ph < 0.5
+          ? -50
+          : ph > 0.5 && ph < 0.55
+            ? 30
+            : Math.sin(ph * 6.28) * 6
+        : Math.sin(ph * 6.28) * 28;
     pts.push(`${x},${60 + ecg}`);
   }
   return (
     <svg viewBox="0 0 560 120" className="wave" aria-hidden>
       <line x1="0" y1="60" x2="560" y2="60" stroke="var(--border)" />
-      <polyline points={pts.join(" ")} fill="none" stroke="var(--nominal)" strokeWidth="2.5" strokeLinejoin="round" />
+      <polyline
+        points={pts.join(" ")}
+        fill="none"
+        stroke="var(--nominal)"
+        strokeWidth="2.5"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
 
-function ManualEntry({ ind, onSave, onCancel }: { ind: Indicator; onSave: (v: number[]) => void; onCancel: () => void }) {
+function ManualEntry({
+  ind,
+  onSave,
+  onCancel,
+}: {
+  ind: Indicator;
+  onSave: (v: number[]) => void;
+  onCancel: () => void;
+}) {
   const [vals, setVals] = useState<string[]>(ind.metrics.map(() => ""));
   const bounds = (i: number) => {
     const m = ind.metrics[i];
     const span = Math.max(1, m.normalRange.max - m.normalRange.min);
-    return { min: m.unit === "%" && m.key !== "change" ? 50 : m.normalRange.min - span * 2, max: m.normalRange.max + span * 3 };
+    return {
+      min: m.unit === "%" && m.key !== "change" ? 50 : m.normalRange.min - span * 2,
+      max: m.normalRange.max + span * 3,
+    };
   };
   const errs = vals.map((v, i) => {
     if (v === "") return "Required";
     const n = Number(v);
     const b = bounds(i);
-    return Number.isNaN(n) ? "Numbers only" : n < b.min || n > b.max ? `Check this: usually ${ind.metrics[i].normalRange.min} to ${ind.metrics[i].normalRange.max} ${ind.metrics[i].unit}` : "";
+    return Number.isNaN(n)
+      ? "Numbers only"
+      : n < b.min || n > b.max
+        ? `Check this: usually ${ind.metrics[i].normalRange.min} to ${ind.metrics[i].normalRange.max} ${ind.metrics[i].unit}`
+        : "";
   });
   const ok = errs.every((e) => !e);
   return (
@@ -280,7 +364,13 @@ function ManualEntry({ ind, onSave, onCancel }: { ind: Indicator; onSave: (v: nu
           <span>
             {m.label} ({m.unit})
           </span>
-          <input className="input" inputMode="decimal" value={vals[i]} aria-invalid={!!errs[i] && vals[i] !== ""} onChange={(e) => setVals((v) => v.map((x, k) => (k === i ? e.target.value : x)))} />
+          <input
+            className="input"
+            inputMode="decimal"
+            value={vals[i]}
+            aria-invalid={!!errs[i] && vals[i] !== ""}
+            onChange={(e) => setVals((v) => v.map((x, k) => (k === i ? e.target.value : x)))}
+          />
           {vals[i] !== "" && errs[i] && <small style={{ color: "var(--watch)" }}>{errs[i]}</small>}
         </label>
       ))}
@@ -306,10 +396,13 @@ function MoodCapture({ onSave, simReaction }: { onSave: (v: number[]) => void; s
   const TRIALS = 5;
   const arm = () => {
     setState("wait");
-    timer.current = window.setTimeout(() => {
-      goAt.current = performance.now();
-      setState("go");
-    }, 1200 + Math.random() * 1800);
+    timer.current = window.setTimeout(
+      () => {
+        goAt.current = performance.now();
+        setState("go");
+      },
+      1200 + Math.random() * 1800,
+    );
   };
   useEffect(() => () => window.clearTimeout(timer.current), []);
   const tap = () => {
@@ -326,7 +419,9 @@ function MoodCapture({ onSave, simReaction }: { onSave: (v: number[]) => void; s
       else arm();
     }
   };
-  const avg = times.current.length ? Math.round(times.current.reduce((a, b) => a + b, 0) / times.current.length) : null;
+  const avg = times.current.length
+    ? Math.round(times.current.reduce((a, b) => a + b, 0) / times.current.length)
+    : null;
   return (
     <section className="card stack reveal">
       <div className="field">
@@ -340,8 +435,14 @@ function MoodCapture({ onSave, simReaction }: { onSave: (v: number[]) => void; s
         </div>
       </div>
       <div className="field">
-        <span>2. Reaction test: tap the pad as soon as it turns green ({Math.min(trial, TRIALS)}/{TRIALS})</span>
-        <button className={`reaction-pad${state === "go" ? " is-go" : ""}`} onClick={tap} disabled={state === "done"}>
+        <span>
+          2. Reaction test: tap the pad as soon as it turns green ({Math.min(trial, TRIALS)}/{TRIALS})
+        </span>
+        <button
+          className={`reaction-pad${state === "go" ? " is-go" : ""}`}
+          onClick={tap}
+          disabled={state === "done"}
+        >
           {state === "idle" && "Tap to start"}
           {state === "wait" && "Wait for green…"}
           {state === "go" && "TAP!"}
@@ -350,10 +451,16 @@ function MoodCapture({ onSave, simReaction }: { onSave: (v: number[]) => void; s
         </button>
       </div>
       <div className="row">
-        <button className="btn btn--primary btn--lg" disabled={mood === null} onClick={() => onSave([mood!, avg ?? simReaction])}>
+        <button
+          className="btn btn--primary btn--lg"
+          disabled={mood === null}
+          onClick={() => onSave([mood!, avg ?? simReaction])}
+        >
           Save
         </button>
-        {state !== "done" && <span className="dim">You can skip the test; a simulated reaction time is used instead.</span>}
+        {state !== "done" && (
+          <span className="dim">You can skip the test; a simulated reaction time is used instead.</span>
+        )}
       </div>
     </section>
   );
@@ -378,13 +485,22 @@ function Result({ ind }: { ind: Indicator }) {
         {base && ind.id !== "radiation" && (
           <span className="mono" style={{ color: `var(--${e.status === "stale" ? "stale" : e.status})` }}>
             {diff >= 0 ? "+" : "−"}
-            {Math.abs(diff).toFixed(ind.metrics[0].decimals)} vs your usual {base.mean.toFixed(ind.metrics[0].decimals)}
+            {Math.abs(diff).toFixed(ind.metrics[0].decimals)} vs your usual{" "}
+            {base.mean.toFixed(ind.metrics[0].decimals)}
           </span>
         )}
       </div>
       <p style={{ fontSize: "var(--fs-lg)" }}>{ind.plainMeaning[e.status]}</p>
       {alert && (
-        <DecisionPanel title={alert.title} tHarmMin={alert.tHarmMin} tHarmSource={alert.tHarmSource} assumption={alert.assumption} reply={h.link.reply} verdict={alert.verdict} compact />
+        <DecisionPanel
+          title={alert.title}
+          tHarmMin={alert.tHarmMin}
+          tHarmSource={alert.tHarmSource}
+          assumption={alert.assumption}
+          reply={h.link.reply}
+          verdict={alert.verdict}
+          compact
+        />
       )}
       <div className="row">
         {e.status === "watch" || e.status === "act" ? (
@@ -406,7 +522,11 @@ function Result({ ind }: { ind: Indicator }) {
           <p>{e.reason}</p>
           <p className="dim">
             Detector: {e.detector ?? "None"} · Confidence: {e.confidence} · Limits from{" "}
-            {ind.thresholdSource === "demo-assumption" ? "a demo assumption" : ind.thresholdSource === "NASA" ? "a NASA standard" : "a clinical reference"}
+            {ind.thresholdSource === "demo-assumption"
+              ? "a demo assumption"
+              : ind.thresholdSource === "NASA"
+                ? "a NASA standard"
+                : "a clinical reference"}
             {ind.todo && <> · Note: {ind.todo}</>}
           </p>
           <ul>

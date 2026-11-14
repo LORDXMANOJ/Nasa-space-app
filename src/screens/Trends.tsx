@@ -4,7 +4,18 @@
  */
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { CartesianGrid, Legend, Line, LineChart, ReferenceArea, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ReferenceArea,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { INDICATORS, indicatorById } from "../data";
 import { learnMetricBaselines } from "../engine/detectors";
 import { displayValue } from "../lib/format";
@@ -27,7 +38,12 @@ export default function Trends() {
     .filter((r) => range === 0 || r.day > h.day - range)
     .map((r) => ({
       day: r.day,
-      ...Object.fromEntries(ind.metrics.map((m, i) => [m.key, i === 0 ? +displayValue(ind, r.values[0], settings).toFixed(2) : r.values[i]])),
+      ...Object.fromEntries(
+        ind.metrics.map((m, i) => [
+          m.key,
+          i === 0 ? +displayValue(ind, r.values[0], settings).toFixed(2) : r.values[i],
+        ]),
+      ),
     }));
   const metrics = ind.id === "bp" ? ind.metrics : [ind.metrics[0]];
   const m0 = ind.metrics[0];
@@ -46,7 +62,10 @@ export default function Trends() {
       <div className="page-head">
         <div>
           <h1>{ind.name} trend</h1>
-          <p className="lede">The shaded band is your normal, from your readings on Earth before launch (days -9 to 0). Dashed lines are the fixed safety limits.</p>
+          <p className="lede">
+            The shaded band is your normal, from your readings on Earth before launch (days -9 to 0). Dashed
+            lines are the fixed safety limits.
+          </p>
         </div>
         <StatusBadge status={h.evals[ind.id].status} large />
       </div>
@@ -84,7 +103,9 @@ export default function Trends() {
                   <th>Day</th>
                   {metrics.map((m) => (
                     <th key={m.key}>
-                      {m.label} ({m.key === m0.key ? (ind.altUnit && conv(1) !== 1 ? ind.altUnit.unit : m.unit) : m.unit})
+                      {m.label} (
+                      {m.key === m0.key ? (ind.altUnit && conv(1) !== 1 ? ind.altUnit.unit : m.unit) : m.unit}
+                      )
                     </th>
                   ))}
                 </tr>
@@ -104,21 +125,90 @@ export default function Trends() {
             </table>
           </div>
         ) : (
-          <div style={{ height: 440 }} role="img" aria-label={`${ind.name} over ${rows.length} readings. Latest status ${h.evals[ind.id].status}.`}>
+          <div
+            style={{ height: 440 }}
+            role="img"
+            aria-label={`${ind.name} over ${rows.length} readings. Latest status ${h.evals[ind.id].status}.`}
+          >
             <ResponsiveContainer>
               <LineChart data={rows} margin={{ top: 16, right: 56, bottom: 8, left: 8 }}>
                 <CartesianGrid stroke="#cfcbbf" strokeDasharray="0" vertical={false} />
-                <XAxis dataKey="day" type="number" domain={["dataMin", "dataMax"]} stroke="#4e5f55" tick={{ fontFamily: "Shantell Sans", fontSize: 12, fill: "#4e5f55" }} label={{ value: "Mission day", position: "insideBottomRight", offset: -4, fill: "#4e5f55", fontSize: 12 }} />
-                <YAxis stroke="#4e5f55" tick={{ fontFamily: "Shantell Sans", fontSize: 12, fill: "#4e5f55" }} domain={["auto", "auto"]} width={56} />
-                <Tooltip contentStyle={{ background: "#ffffff", border: "2px solid #344e41", borderRadius: 10, fontFamily: "Shantell Sans" }} labelFormatter={(d) => `Day ${d}`} />
-                {first <= 0 && <ReferenceArea x1={first} x2={0} fill="#dad7cd" fillOpacity={0.7} label={{ value: "on Earth", fill: "#4e5f55", fontSize: 12, position: "insideTop" }} />}
-                {b0 && !m0.cumulative && <ReferenceArea y1={conv(b0.mean - b0.sd)} y2={conv(b0.mean + b0.sd)} fill="#588157" fillOpacity={0.15} ifOverflow="extendDomain" />}
+                <XAxis
+                  dataKey="day"
+                  type="number"
+                  domain={["dataMin", "dataMax"]}
+                  stroke="#4e5f55"
+                  tick={{ fontFamily: "Shantell Sans", fontSize: 12, fill: "#4e5f55" }}
+                  label={{
+                    value: "Mission day",
+                    position: "insideBottomRight",
+                    offset: -4,
+                    fill: "#4e5f55",
+                    fontSize: 12,
+                  }}
+                />
+                <YAxis
+                  stroke="#4e5f55"
+                  tick={{ fontFamily: "Shantell Sans", fontSize: 12, fill: "#4e5f55" }}
+                  domain={["auto", "auto"]}
+                  width={56}
+                />
+                <Tooltip
+                  contentStyle={{
+                    background: "#ffffff",
+                    border: "2px solid #344e41",
+                    borderRadius: 10,
+                    fontFamily: "Shantell Sans",
+                  }}
+                  labelFormatter={(d) => `Day ${d}`}
+                />
+                {first <= 0 && (
+                  <ReferenceArea
+                    x1={first}
+                    x2={0}
+                    fill="#dad7cd"
+                    fillOpacity={0.7}
+                    label={{ value: "on Earth", fill: "#4e5f55", fontSize: 12, position: "insideTop" }}
+                  />
+                )}
+                {b0 && !m0.cumulative && (
+                  <ReferenceArea
+                    y1={conv(b0.mean - b0.sd)}
+                    y2={conv(b0.mean + b0.sd)}
+                    fill="#588157"
+                    fillOpacity={0.15}
+                    ifOverflow="extendDomain"
+                  />
+                )}
                 {lines.map((l, i) => (
-                  <ReferenceLine key={i} y={conv(l.y)} stroke={l.c} strokeDasharray="6 5" ifOverflow="extendDomain" label={{ value: l.label, fill: l.c, position: "right", fontSize: 12 }} />
+                  <ReferenceLine
+                    key={i}
+                    y={conv(l.y)}
+                    stroke={l.c}
+                    strokeDasharray="6 5"
+                    ifOverflow="extendDomain"
+                    label={{ value: l.label, fill: l.c, position: "right", fontSize: 12 }}
+                  />
                 ))}
-                <ReferenceLine x={h.day} stroke="#344e41" strokeOpacity={0.5} label={{ value: "today", fill: "#4e5f55", fontSize: 11, position: "top" }} />
+                <ReferenceLine
+                  x={h.day}
+                  stroke="#344e41"
+                  strokeOpacity={0.5}
+                  label={{ value: "today", fill: "#4e5f55", fontSize: 11, position: "top" }}
+                />
                 {metrics.map((m, i) => (
-                  <Line key={m.key} type="monotone" dataKey={m.key} name={m.label} stroke={COLORS[i]} strokeWidth={2.2} dot={{ r: 2.5 }} activeDot={{ r: 5 }} isAnimationActive={!settings.lowPower && !settings.reducedMotion} connectNulls />
+                  <Line
+                    key={m.key}
+                    type="monotone"
+                    dataKey={m.key}
+                    name={m.label}
+                    stroke={COLORS[i]}
+                    strokeWidth={2.2}
+                    dot={{ r: 2.5 }}
+                    activeDot={{ r: 5 }}
+                    isAnimationActive={!settings.lowPower && !settings.reducedMotion}
+                    connectNulls
+                  />
                 ))}
                 {metrics.length > 1 && <Legend />}
               </LineChart>
@@ -126,7 +216,10 @@ export default function Trends() {
           </div>
         )}
         <p className="dim" style={{ marginTop: "var(--sp-3)", fontSize: "var(--fs-sm)" }}>
-          {h.evals[ind.id].reason} {b0 && !m0.cumulative && `Your normal: ${conv(b0.mean).toFixed(m0.decimals)} ± ${(conv(b0.mean + b0.sd) - conv(b0.mean)).toFixed(m0.decimals || 1)}.`}
+          {h.evals[ind.id].reason}{" "}
+          {b0 &&
+            !m0.cumulative &&
+            `Your normal: ${conv(b0.mean).toFixed(m0.decimals)} ± ${(conv(b0.mean + b0.sd) - conv(b0.mean)).toFixed(m0.decimals || 1)}.`}
         </p>
       </section>
     </div>

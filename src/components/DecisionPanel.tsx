@@ -9,7 +9,8 @@ import { formatDuration, type ReplyBreakdown, type Verdict } from "../engine/mis
 
 const MIN = 1; // 1 minute
 const MAX = 30 * 1440; // 30 days
-const pos = (min: number) => (Number.isFinite(min) ? Math.min(1, Math.max(0.02, Math.log10(Math.max(MIN, min)) / Math.log10(MAX))) : 1);
+const pos = (min: number) =>
+  Number.isFinite(min) ? Math.min(1, Math.max(0.02, Math.log10(Math.max(MIN, min)) / Math.log10(MAX))) : 1;
 
 interface Props {
   title: string;
@@ -24,7 +25,10 @@ interface Props {
 export function DecisionPanel({ title, tHarmMin, tHarmSource, assumption, reply, verdict, compact }: Props) {
   const act = verdict === "act-onboard";
   return (
-    <section className={`decision ${act ? "is-act" : "is-wait"}${compact ? " is-compact" : ""}`} aria-label={`Can ${title} wait for Earth?`}>
+    <section
+      className={`decision ${act ? "is-act" : "is-wait"}${compact ? " is-compact" : ""}`}
+      aria-label={`Can ${title} wait for Earth?`}
+    >
       <div className="decision-head">
         <span className="label">Can this wait for Earth?</span>
         <span className={`verdict ${act ? "verdict--act" : "verdict--wait"}`}>
@@ -33,7 +37,11 @@ export function DecisionPanel({ title, tHarmMin, tHarmSource, assumption, reply,
         </span>
       </div>
 
-      <div className="bars" role="img" aria-label={`Safe wait ${formatDuration(tHarmMin)}; Earth reply ${formatDuration(reply.totalMin)}.`}>
+      <div
+        className="bars"
+        role="img"
+        aria-label={`Safe wait ${formatDuration(tHarmMin)}; Earth reply ${formatDuration(reply.totalMin)}.`}
+      >
         <div className="bar-row">
           <span className="bar-label">
             <Timer aria-hidden /> Safe wait
@@ -48,7 +56,10 @@ export function DecisionPanel({ title, tHarmMin, tHarmSource, assumption, reply,
             <Earth aria-hidden /> Earth reply
           </span>
           <div className="bar-track">
-            <div className={`bar-fill bar-fill--reply${reply.noContact ? " is-none" : ""}`} style={{ transform: `scaleX(${pos(reply.totalMin)})` }} />
+            <div
+              className={`bar-fill bar-fill--reply${reply.noContact ? " is-none" : ""}`}
+              style={{ transform: `scaleX(${pos(reply.totalMin)})` }}
+            />
           </div>
           <span className="bar-value num">{formatDuration(reply.totalMin)}</span>
         </div>
@@ -73,7 +84,8 @@ export function DecisionPanel({ title, tHarmMin, tHarmSource, assumption, reply,
           <div className="row decision-foot">
             <span className="dim" style={{ fontSize: "var(--fs-sm)" }}>
               Safe wait from the {tHarmSource}
-              {assumption && <span className="assume">ASSUMPTION</span>} · Reply = {reply.parts.map((p) => `${p.label} ${formatDuration(p.min)}`).join(" + ")}
+              {assumption && <span className="assume">ASSUMPTION</span>} · Reply ={" "}
+              {reply.parts.map((p) => `${p.label} ${formatDuration(p.min)}`).join(" + ")}
             </span>
             <span className="spacer" style={{ flex: 1 }} />
             <Link className="btn btn--sm" to="/consult">

@@ -174,6 +174,14 @@ Four numbered cells (You, Earth readings, Today's readings, Your results); done 
 ### Check-in (touch first)
 Three short steps with their own strip: Your wearable, Measure, How you feel. Each reading is a card with its Earth value and a number field (− value +, 56px). Tapping the value opens an on-screen number pad (bottom sheet, 64px keys). Mood is a 1 to 10 row of 64px buttons; symptoms are whole-row toggles. A sticky bar at the bottom holds Back, how many are still to fill, and Next / See my results. Missing fields get a red outline, a message under them and a short jiggle.
 
+### Empty, error and loading states
+- **All clear** (goal empty state): a Pine Teal to Hunter Green panel with an orbit scene (planet, dashed orbit, a dot that circles, a check that draws itself; still with reduced motion), a sage kicker, a DynaPuff title, why it is empty and one next action.
+- **Empty hint**: dashed rounded box, Fern icon, what the section is for and how to start.
+- **Plan complete**: Hunter Green strip with a sage tick.
+- **Save notice**: Watch banner pinned to the top of the screen with a Try again button.
+- **Crash screen**: a CAUTION block ("This screen stopped") with what happened, that data is safe, Reload this screen and Go to the dashboard.
+- **Progress**: 5px Dry Sage bar along the bottom of a working button; 10px rounded bar for longer checks.
+
 ### Feedback
 Buttons scale to 0.96 when pressed. Working: spinner + words, colour kept (never greyed). Done: tick + word on a Nominal-green button for 1.6 s. Toasts (Pine Teal, bottom centre, 56px, dismissable) confirm saves and sends. Touch targets: 56px minimum, 64px for the main action, 48px for small buttons.
 

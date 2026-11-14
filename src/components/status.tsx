@@ -12,7 +12,14 @@ export function StatusShape({ status, size = 16 }: { status: Status; size?: numb
       return (
         <svg {...common}>
           <circle cx="8" cy="8" r="7" fill="currentColor" />
-          <polyline points="4.6,8.3 7,10.6 11.4,5.6" fill="none" stroke="#ffffff" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+          <polyline
+            points="4.6,8.3 7,10.6 11.4,5.6"
+            fill="none"
+            stroke="#ffffff"
+            strokeWidth="1.9"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </svg>
       );
     case "watch":
@@ -34,7 +41,15 @@ export function StatusShape({ status, size = 16 }: { status: Status; size?: numb
     default:
       return (
         <svg {...common}>
-          <circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeDasharray="2.6 2.2" />
+          <circle
+            cx="8"
+            cy="8"
+            r="6.6"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeDasharray="2.6 2.2"
+          />
         </svg>
       );
   }

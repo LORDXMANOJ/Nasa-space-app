@@ -39,7 +39,11 @@ export function PresenterPanel() {
       <div className="row">
         <h2>Presenter controls</h2>
         <span className="spacer" style={{ flex: 1 }} />
-        <button className="icon-btn" onClick={() => s.togglePresenter(false)} aria-label="Close presenter controls">
+        <button
+          className="icon-btn"
+          onClick={() => s.togglePresenter(false)}
+          aria-label="Close presenter controls"
+        >
           <X />
         </button>
       </div>
@@ -59,7 +63,14 @@ export function PresenterPanel() {
         <span>
           Mission day <span className="num">{s.day}</span>
         </span>
-        <input type="range" min={profile.days.min} max={profile.days.max} value={s.day} onChange={(e) => s.setDay(Number(e.target.value))} aria-valuetext={`Day ${s.day}`} />
+        <input
+          type="range"
+          min={profile.days.min}
+          max={profile.days.max}
+          value={s.day}
+          onChange={(e) => s.setDay(Number(e.target.value))}
+          aria-valuetext={`Day ${s.day}`}
+        />
       </label>
       <div className="row">
         <button className="btn btn--sm" onClick={() => s.setDay(s.day - 1)} aria-label="Previous day">
@@ -93,7 +104,11 @@ export function PresenterPanel() {
       <hr className="divider" />
       <label className="field">
         <span>Where are we?</span>
-        <select className="select" value={s.environment} onChange={(e) => s.setEnvironment(e.target.value as EnvironmentId)}>
+        <select
+          className="select"
+          value={s.environment}
+          onChange={(e) => s.setEnvironment(e.target.value as EnvironmentId)}
+        >
           {ENVIRONMENTS.map((e) => (
             <option key={e.id} value={e.id}>
               {e.name}
@@ -106,13 +121,23 @@ export function PresenterPanel() {
           <span>
             Mars one-way signal delay <span className="num">{s.marsOneWayMin} min</span>
           </span>
-          <input type="range" min={mission.adjustable.min} max={mission.adjustable.max} value={s.marsOneWayMin} onChange={(e) => s.setMarsDelay(Number(e.target.value))} />
+          <input
+            type="range"
+            min={mission.adjustable.min}
+            max={mission.adjustable.max}
+            value={s.marsOneWayMin}
+            onChange={(e) => s.setMarsDelay(Number(e.target.value))}
+          />
         </label>
       )}
       {mission.canConjunct && (
         <label className="toggle">
           <span>Solar conjunction (no contact ~2 weeks)</span>
-          <input type="checkbox" checked={s.conjunction} onChange={(e) => s.setConjunction(e.target.checked)} />
+          <input
+            type="checkbox"
+            checked={s.conjunction}
+            onChange={(e) => s.setConjunction(e.target.checked)}
+          />
         </label>
       )}
       <div className="field">

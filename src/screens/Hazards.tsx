@@ -16,7 +16,10 @@ export function Hazards() {
       <div className="page-head">
         <div>
           <h1>Five hazards of long missions</h1>
-          <p className="lede">Each hazard links to the readings that would show its effect on you. Highlighted: most important for {env.name}.</p>
+          <p className="lede">
+            Each hazard links to the readings that would show its effect on you. Highlighted: most important
+            for {env.name}.
+          </p>
         </div>
       </div>
       <div className="hazard-grid">
@@ -25,7 +28,12 @@ export function Hazards() {
           const regions = [...new Set(inds.flatMap((i) => i.bodyRegions))];
           const emph = env.emphasis.includes(hz.id);
           return (
-            <article key={hz.id} id={hz.id} className="card stack hazard-card" style={emph ? { borderColor: "var(--accent)" } : undefined}>
+            <article
+              key={hz.id}
+              id={hz.id}
+              className="card stack hazard-card"
+              style={emph ? { borderColor: "var(--accent)" } : undefined}
+            >
               <div className="row">
                 <h2>{hz.name}</h2>
                 {emph && <span className="chip">Key for {env.name}</span>}
@@ -37,7 +45,12 @@ export function Hazards() {
               <div className="stack" style={{ gap: "var(--sp-2)" }}>
                 <span className="label">Readings that show it</span>
                 {inds.map((i) => (
-                  <Link key={i.id} to={`/trends?ind=${i.id}`} className="row" style={{ justifyContent: "space-between", color: "inherit", textDecoration: "none" }}>
+                  <Link
+                    key={i.id}
+                    to={`/trends?ind=${i.id}`}
+                    className="row"
+                    style={{ justifyContent: "space-between", color: "inherit", textDecoration: "none" }}
+                  >
                     <span>{i.shortName}</span>
                     <StatusBadge status={h.evals[i.id].status} />
                   </Link>

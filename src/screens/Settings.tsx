@@ -7,9 +7,19 @@ import { PROFILES } from "../engine/profiles";
 import { formatDuration, MISSIONS, ENV_TO_MISSION } from "../engine/missions";
 import { useLink } from "../store/health";
 import { useMission } from "../store/mission";
-import { toast } from "../store/toast";
+import { toast, toastWhenSaved } from "../store/toast";
 
-function Toggle({ checked, onChange, label, hint }: { checked: boolean; onChange: (v: boolean) => void; label: string; hint: string }) {
+function Toggle({
+  checked,
+  onChange,
+  label,
+  hint,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  label: string;
+  hint: string;
+}) {
   return (
     <label className="toggle">
       <span>
@@ -21,7 +31,17 @@ function Toggle({ checked, onChange, label, hint }: { checked: boolean; onChange
   );
 }
 
-function Seg<T extends string>({ value, options, onChange, label }: { value: T; options: T[]; onChange: (v: T) => void; label: string }) {
+function Seg<T extends string>({
+  value,
+  options,
+  onChange,
+  label,
+}: {
+  value: T;
+  options: T[];
+  onChange: (v: T) => void;
+  label: string;
+}) {
   return (
     <div className="seg" role="group" aria-label={label}>
       {options.map((o) => (
@@ -38,7 +58,7 @@ export function Settings() {
   const link = useLink();
   const set = (patch: Parameters<typeof st.updateSettings>[0]) => {
     st.updateSettings(patch);
-    toast("Saved");
+    toastWhenSaved("Saved");
   };
   const mission = MISSIONS[ENV_TO_MISSION[st.environment]];
   return (
@@ -61,7 +81,8 @@ export function Settings() {
             ))}
           </div>
           <p className="dim" style={{ fontSize: "var(--fs-sm)" }}>
-            All crew and readings are simulated. Each story is seeded, so it plays out the same way every time.
+            All crew and readings are simulated. Each story is seeded, so it plays out the same way every
+            time.
           </p>
         </section>
 
@@ -69,10 +90,14 @@ export function Settings() {
           <h2>Where are we?</h2>
           <label className="field">
             <span>Environment</span>
-            <select className="select" value={st.environment} onChange={(e) => {
+            <select
+              className="select"
+              value={st.environment}
+              onChange={(e) => {
                 st.setEnvironment(e.target.value as EnvironmentId);
-                toast("Saved. Earth reply updated.");
-              }}>
+                toastWhenSaved("Saved. Earth reply updated.");
+              }}
+            >
               {ENVIRONMENTS.map((e) => (
                 <option key={e.id} value={e.id}>
                   {e.name}
@@ -85,7 +110,13 @@ export function Settings() {
               <span>
                 One-way signal delay to Earth: <span className="num">{st.marsOneWayMin} min</span>
               </span>
-              <input type="range" min={mission.adjustable.min} max={mission.adjustable.max} value={st.marsOneWayMin} onChange={(e) => st.setMarsDelay(Number(e.target.value))} />
+              <input
+                type="range"
+                min={mission.adjustable.min}
+                max={mission.adjustable.max}
+                value={st.marsOneWayMin}
+                onChange={(e) => st.setMarsDelay(Number(e.target.value))}
+              />
               <small>Mars is 3 to 22 light-minutes away depending on where the planets are.</small>
             </label>
           )}
@@ -93,18 +124,37 @@ export function Settings() {
             <label className="toggle">
               <span>
                 <strong style={{ display: "block" }}>Solar conjunction</strong>
-                <small className="dim">The Sun blocks the signal for about two weeks: no contact at all.</small>
+                <small className="dim">
+                  The Sun blocks the signal for about two weeks: no contact at all.
+                </small>
               </span>
-              <input type="checkbox" checked={st.conjunction} onChange={(e) => {
-                st.setConjunction(e.target.checked);
-                toast(e.target.checked ? "Conjunction on: no contact with Earth." : "Conjunction off: contact restored.", "info");
-              }} />
+              <input
+                type="checkbox"
+                checked={st.conjunction}
+                onChange={(e) => {
+                  st.setConjunction(e.target.checked);
+                  toast(
+                    e.target.checked
+                      ? "Conjunction on: no contact with Earth."
+                      : "Conjunction off: contact restored.",
+                    "info",
+                  );
+                }}
+              />
             </label>
           )}
           <div className="banner banner--info">
             <span>
               Earth reply right now: <strong>{formatDuration(link.reply.totalMin)}</strong>
-              {!link.reply.noContact && <>: {link.reply.parts.map((p) => `${p.label.toLowerCase()} ${formatDuration(p.min)}`).join(" + ")}.</>}
+              {!link.reply.noContact && (
+                <>
+                  :{" "}
+                  {link.reply.parts
+                    .map((p) => `${p.label.toLowerCase()} ${formatDuration(p.min)}`)
+                    .join(" + ")}
+                  .
+                </>
+              )}
               <span className="assume">ASSUMPTION</span> review time and relay waits
             </span>
           </div>
@@ -114,24 +164,59 @@ export function Settings() {
           <h2>Units</h2>
           <div className="row">
             <span style={{ width: 120 }}>Temperature</span>
-            <Seg label="Temperature unit" value={st.settings.tempUnit} options={["°C", "°F"]} onChange={(v) => set({ tempUnit: v })} />
+            <Seg
+              label="Temperature unit"
+              value={st.settings.tempUnit}
+              options={["°C", "°F"]}
+              onChange={(v) => set({ tempUnit: v })}
+            />
           </div>
           <div className="row">
             <span style={{ width: 120 }}>Glucose</span>
-            <Seg label="Glucose unit" value={st.settings.glucoseUnit} options={["mg/dL", "mmol/L"]} onChange={(v) => set({ glucoseUnit: v })} />
+            <Seg
+              label="Glucose unit"
+              value={st.settings.glucoseUnit}
+              options={["mg/dL", "mmol/L"]}
+              onChange={(v) => set({ glucoseUnit: v })}
+            />
           </div>
           <div className="row">
             <span style={{ width: 120 }}>Body mass</span>
-            <Seg label="Mass unit" value={st.settings.weightUnit} options={["kg", "lb"]} onChange={(v) => set({ weightUnit: v })} />
+            <Seg
+              label="Mass unit"
+              value={st.settings.weightUnit}
+              options={["kg", "lb"]}
+              onChange={(v) => set({ weightUnit: v })}
+            />
           </div>
         </section>
 
         <section className="card stack">
           <h2>Comfort and power</h2>
-          <Toggle checked={st.settings.lowPower} onChange={(v) => set({ lowPower: v })} label="Low-power mode" hint="Turns off 3D and animation. Saves laptop battery." />
-          <Toggle checked={st.settings.largeText} onChange={(v) => set({ largeText: v })} label="Large text" hint="Everything 25 % bigger, for reading at arm's length." />
-          <Toggle checked={st.settings.highContrast} onChange={(v) => set({ highContrast: v })} label="High contrast" hint="Brighter text and borders, no transparency." />
-          <Toggle checked={st.settings.reducedMotion} onChange={(v) => set({ reducedMotion: v })} label="Reduce motion" hint="No pulsing or sliding." />
+          <Toggle
+            checked={st.settings.lowPower}
+            onChange={(v) => set({ lowPower: v })}
+            label="Low-power mode"
+            hint="Turns off 3D and animation. Saves laptop battery."
+          />
+          <Toggle
+            checked={st.settings.largeText}
+            onChange={(v) => set({ largeText: v })}
+            label="Large text"
+            hint="Everything 25 % bigger, for reading at arm's length."
+          />
+          <Toggle
+            checked={st.settings.highContrast}
+            onChange={(v) => set({ highContrast: v })}
+            label="High contrast"
+            hint="Brighter text and borders, no transparency."
+          />
+          <Toggle
+            checked={st.settings.reducedMotion}
+            onChange={(v) => set({ reducedMotion: v })}
+            label="Reduce motion"
+            hint="No pulsing or sliding."
+          />
           <hr className="divider" />
           <div className="row">
             <button className="btn" onClick={st.signOut}>

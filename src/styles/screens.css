@@ -1445,3 +1445,257 @@ details.why summary {
     min-width: 0 !important;
   }
 }
+
+/* ---------- Loading, error and empty states ---------- */
+.action-wrap {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-3);
+}
+.btn.has-progress {
+  position: relative;
+  overflow: hidden;
+}
+.btn-progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 5px;
+  width: 100%;
+  background: var(--p-sage);
+  transform-origin: left center;
+  animation: go-bar linear forwards;
+}
+.inline-error {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--act);
+  font-weight: 700;
+}
+.inline-error svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+.req {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--p-hunter);
+  color: var(--p-dust);
+  font-size: var(--fs-label);
+  font-weight: 800;
+  vertical-align: 2px;
+}
+.char-count {
+  justify-self: end;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+.char-count.is-low {
+  color: var(--watch);
+}
+.chip {
+  min-height: 48px;
+  cursor: pointer;
+}
+.msg-suggest {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-top: var(--sp-3);
+}
+.save-banner {
+  position: sticky;
+  top: -24px; /* .shell-main has 24px top padding: pin to the real top edge */
+  z-index: 20;
+  margin: 0 auto var(--sp-4);
+  max-width: 1320px;
+  align-items: center;
+}
+.save-banner p {
+  margin: 2px 0 0;
+}
+.empty-hint {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: flex-start;
+  padding: var(--sp-4);
+  border: var(--bw) dashed var(--border-strong);
+  border-radius: var(--r-lg);
+}
+.empty-hint > svg {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  color: var(--p-fern);
+}
+.empty-hint p {
+  margin: 4px 0 0;
+}
+.plan-done {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: center;
+  margin-top: var(--sp-4);
+  padding: var(--sp-4);
+  border-radius: var(--r-lg);
+  background: var(--p-hunter);
+  color: var(--p-dust);
+}
+.plan-done > svg {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  color: var(--p-sage);
+}
+.plan-done p {
+  margin: 2px 0 0;
+}
+.mc-progress {
+  margin: var(--sp-4) 0;
+}
+.mc-bar {
+  height: 10px;
+  margin-top: var(--sp-2);
+  border-radius: 999px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.mc-bar span {
+  display: block;
+  height: 100%;
+  background: var(--p-fern);
+  transform-origin: left center;
+  transition: transform 300ms var(--ease-out);
+}
+
+/* The goal empty state: an achievement, not a blank */
+.all-clear {
+  display: grid;
+  grid-template-columns: minmax(180px, 280px) minmax(0, 1fr);
+  gap: var(--sp-6);
+  align-items: center;
+  margin: var(--sp-8) 0;
+  padding: var(--sp-6) var(--sp-8);
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(163, 177, 138, 0.45), transparent 60%),
+    linear-gradient(135deg, var(--p-pine) 0%, var(--p-hunter) 100%);
+  color: var(--p-dust);
+  overflow: hidden;
+}
+.all-clear h2 {
+  color: var(--p-dust);
+  font-size: 34px;
+  margin: var(--sp-1) 0 var(--sp-2);
+}
+.all-clear p {
+  max-width: 60ch;
+}
+.all-clear .dim {
+  color: rgba(218, 215, 205, 0.78);
+}
+.all-clear .btn {
+  --btn-bg: var(--p-dust);
+  --btn-fg: var(--p-pine);
+  --btn-bd: var(--p-dust);
+}
+.all-clear-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+  color: var(--p-sage);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: var(--fs-sm);
+}
+.all-clear-kicker svg {
+  width: 18px;
+  height: 18px;
+}
+.all-clear-art {
+  width: 100%;
+  height: auto;
+}
+.ac-stars circle {
+  fill: var(--p-dust);
+  animation: twinkle 3.2s ease-in-out infinite;
+}
+.ac-stars circle:nth-child(2n) {
+  animation-delay: 1.4s;
+}
+.ac-orbit {
+  fill: none;
+  stroke: rgba(218, 215, 205, 0.45);
+  stroke-width: 2;
+  stroke-dasharray: 5 7;
+}
+.ac-planet {
+  fill: var(--p-fern);
+  stroke: var(--p-sage);
+  stroke-width: 3;
+}
+.ac-land {
+  fill: none;
+  stroke: var(--p-sage);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+.ac-ship {
+  fill: var(--p-dust);
+}
+.ac-check circle {
+  fill: var(--p-sage);
+}
+.ac-check path {
+  fill: none;
+  stroke: var(--p-pine);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 30;
+  stroke-dashoffset: 30;
+  animation: draw-check 600ms 300ms var(--ease-out) forwards;
+}
+.ac-check {
+  transform-origin: 164px 62px;
+  animation: pop 420ms var(--ease-out);
+}
+@keyframes twinkle {
+  50% { opacity: 0.35; }
+}
+@keyframes draw-check {
+  to { stroke-dashoffset: 0; }
+}
+[data-motion="reduced"] .ac-stars circle,
+[data-motion="reduced"] .ac-check {
+  animation: none;
+}
+[data-motion="reduced"] .ac-check path {
+  animation: none;
+  stroke-dashoffset: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ac-stars circle,
+  .ac-check {
+    animation: none;
+  }
+  .ac-check path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+@media (max-width: 900px) {
+  .all-clear {
+    grid-template-columns: 1fr;
+    padding: var(--sp-5);
+  }
+  .all-clear-art {
+    max-width: 220px;
+  }
+}

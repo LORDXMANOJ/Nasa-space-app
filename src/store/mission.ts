@@ -122,10 +122,16 @@ export const useMission = create<MissionState>()(
         set((st) => {
           if (st.profileId === id) return { identified: true };
           const p = profileById(id);
-          return { identified: true, profileId: p.id, day: p.story === "fever" ? p.days.focus - 1 : p.days.focus, ...clearPerDay };
+          return {
+            identified: true,
+            profileId: p.id,
+            day: p.story === "fever" ? p.days.focus - 1 : p.days.focus,
+            ...clearPerDay,
+          };
         }),
       signOut: () => set({ identified: false }),
-      markCheckedIn: () => set((st) => ({ checkedIn: { ...st.checkedIn, [`${st.profileId}:${st.day}`]: true } })),
+      markCheckedIn: () =>
+        set((st) => ({ checkedIn: { ...st.checkedIn, [`${st.profileId}:${st.day}`]: true } })),
 
       setDay: (d) =>
         set((st) => {
@@ -144,7 +150,9 @@ export const useMission = create<MissionState>()(
       replayOnboarding: () => set({ onboarded: false }),
       addReadings: (rs) =>
         set((st) => {
-          const keep = st.userReadings.filter((u) => !rs.some((r) => r.indicatorId === u.indicatorId && r.day === u.day));
+          const keep = st.userReadings.filter(
+            (u) => !rs.some((r) => r.indicatorId === u.indicatorId && r.day === u.day),
+          );
           const completions = { ...st.completions };
           rs.forEach((r) => (completions[r.indicatorId] = (completions[r.indicatorId] ?? 0) + 1));
           return { userReadings: [...keep, ...rs], completions };
@@ -159,7 +167,9 @@ export const useMission = create<MissionState>()(
         }),
       releaseQueue: (oneWayMin, tReplyMin) =>
         set((st) => ({
-          outbox: st.outbox.map((o) => (o.sentAt === null ? { ...o, sentAt: Date.now(), oneWayMin, tReplyMin } : o)),
+          outbox: st.outbox.map((o) =>
+            o.sentAt === null ? { ...o, sentAt: Date.now(), oneWayMin, tReplyMin } : o,
+          ),
         })),
       clearOutbox: () => set({ outbox: [] }),
       setDemoSpeed: (x) => set({ demoSpeed: x }),

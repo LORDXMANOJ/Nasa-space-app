@@ -37,20 +37,34 @@ function makePerson(id: number, seed: number): Person {
   const u = (a: number, b: number) => a + (b - a) * r();
   return {
     id,
-    m: { sys: u(105, 128), dia: u(65, 80), hr: u(50, 78), glu: u(78, 96), temp: u(36.4, 36.9), sleep: u(6.6, 8), mood: u(6, 8.5) },
+    m: {
+      sys: u(105, 128),
+      dia: u(65, 80),
+      hr: u(50, 78),
+      glu: u(78, 96),
+      temp: u(36.4, 36.9),
+      sleep: u(6.6, 8),
+      mood: u(6, 8.5),
+    },
     k: u(0.6, 1.2),
   };
 }
 
 type Shift = Partial<Record<keyof Person["m"], number>>;
 
-function history(p: Person, seed: number, days: number, shift: (d: number) => Shift): Record<string, Reading[]> {
+function history(
+  p: Person,
+  seed: number,
+  days: number,
+  shift: (d: number) => Shift,
+): Record<string, Reading[]> {
   const h: Record<string, Reading[]> = { bp: [], hr: [], glucose: [], temp: [], sleep: [], mood: [] };
   const g = (k: string, d: number) => gaussian(`v:${seed}:${p.id}:${k}:${d}`);
   for (let d = -9; d <= days; d++) {
     const s = shift(d);
     const v = (k: keyof Person["m"]) => p.m[k] + (s[k] ?? 0) + g(k, d) * SD[k] * p.k;
-    const push = (id: string, values: number[]) => h[id].push({ indicatorId: id, day: d, values, source: "sim" });
+    const push = (id: string, values: number[]) =>
+      h[id].push({ indicatorId: id, day: d, values, source: "sim" });
     push("bp", [Math.round(v("sys")), Math.round(v("dia"))]);
     push("hr", [Math.round(v("hr")), 55]);
     if ((d - 1) % 3 === 0) push("glucose", [Math.round(v("glu"))]);
@@ -64,7 +78,7 @@ function history(p: Person, seed: number, days: number, shift: (d: number) => Sh
 const FEVER: Shift = { temp: 1.6, hr: 35, sleep: -1.2, mood: -2 };
 const MILD: Shift = { temp: 0.5, hr: 9, sleep: -0.8, mood: -1.2 };
 
-export function runValidation(n = 300, seed = 2026): ValidationResult {
+export function runValidation(n = 300, seed = 2026, onProgress?: (done: number) => void): ValidationResult {
   const t0 = Date.now();
   let normalDays = 0;
   let unusualFalse = 0;
@@ -78,6 +92,7 @@ export function runValidation(n = 300, seed = 2026): ValidationResult {
   let steadyDrift = 0;
 
   for (let i = 0; i < n; i++) {
+    if (onProgress && i % 10 === 0) onProgress(i / n);
     const p = makePerson(i, seed);
     // Normal days 11–30.
     const normal = history(p, seed, 20, () => ({}));

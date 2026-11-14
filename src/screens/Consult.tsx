@@ -15,6 +15,9 @@ import { StatusBadge } from "../components/status";
 import { ActionButton } from "../components/Feedback";
 import { toast } from "../store/toast";
 
+/** Keeps the packet short enough for a slow, scheduled link. */
+const NOTE_MAX = 400;
+
 export function Consult() {
   const [preview, setPreview] = useState(false);
   const h = useHealth();
@@ -171,8 +174,17 @@ export function Consult() {
               rows={3}
               style={{ padding: "var(--sp-3)" }}
               value={note}
+              maxLength={NOTE_MAX}
+              aria-describedby="note-count"
               onChange={(e) => setNote(e.target.value)}
             />
+            <small
+              id="note-count"
+              className={`char-count${NOTE_MAX - note.length <= 40 ? " is-low" : ""}`}
+              aria-live="polite"
+            >
+              {NOTE_MAX - note.length} characters left
+            </small>
           </label>
           <button
             className="btn btn--sm"
@@ -192,7 +204,6 @@ export function Consult() {
             <ActionButton
               className="btn btn--primary btn--lg"
               onAction={doSend}
-              minWorkMs={900}
               workingLabel={h.link.reply.noContact ? "Queuing…" : "Sending…"}
               doneLabel={h.link.reply.noContact ? "Queued" : "Sent"}
             >
@@ -233,7 +244,16 @@ function Outbox({ items, onClear }: { items: ConsultPacket[]; onClear: () => voi
         )}
       </div>
       {items.length === 0 && (
-        <p className="dim">Nothing sent yet. Packets stay on board until sent, and work fully offline.</p>
+        <div className="empty-hint">
+          <Send aria-hidden />
+          <div>
+            <strong>No packets yet</strong>
+            <p className="dim">
+              Packets you send to the flight surgeon appear here, with where each one is: queued, on its way,
+              delivered, reply due. Choose what to include on the left, then press Send.
+            </p>
+          </div>
+        </div>
       )}
       {items.map((p) => {
         const { status, replyInMs } = packetStatus(p, now);

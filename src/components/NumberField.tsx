@@ -22,7 +22,20 @@ interface Props {
   placeholder?: string;
 }
 
-export function NumberField({ id, label, unit, value, onChange, decimals, min, max, invalid, readOnly, shake, placeholder = "Tap to enter" }: Props) {
+export function NumberField({
+  id,
+  label,
+  unit,
+  value,
+  onChange,
+  decimals,
+  min,
+  max,
+  invalid,
+  readOnly,
+  shake,
+  placeholder = "Tap to enter",
+}: Props) {
   const [open, setOpen] = useState(false);
   const step = decimals > 0 ? Math.pow(10, -decimals) : 1;
   const bump = (dir: 1 | -1) => {
@@ -72,7 +85,19 @@ export function NumberField({ id, label, unit, value, onChange, decimals, min, m
   );
 }
 
-function Keypad({ label, unit, initial, decimals, onClose }: { label: string; unit: string; initial: string; decimals: number; onClose: (v: string | null) => void }) {
+function Keypad({
+  label,
+  unit,
+  initial,
+  decimals,
+  onClose,
+}: {
+  label: string;
+  unit: string;
+  initial: string;
+  decimals: number;
+  onClose: (v: string | null) => void;
+}) {
   const [v, setV] = useState(initial);
   const [fresh, setFresh] = useState(true); // the first key replaces the old value
   const done = useRef<HTMLButtonElement>(null);
@@ -104,7 +129,13 @@ function Keypad({ label, unit, initial, decimals, onClose }: { label: string; un
   const keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", decimals > 0 ? "." : "", "0", "⌫"];
   return createPortal(
     <div className="kp-scrim" onClick={() => onClose(v)}>
-      <div className="kp-sheet" role="dialog" aria-modal="true" aria-label={`Enter ${label}`} onClick={(e) => e.stopPropagation()}>
+      <div
+        className="kp-sheet"
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Enter ${label}`}
+        onClick={(e) => e.stopPropagation()}
+      >
         <p className="kp-label">{label}</p>
         <p className="kp-display" aria-live="polite">
           <span className={fresh ? "kp-old" : ""}>{v || "–"}</span> <small>{unit}</small>
@@ -112,7 +143,13 @@ function Keypad({ label, unit, initial, decimals, onClose }: { label: string; un
         <div className="kp-keys">
           {keys.map((k, i) =>
             k ? (
-              <button key={i} type="button" className="kp-key" aria-label={k === "⌫" ? "Delete" : k === "." ? "Decimal point" : k} onClick={() => type(k)}>
+              <button
+                key={i}
+                type="button"
+                className="kp-key"
+                aria-label={k === "⌫" ? "Delete" : k === "." ? "Decimal point" : k}
+                onClick={() => type(k)}
+              >
                 {k === "⌫" ? <Delete aria-hidden /> : k}
               </button>
             ) : (

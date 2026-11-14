@@ -41,17 +41,40 @@ export function IndicatorIcon({ name, size = 18 }: { name: string; size?: number
   return <C width={size} height={size} aria-hidden />;
 }
 
-export function Sparkline({ values, status, height = 36 }: { values: number[]; status: Status; height?: number }) {
+export function Sparkline({
+  values,
+  status,
+  height = 36,
+}: {
+  values: number[];
+  status: Status;
+  height?: number;
+}) {
   if (values.length < 2) return <svg className="spark" style={{ height }} aria-hidden />;
   const w = 200;
   const min = Math.min(...values);
   const max = Math.max(...values);
   const span = max - min || 1;
-  const pts = values.map((v, i) => `${(i / (values.length - 1)) * w},${height - 4 - ((v - min) / span) * (height - 8)}`);
+  const pts = values.map(
+    (v, i) => `${(i / (values.length - 1)) * w},${height - 4 - ((v - min) / span) * (height - 8)}`,
+  );
   const last = pts[pts.length - 1].split(",");
   return (
-    <svg className="spark" viewBox={`0 0 ${w} ${height}`} preserveAspectRatio="none" style={{ height }} aria-hidden>
-      <polyline points={pts.join(" ")} fill="none" stroke={statusColorVar(status)} strokeWidth="2" vectorEffect="non-scaling-stroke" strokeLinejoin="round" />
+    <svg
+      className="spark"
+      viewBox={`0 0 ${w} ${height}`}
+      preserveAspectRatio="none"
+      style={{ height }}
+      aria-hidden
+    >
+      <polyline
+        points={pts.join(" ")}
+        fill="none"
+        stroke={statusColorVar(status)}
+        strokeWidth="2"
+        vectorEffect="non-scaling-stroke"
+        strokeLinejoin="round"
+      />
       <circle cx={last[0]} cy={last[1]} r="3" fill={statusColorVar(status)} />
     </svg>
   );
@@ -69,12 +92,25 @@ export function TrendArrow({ delta, label }: { delta: number; label?: string }) 
   );
 }
 
-export function ReadinessRing({ score, size = 168, stroke = 14 }: { score: number; size?: number; stroke?: number }) {
+export function ReadinessRing({
+  score,
+  size = 168,
+  stroke = 14,
+}: {
+  score: number;
+  size?: number;
+  stroke?: number;
+}) {
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
   const status: Status = score >= 85 ? "nominal" : score >= 65 ? "watch" : "act";
   return (
-    <div className="ring" style={{ width: size, height: size }} role="img" aria-label={`Crew readiness ${score} out of 100`}>
+    <div
+      className="ring"
+      style={{ width: size, height: size }}
+      role="img"
+      aria-label={`Crew readiness ${score} out of 100`}
+    >
       <svg width={size} height={size}>
         <circle className="ring-track" cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={stroke} />
         <circle
@@ -170,7 +206,17 @@ export function GlossaryText({ text, glossary }: { text: string; glossary: Recor
   );
 }
 
-export function Modal({ title, onClose, children, wide }: { title: string; onClose: () => void; children: ReactNode; wide?: boolean }) {
+export function Modal({
+  title,
+  onClose,
+  children,
+  wide,
+}: {
+  title: string;
+  onClose: () => void;
+  children: ReactNode;
+  wide?: boolean;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const prev = document.activeElement as HTMLElement | null;
@@ -184,7 +230,15 @@ export function Modal({ title, onClose, children, wide }: { title: string; onClo
   }, [onClose]);
   return (
     <div className="modal-backdrop" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="modal" role="dialog" aria-modal="true" aria-label={title} tabIndex={-1} ref={ref} style={wide ? { width: "min(980px, 100%)" } : undefined}>
+      <div
+        className="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        tabIndex={-1}
+        ref={ref}
+        style={wide ? { width: "min(980px, 100%)" } : undefined}
+      >
         <div className="row" style={{ marginBottom: "var(--sp-5)" }}>
           <h2>{title}</h2>
           <span className="spacer" />
@@ -198,7 +252,15 @@ export function Modal({ title, onClose, children, wide }: { title: string; onClo
   );
 }
 
-export function EmptyState({ icon, title, children }: { icon: ReactNode; title: string; children?: ReactNode }) {
+export function EmptyState({
+  icon,
+  title,
+  children,
+}: {
+  icon: ReactNode;
+  title: string;
+  children?: ReactNode;
+}) {
   return (
     <div className="empty">
       {icon}

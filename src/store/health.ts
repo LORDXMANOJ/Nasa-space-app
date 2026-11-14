@@ -41,7 +41,10 @@ export function useHealth() {
     const profile = profileById(profileId);
     const history = buildHistory(profile, environment, day, userReadings);
     const a = assessDay(history, day);
-    const alerts: AlertWithVerdict[] = a.alerts.map((x) => ({ ...x, verdict: verdictFor(x, link.reply.totalMin) }));
+    const alerts: AlertWithVerdict[] = a.alerts.map((x) => ({
+      ...x,
+      verdict: verdictFor(x, link.reply.totalMin),
+    }));
     const ready = readiness(a.evals);
     const due = dueIndicators(history, day);
     const regionStatus = {} as Record<RegionId, Status>;
@@ -50,7 +53,11 @@ export function useHealth() {
       regionStatus[r.id] = related.reduce<Status>((acc, i) => worst(acc, a.evals[i.id].status), "stale");
     }
     const top = alerts[0];
-    const parts = [due.length ? `${due.length} check-in reading${due.length > 1 ? "s" : ""} still to take today.` : "Today's check-in is complete."];
+    const parts = [
+      due.length
+        ? `${due.length} check-in reading${due.length > 1 ? "s" : ""} still to take today.`
+        : "Today's check-in is complete.",
+    ];
     if (!top) parts.push("No alerts: everything is within your normal.");
     else
       parts.push(

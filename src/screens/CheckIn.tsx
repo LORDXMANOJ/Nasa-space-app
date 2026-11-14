@@ -15,7 +15,8 @@ export function CheckIn() {
         <div>
           <h1>Daily check-in</h1>
           <p className="lede">
-            Day {h.day}. About a minute. Your wearable filled the first rows; measure or type the rest. Your Earth reading is beside each one.
+            Day {h.day}. About a minute. Your wearable filled the first rows; measure or type the rest. Your
+            Earth reading is beside each one.
           </p>
         </div>
       </div>

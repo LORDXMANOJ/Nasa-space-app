@@ -31,7 +31,10 @@ export default function BodyReport() {
   const settings = useMission((s) => s.settings);
   const webgl = useMemo(hasWebGL, []);
   const [mode, setMode] = useState<"3d" | "2d">(webgl && !settings.lowPower ? "3d" : "2d");
-  const firstFlagged = REGIONS.find((r) => h.regionStatus[r.id] === "act") ?? REGIONS.find((r) => h.regionStatus[r.id] === "watch") ?? REGIONS[0];
+  const firstFlagged =
+    REGIONS.find((r) => h.regionStatus[r.id] === "act") ??
+    REGIONS.find((r) => h.regionStatus[r.id] === "watch") ??
+    REGIONS[0];
   const [sel, setSel] = useState<RegionId>(firstFlagged.id);
   const use3d = mode === "3d" && webgl && !settings.lowPower;
   const reduced = settings.reducedMotion || settings.lowPower;
@@ -39,14 +42,20 @@ export default function BodyReport() {
   const region = REGIONS.find((r) => r.id === sel)!;
   const related = INDICATORS.filter((i) => i.bodyRegions.includes(sel));
   const alerts = h.alerts.filter((a) => a.regions.includes(sel));
-  const hazards = [...new Set(related.filter((i) => ["watch", "act"].includes(h.evals[i.id].status)).flatMap((i) => i.hazards))];
+  const hazards = [
+    ...new Set(
+      related.filter((i) => ["watch", "act"].includes(h.evals[i.id].status)).flatMap((i) => i.hazards),
+    ),
+  ];
 
   return (
     <div className="page">
       <div className="page-head">
         <div>
           <h1>Body report</h1>
-          <p className="lede">Pick a region to see what it does, its readings and the plan. Colour, shape and word always agree.</p>
+          <p className="lede">
+            Pick a region to see what it does, its readings and the plan. Colour, shape and word always agree.
+          </p>
         </div>
       </div>
       <div className="body-layout">
@@ -55,7 +64,11 @@ export default function BodyReport() {
             <li key={r.id}>
               <button aria-pressed={sel === r.id} onClick={() => setSel(r.id)}>
                 <span>{r.name}</span>
-                {INDICATORS.some((i) => i.bodyRegions.includes(r.id)) ? <StatusBadge status={h.regionStatus[r.id]} /> : <span className="chip">Not tracked</span>}
+                {INDICATORS.some((i) => i.bodyRegions.includes(r.id)) ? (
+                  <StatusBadge status={h.regionStatus[r.id]} />
+                ) : (
+                  <span className="chip">Not tracked</span>
+                )}
               </button>
             </li>
           ))}
@@ -64,7 +77,12 @@ export default function BodyReport() {
         <div className="body-stage">
           <div className="stage-tools">
             <div className="seg" role="group" aria-label="View">
-              <button aria-pressed={use3d} onClick={() => setMode("3d")} disabled={!webgl || settings.lowPower} title={settings.lowPower ? "Off in low-power mode" : undefined}>
+              <button
+                aria-pressed={use3d}
+                onClick={() => setMode("3d")}
+                disabled={!webgl || settings.lowPower}
+                title={settings.lowPower ? "Off in low-power mode" : undefined}
+              >
                 <Box width={16} aria-hidden /> 3D
               </button>
               <button aria-pressed={!use3d} onClick={() => setMode("2d")}>
@@ -88,20 +106,36 @@ export default function BodyReport() {
           )}
         </div>
 
-        <aside className="card stack region-panel drawer" key={sel} aria-live="polite" aria-label={`${region.name} details`}>
+        <aside
+          className="card stack region-panel drawer"
+          key={sel}
+          aria-live="polite"
+          aria-label={`${region.name} details`}
+        >
           <div className="row">
             <h2>{region.name}</h2>
             <span className="spacer" style={{ flex: 1 }} />
-            {related.length > 0 ? <StatusBadge status={h.regionStatus[sel]} large /> : <span className="chip">Not tracked</span>}
+            {related.length > 0 ? (
+              <StatusBadge status={h.regionStatus[sel]} large />
+            ) : (
+              <span className="chip">Not tracked</span>
+            )}
           </div>
           <p className="dim">{region.function}</p>
           <div className="stack" style={{ gap: "var(--sp-3)" }}>
-            {related.length === 0 && <p className="dim">No reading covers this region yet. A vision self-test is planned.</p>}
+            {related.length === 0 && (
+              <p className="dim">No reading covers this region yet. A vision self-test is planned.</p>
+            )}
             {related.map((i) => {
               const r = h.history[i.id].at(-1);
               const v = formatPrimary(i, r?.values, settings);
               return (
-                <Link key={i.id} to={`/trends?ind=${i.id}`} className="card card--tight" style={{ textDecoration: "none", color: "inherit" }}>
+                <Link
+                  key={i.id}
+                  to={`/trends?ind=${i.id}`}
+                  className="card card--tight"
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
                   <div className="row">
                     <strong>{i.shortName}</strong>
                     <span className="spacer" style={{ flex: 1 }} />
@@ -110,7 +144,11 @@ export default function BodyReport() {
                     </span>
                     <StatusBadge status={h.evals[i.id].status} />
                   </div>
-                  <Sparkline values={h.history[i.id].slice(-14).map((x) => x.values[0])} status={h.evals[i.id].status} height={30} />
+                  <Sparkline
+                    values={h.history[i.id].slice(-14).map((x) => x.values[0])}
+                    status={h.evals[i.id].status}
+                    height={30}
+                  />
                 </Link>
               );
             })}
@@ -134,7 +172,10 @@ export default function BodyReport() {
               {alerts.map((a) => (
                 <div key={a.id} className="row" style={{ justifyContent: "space-between" }}>
                   <span>{a.title}</span>
-                  <span className={`verdict ${a.verdict === "act-onboard" ? "verdict--act" : "verdict--wait"}`} style={{ fontSize: "0.7rem", padding: "2px 8px" }}>
+                  <span
+                    className={`verdict ${a.verdict === "act-onboard" ? "verdict--act" : "verdict--wait"}`}
+                    style={{ fontSize: "0.7rem", padding: "2px 8px" }}
+                  >
                     {a.verdict === "act-onboard" ? "Act on board" : "Ask Earth"}
                   </span>
                 </div>

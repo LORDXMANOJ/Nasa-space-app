@@ -40,7 +40,10 @@ export function WhoAreYou() {
               <Globe2 />
             </p>
             <h1>Astronaut Health Monitor</h1>
-            <p className="lede">A one-minute daily health check that knows when a problem can wait for Earth, and when it cannot.</p>
+            <p className="lede">
+              A one-minute daily health check that knows when a problem can wait for Earth, and when it
+              cannot.
+            </p>
             <button className="btn btn--primary btn--lg who-cta" onClick={() => setStep("pick")}>
               <UserRound aria-hidden /> Who are you?
             </button>
@@ -52,7 +55,9 @@ export function WhoAreYou() {
           <div className="stack" style={{ gap: "var(--sp-6)" }}>
             <div>
               <h1>Who are you?</h1>
-              <p className="lede">Pick yourself from the crew. Each one has a short health story in this demo.</p>
+              <p className="lede">
+                Pick yourself from the crew. Each one has a short health story in this demo.
+              </p>
             </div>
             <div className="crew-pick">
               {PROFILES.map((p) => (
@@ -64,13 +69,19 @@ export function WhoAreYou() {
                     setStep("earth");
                   }}
                 >
-                  <strong style={{ fontFamily: "var(--font-display)", fontSize: "var(--fs-lg)" }}>{p.name}</strong>
+                  <strong style={{ fontFamily: "var(--font-display)", fontSize: "var(--fs-lg)" }}>
+                    {p.name}
+                  </strong>
                   <span className="dim">{p.role}</span>
                   <span style={{ fontSize: "var(--fs-sm)" }}>{p.storyTitle}</span>
                 </button>
               ))}
             </div>
-            <button className="btn btn--ghost" style={{ alignSelf: "flex-start" }} onClick={() => setStep("welcome")}>
+            <button
+              className="btn btn--ghost"
+              style={{ alignSelf: "flex-start" }}
+              onClick={() => setStep("welcome")}
+            >
               <ArrowLeft /> Back
             </button>
           </div>
@@ -81,7 +92,8 @@ export function WhoAreYou() {
             <div>
               <h1>Hello {profile.name.split(" ")[0]}. These are your readings on Earth.</h1>
               <p className="lede">
-                Taken over the 10 days before launch. They are your normal: every reading in space is compared with them. (Simulated for this demo.)
+                Taken over the 10 days before launch. They are your normal: every reading in space is compared
+                with them. (Simulated for this demo.)
               </p>
             </div>
             <table className="table">
@@ -94,7 +106,8 @@ export function WhoAreYou() {
               </thead>
               <tbody>
                 {INDICATORS.filter((i) => i.id !== "radiation").map((ind) => {
-                  const keys = ind.id === "bp" ? ["bp.systolic", "bp.diastolic"] : [`${ind.id}.${ind.metrics[0].key}`];
+                  const keys =
+                    ind.id === "bp" ? ["bp.systolic", "bp.diastolic"] : [`${ind.id}.${ind.metrics[0].key}`];
                   const m = ind.metrics[0];
                   const mean = keys.map((k) => earth.base[k]?.mean.toFixed(m.decimals) ?? "none").join("/");
                   const rng = keys

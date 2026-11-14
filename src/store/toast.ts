@@ -3,6 +3,7 @@
  * Call toast("Saved") from anywhere; each message leaves on its own after a few seconds.
  */
 import { create } from "zustand";
+import { useSaveStatus } from "./saveStatus";
 
 export type ToastKind = "success" | "info" | "error";
 export interface ToastItem {
@@ -29,3 +30,12 @@ export const useToasts = create<ToastState>((set, get) => ({
 }));
 
 export const toast = (text: string, kind: ToastKind = "success") => useToasts.getState().push(text, kind);
+
+/**
+ * "Saved"-type confirmations: wait until the write to device storage has had a moment to finish, and only
+ * confirm if it worked. If it failed, the save notice at the top of the screen already explains what to do.
+ */
+export const toastWhenSaved = (text: string) =>
+  window.setTimeout(() => {
+    if (!useSaveStatus.getState().failed) toast(text);
+  }, 350);

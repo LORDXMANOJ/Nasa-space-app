@@ -8,7 +8,8 @@ import { CheckCircle2, OctagonAlert, TriangleAlert, UserRound } from "lucide-rea
 import { indicatorById } from "../data";
 import { DecisionPanel } from "../components/DecisionPanel";
 import { StatusBadge } from "../components/status";
-import { EmptyState, HazardChip } from "../components/ui";
+import { HazardChip } from "../components/ui";
+import { AllClear } from "../components/AllClear";
 import { useHealth } from "../store/health";
 import { useMission } from "../store/mission";
 import { toast } from "../store/toast";
@@ -24,8 +25,8 @@ export function Recovery() {
         <div>
           <h1>Recovery plan</h1>
           <p className="lede">
-            {h.alerts.length ? "What to do now, step by step." : "Nothing needs a plan today."} Self-care steps only; treatment decisions belong to your Crew Medical
-            Officer.
+            {h.alerts.length ? "What to do now, step by step." : "Nothing needs a plan today."} Self-care
+            steps only; treatment decisions belong to your Crew Medical Officer.
           </p>
         </div>
         {h.alerts.length > 0 && (
@@ -36,14 +37,21 @@ export function Recovery() {
       </div>
 
       {h.alerts.length === 0 && (
-        <div className="card">
-          <EmptyState icon={<CheckCircle2 />} title="All clear">
-            <p>Keep your routine: daily check-in, exercise session, regular sleep time.</p>
-            <Link className="btn" to="/checkin">
-              Do today's check-in
+        <AllClear
+          kicker="No plan needed today"
+          title="Nothing to recover from"
+          action={
+            <Link className="btn" to="/">
+              Back to today's results
             </Link>
-          </EmptyState>
-        </div>
+          }
+        >
+          <p>
+            This page holds the step-by-step plan for any reading that needs care: what to do now, the
+            red-flag signs, and when to call your Crew Medical Officer. Today none of your readings needs one.
+          </p>
+          <p className="dim">Keep your routine: daily check-in, exercise session, regular sleep time.</p>
+        </AllClear>
       )}
 
       <div className="stack" style={{ gap: "var(--sp-8)" }}>
@@ -107,13 +115,29 @@ export function Recovery() {
                                 toggle(key(i));
                                 if (was) return toast(`Step ${i + 1} unticked`, "info");
                                 const left = a.steps.length - done - 1;
-                                toast(left === 0 ? "All steps done. Tell your Crew Medical Officer how you feel." : `Step ${i + 1} done. ${left} to go.`);
+                                toast(
+                                  left === 0
+                                    ? "All steps done. Tell your Crew Medical Officer how you feel."
+                                    : `Step ${i + 1} done. ${left} to go.`,
+                                );
                               }}
                             />
                           </label>
                         </li>
                       ))}
                     </ol>
+                    {done === a.steps.length && (
+                      <div className="plan-done" role="status">
+                        <CheckCircle2 className="pop" aria-hidden />
+                        <div>
+                          <strong>Plan complete</strong>
+                          <p>
+                            Well done. Tell your Crew Medical Officer how you feel now, and re-measure when
+                            the plan says.
+                          </p>
+                        </div>
+                      </div>
+                    )}
                     <div className="banner banner--info" style={{ marginTop: "var(--sp-4)" }}>
                       <UserRound aria-hidden />
                       <div>
@@ -129,7 +153,14 @@ export function Recovery() {
                       ))}
                     </div>
                   </div>
-                  <DecisionPanel title={a.title} tHarmMin={a.tHarmMin} tHarmSource={a.tHarmSource} assumption={a.assumption} reply={h.link.reply} verdict={a.verdict} />
+                  <DecisionPanel
+                    title={a.title}
+                    tHarmMin={a.tHarmMin}
+                    tHarmSource={a.tHarmSource}
+                    assumption={a.assumption}
+                    reply={h.link.reply}
+                    verdict={a.verdict}
+                  />
                 </div>
 
                 <p className="dim" style={{ fontSize: "var(--fs-sm)" }}>

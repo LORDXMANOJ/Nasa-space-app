@@ -3,6 +3,7 @@
  * (settings, user readings, checklists, Ground Link outbox). No network, no telemetry.
  */
 import Dexie, { type Table } from "dexie";
+import { useSaveStatus } from "./saveStatus";
 import type { StateStorage } from "zustand/middleware";
 
 interface KV {
@@ -20,7 +21,7 @@ class AhmDb extends Dexie {
 
 export const db = new AhmDb();
 
-/** zustand `persist` storage backed by Dexie; falls back silently if IndexedDB is unavailable. */
+/** zustand `persist` storage backed by Dexie; if a write fails the app keeps running in memory and shows a notice. */
 export const dexieStorage: StateStorage = {
   getItem: async (name) => {
     try {
@@ -32,8 +33,10 @@ export const dexieStorage: StateStorage = {
   setItem: async (name, value) => {
     try {
       await db.kv.put({ key: name, value });
+      if (useSaveStatus.getState().failed) useSaveStatus.getState().setFailed(false);
     } catch {
-      /* storage unavailable: keep running in memory */
+      // storage unavailable or full: keep running in memory, and tell the crew (never fail silently)
+      useSaveStatus.getState().setFailed(true);
     }
   },
   removeItem: async (name) => {

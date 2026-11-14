@@ -26,6 +26,8 @@ import { formatDuration } from "../engine/missions";
 import { useMission } from "../store/mission";
 import { Modal } from "../components/ui";
 import { PresenterPanel } from "./PresenterPanel";
+import { ActionButton } from "../components/Feedback";
+import { useSaveStatus } from "../store/saveStatus";
 import { Toaster } from "../components/Feedback";
 
 export const NAV = [
@@ -47,6 +49,13 @@ export function Shell({ children }: { children: ReactNode }) {
   const day = useMission((s) => s.day);
   const env = environmentById(useMission((s) => s.environment));
   const lowPower = useMission((s) => s.settings.lowPower);
+  const saveFailed = useSaveStatus((s) => s.failed);
+  /** Any state update makes persist write again; then wait a moment and report whether it worked. */
+  const retrySave = async () => {
+    useMission.setState({});
+    await new Promise((r) => window.setTimeout(r, 300));
+    if (useSaveStatus.getState().failed) throw new Error("still failing");
+  };
   const presenterOpen = useMission((s) => s.presenterOpen);
   const togglePresenter = useMission((s) => s.togglePresenter);
   const [help, setHelp] = useState(false);
@@ -54,7 +63,8 @@ export function Shell({ children }: { children: ReactNode }) {
   const releaseQueue = useMission((s) => s.releaseQueue);
   const hasQueued = useMission((s) => s.outbox.some((o) => o.sentAt === null));
   useEffect(() => {
-    if (!health.link.reply.noContact && hasQueued) releaseQueue(health.link.oneWayMin, health.link.reply.totalMin);
+    if (!health.link.reply.noContact && hasQueued)
+      releaseQueue(health.link.oneWayMin, health.link.reply.totalMin);
   }, [health.link, hasQueued, releaseQueue]);
 
   useEffect(() => {
@@ -88,7 +98,12 @@ export function Shell({ children }: { children: ReactNode }) {
           <Orbit width={30} height={30} />
         </div>
         {NAV.map((n) => (
-          <NavLink key={n.to} to={n.to} end={n.to === "/"} className={({ isActive }) => (isActive ? "active" : "")}>
+          <NavLink
+            key={n.to}
+            to={n.to}
+            end={n.to === "/"}
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
             <n.icon aria-hidden />
             {n.label}
             {n.to === "/recovery" && flagged && <span className="dot" aria-label="Action needed" />}
@@ -105,7 +120,10 @@ export function Shell({ children }: { children: ReactNode }) {
           </span>
         </span>
         <span className="item">{env.name}</span>
-        <span className="item" title="Time to get an answer from the flight surgeon on Earth (signal out + review + signal back)">
+        <span
+          className="item"
+          title="Time to get an answer from the flight surgeon on Earth (signal out + review + signal back)"
+        >
           <Satellite aria-hidden />
           {health.link.conjunction ? (
             <span style={{ color: "var(--act)", fontWeight: 700 }}>No contact: solar conjunction</span>
@@ -133,12 +151,34 @@ export function Shell({ children }: { children: ReactNode }) {
       </header>
 
       <main id="main" className="shell-main" tabIndex={-1}>
+        {saveFailed && (
+          <div className="banner banner--watch save-banner" role="alert">
+            <TriangleAlert aria-hidden />
+            <div>
+              <strong>Your last change could not be saved on this device.</strong>
+              <p>
+                The device storage is full or blocked. Your readings are kept while the app stays open, but
+                would be lost if you close it.
+              </p>
+            </div>
+            <ActionButton
+              className="btn btn--primary"
+              onAction={retrySave}
+              workingLabel="Saving…"
+              doneLabel="Saved"
+              failLabel="Still not saved: storage is still blocked."
+            >
+              Try again
+            </ActionButton>
+          </div>
+        )}
         {children}
       </main>
 
       <footer className="foot" role="contentinfo">
         <TriangleAlert aria-hidden />
-        Prototype with simulated data. It flags and explains; it does not diagnose. Your Crew Medical Officer decides. Consult the flight surgeon.
+        Prototype with simulated data. It flags and explains; it does not diagnose. Your Crew Medical Officer
+        decides. Consult the flight surgeon.
         <span className="spacer" style={{ flex: 1 }} />
         <span>
           Press <span className="kbd">?</span> for shortcuts
@@ -173,7 +213,8 @@ export function Shell({ children }: { children: ReactNode }) {
               </tr>
               <tr>
                 <td>
-                  <span className="kbd">Ctrl</span>+<span className="kbd">Shift</span>+<span className="kbd">D</span>
+                  <span className="kbd">Ctrl</span>+<span className="kbd">Shift</span>+
+                  <span className="kbd">D</span>
                 </td>
                 <td>Presenter controls (demo)</td>
               </tr>

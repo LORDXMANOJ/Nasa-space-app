@@ -50,9 +50,31 @@ export function DevComponents() {
       </section>
       <section className="card stack">
         <h2>Decision panel</h2>
-        <DecisionPanel title="Fever" tHarmMin={60} tHarmSource="condition card" assumption reply={earthReply({ mission: "mars-transit", oneWayMin: 22 })} verdict="act-onboard" />
-        <DecisionPanel title="BP drift" tHarmMin={13 * 1440} tHarmSource="forecast" assumption={false} reply={earthReply({ mission: "iss" })} verdict="ask-earth" />
-        <DecisionPanel title="Conjunction" tHarmMin={720} tHarmSource="indicator rule" assumption reply={earthReply({ mission: "mars-transit", conjunction: true })} verdict="act-onboard" compact />
+        <DecisionPanel
+          title="Fever"
+          tHarmMin={60}
+          tHarmSource="condition card"
+          assumption
+          reply={earthReply({ mission: "mars-transit", oneWayMin: 22 })}
+          verdict="act-onboard"
+        />
+        <DecisionPanel
+          title="BP drift"
+          tHarmMin={13 * 1440}
+          tHarmSource="forecast"
+          assumption={false}
+          reply={earthReply({ mission: "iss" })}
+          verdict="ask-earth"
+        />
+        <DecisionPanel
+          title="Conjunction"
+          tHarmMin={720}
+          tHarmSource="indicator rule"
+          assumption
+          reply={earthReply({ mission: "mars-transit", conjunction: true })}
+          verdict="act-onboard"
+          compact
+        />
       </section>
       <section className="card stack">
         <h2>Banners</h2>
