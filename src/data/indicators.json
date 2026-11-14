@@ -271,8 +271,8 @@
           "usedFor": "RMSSD as the HRV measure"
         },
         {
-          "title": "Canadian Space Agency: Bio-Monitor",
-          "url": "https://www.asc-csa.gc.ca/eng/sciences/bio-monitor.asp",
+          "title": "Canadian Space Agency: Bio-Monitor, Canada's smart shirt for space (infographic)",
+          "url": "https://www.asc-csa.gc.ca/eng/multimedia/search/image/8166",
           "usedFor": "Device name only (linked, not copied)"
         }
       ]
@@ -542,7 +542,7 @@
       "captureDurationSec": 4,
       "weight": 15,
       "thresholdSource": "clinical-reference",
-      "todo": "Watch at < 6 h is a demo assumption (AASM recommends ≥ 7 h; < 7 h on every short night flagged steady crew too often). Quality cut-offs are demo assumptions.",
+      "todo": "Watch below 6 h is supported by the ISS Reaction Self Test findings; Act below 5 h and the quality cut-offs are demo assumptions.",
       "whyItMatters": "Noise, light, workload and no day-night cycle make sleep hard in space. Poor sleep affects mood, focus and your heart.",
       "plainMeaning": {
         "nominal": "You are getting enough sleep.",
@@ -609,6 +609,11 @@
           "title": "NASA Human Research Program: Hazards of human spaceflight",
           "url": "https://www.nasa.gov/hrp/hazards/",
           "usedFor": "Isolation and confinement context"
+        },
+        {
+          "title": "Jones C.W. et al. (2022) Sleep deficiency in spaceflight is associated with degraded neurobehavioral functions and elevated stress in astronauts on six-month missions aboard the ISS (Reaction Self Test), Sleep",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8919197",
+          "usedFor": "On the ISS, 6 h of sleep or less went with slower reactions and more stress: supports the Watch limit below 6 h"
         }
       ]
     },
@@ -733,6 +738,11 @@
           "title": "NASA Human Research Program: Hazards of human spaceflight",
           "url": "https://www.nasa.gov/hrp/hazards/",
           "usedFor": "Isolation and distance context"
+        },
+        {
+          "title": "Jones C.W. et al. (2022) Sleep deficiency in spaceflight is associated with degraded neurobehavioral functions and elevated stress in astronauts on six-month missions aboard the ISS (Reaction Self Test), Sleep",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8919197",
+          "usedFor": "The ISS Reaction Self Test (a 3-minute reaction test astronauts took every 4 days) as the model for our reaction-time check"
         }
       ]
     },
@@ -842,8 +852,8 @@
       },
       "sources": [
         {
-          "title": "American Diabetes Association: Standards of Care in Diabetes",
-          "url": "https://professional.diabetes.org/standards-of-care",
+          "title": "American Diabetes Association (2025) Standards of Care, 6. Glycemic Goals and Hypoglycemia",
+          "url": "https://diabetesjournals.org/care/article/48/Supplement_1/S128/157561/6-Glycemic-Goals-and-Hypoglycemia-Standards-of",
           "usedFor": "Fasting range, level 1/2 hypoglycaemia (70 / 54 mg/dL)"
         }
       ]
@@ -894,8 +904,8 @@
         "gut",
         "musculoskeletal"
       ],
-      "deviceName": "Body-mass measurement device (simulated)",
-      "deviceVerified": false,
+      "deviceName": "SLAMMD body-mass device (simulated reading)",
+      "deviceVerified": true,
       "inputType": "sensor-sim",
       "autoLogged": false,
       "cadenceHours": 168,
@@ -907,9 +917,9 @@
         "offset": 0,
         "decimals": 1
       },
-      "thresholdSource": "clinical-reference",
-      "todo": "The ±5 % / ±10 % cut-offs follow the clinical rule of thumb for significant unintended weight change; verify the ISS body-mass device name (SLAMMD) before naming it.",
-      "whyItMatters": "Without gravity a normal scale doesn't work, so mass is measured by a device that gently pushes you. Losing weight in space often means you are eating too little and losing muscle and bone.",
+      "thresholdSource": "demo-assumption",
+      "todo": "The ±5 % / ±10 % change limits are demo assumptions. ISS crews lost on average 2.8 to 4.4 % of body mass in flight (Zwart et al. 2014).",
+      "whyItMatters": "Without gravity a normal scale doesn't work, so mass is measured by a device that gently pushes you (on the ISS, SLAMMD). Losing weight in space often means eating too little and losing muscle and bone.",
       "plainMeaning": {
         "nominal": "Your weight is steady compared with launch day.",
         "watch": "You have lost (or gained) more than 5 % since launch. Eat every planned meal and keep exercising.",
@@ -971,14 +981,14 @@
       },
       "sources": [
         {
+          "title": "Zwart S.R. et al. (2014) Body mass changes during long-duration spaceflight, Aviat Space Environ Med",
+          "url": "https://www.ncbi.nlm.nih.gov/pubmed/25197887",
+          "usedFor": "Average in-flight body-mass loss of 2.8 to 4.4 %, measured with SLAMMD and the Russian BMMD"
+        },
+        {
           "title": "NASA Human Research Program: Hazards of human spaceflight",
           "url": "https://www.nasa.gov/hrp/hazards/",
           "usedFor": "Muscle, bone and nutrition risks in altered gravity"
-        },
-        {
-          "title": "MedlinePlus: Weight loss, unintentional",
-          "url": "https://medlineplus.gov/ency/article/003107.htm",
-          "usedFor": "Unintended weight change of 5 % or more as a warning sign"
         }
       ]
     },
@@ -1075,8 +1085,8 @@
       },
       "sources": [
         {
-          "title": "NASA-STD-3001 Space Flight Human-System Standard, Vol. 1 (career limit 600 mSv)",
-          "url": "https://www.nasa.gov/ochmo/human-spaceflight-and-aviation-standards/",
+          "title": "NASA OCHMO technical brief: Radiation protection (NASA-STD-3001 career limit 600 mSv)",
+          "url": "https://www.nasa.gov/wp-content/uploads/2023/03/radiation-protection-technical-brief-ochmo.pdf",
           "usedFor": "600 mSv career effective-dose limit"
         },
         {

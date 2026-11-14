@@ -43,7 +43,7 @@ Use presenter controls (`Ctrl+Shift+D`).
 - **Why not deep learning?** Ten days of baseline data per person is far too little. Classical statistics are explainable: every alert says which check fired and why.
 - **How accurate is it?** On simulated people: unusual-day false alarms 0.92% per day, 100% of fevers on day one, 73% of early mild fevers, 99% of slow BP climbs (median 12 days). That checks the method, not clinical accuracy.
 - **What's the weak spot?** About 7% of normal days still get some alert, mostly single readings past a clinical limit. Real data would be needed to tune this.
-- **Does the ISS do daily checks like this?** No. ISS crews have regular private medical conferences and scheduled exams. A daily check-in is our proposal for missions where help is delayed.
+- **Does this already exist at NASA?** Not as one tool. ISS crews have a private medical conference with flight surgeons, usually weekly, and devices like the Bio-Monitor shirt, rHEALTH ONE and SLAMMD have been tested in orbit. NASA's Exploration Medical Capability team is researching decision support for Earth-independent medical care, and the Reaction Self Test showed short sleep slows astronauts' reactions. Our prototype brings these together and adds the "can it wait for Earth?" decision. We don't claim the ISS does daily checks like this.
 - **Does it need the internet?** No. It runs fully offline; packets queue until contact.
 - **Is there AI?** The on-board assistant gives pre-written answers built from the condition cards. No model runs. An AI coding assistant helped write the code.
 

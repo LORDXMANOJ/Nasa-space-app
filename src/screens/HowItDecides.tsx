@@ -174,11 +174,53 @@ export function HowItDecides() {
         <section className="card prose">
           <h2>How astronauts are monitored today</h2>
           <p>
-            On the ISS, crew health is followed by flight surgeons on the ground: regular private medical conferences, scheduled exams, and sensors used in research
-            studies. The Canadian Space Agency's Bio-Monitor shirt is a test wearable. We do <em>not</em> claim the ISS runs daily check-ins like this app; a daily
-            check-in is our proposal for missions where help is delayed by minutes, hours or weeks.
+            On the ISS, flight surgeons on the ground look after the crew. Each astronaut has a private medical conference with them, usually once a week, plus
+            scheduled exams. That works because Earth is seconds away.
           </p>
-          <p className="dim">Sources for this section are marked "TODO verify" in REFERENCES.md until each link is checked.</p>
+          <ul>
+            <li>
+              Wearables and devices have been tested in orbit: the Canadian Space Agency's Bio-Monitor shirt (heart rate, breathing, SpO₂, skin temperature, estimated
+              blood pressure), the rHEALTH ONE blood analyser (2022 demonstration), and SLAMMD, which measures body mass by applying a known force.
+            </li>
+            <li>
+              The Reaction Self Test, a 3-minute reaction test astronauts took every 4 days, linked 6 hours of sleep or less with slower reactions and more stress.
+            </li>
+            <li>
+              NASA's Exploration Medical Capability team is studying clinical decision support for Earth-independent medical operations: the same problem this
+              prototype explores, for crews too far away for real-time help.
+            </li>
+          </ul>
+          <p>
+            We do <em>not</em> claim the ISS runs daily check-ins like this app. A daily check-in that decides whether a problem can wait for Earth is our proposal
+            for missions where help is minutes to weeks away.
+          </p>
+          <p className="dim" style={{ fontSize: "var(--fs-sm)" }}>
+            Sources:{" "}
+            <a href="https://www.nasa.gov/directorates/esdmd/hhp/flight-surgeons" target="_blank" rel="noreferrer">
+              NASA flight surgeons
+            </a>
+            ;{" "}
+            <a href="https://www.asc-csa.gc.ca/eng/multimedia/search/image/8166" target="_blank" rel="noreferrer">
+              CSA Bio-Monitor
+            </a>
+            ;{" "}
+            <a href="https://ntrs.nasa.gov/citations/20230001079" target="_blank" rel="noreferrer">
+              rHEALTH ONE ISS demonstration (NTRS)
+            </a>
+            ;{" "}
+            <a href="https://www.ncbi.nlm.nih.gov/pubmed/25197887" target="_blank" rel="noreferrer">
+              Zwart et al. 2014, body mass in flight
+            </a>
+            ;{" "}
+            <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8919197" target="_blank" rel="noreferrer">
+              Reaction Self Test study
+            </a>
+            ;{" "}
+            <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10284846/" target="_blank" rel="noreferrer">
+              Russell et al. 2023, CDSS for Earth-independent medical operations
+            </a>
+            .
+          </p>
         </section>
 
         <section className="card prose">

@@ -120,5 +120,5 @@ Answers are pre-written, built only from the condition cards and today's detecto
 
 - Prototype, simulated data, no real astronaut data.
 - Flags and explains; decides only whether something can wait. Not a medical device.
-- Limits come from public clinical references or a NASA standard where stated. Everything else is labelled ASSUMPTION or demo assumption.
+- Limits come from public clinical references or a NASA standard where stated. Everything else is labelled ASSUMPTION or demo assumption. The sleep Watch limit (below 6 h) is backed by the ISS Reaction Self Test findings; the body-mass limits are a demo assumption, informed by measured in-flight loss of 2.8 to 4.4 % (Zwart et al. 2014). Source status is tracked in REFERENCES.md.
 - An AI coding assistant (Claude) helped write this code and documentation.
