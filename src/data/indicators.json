@@ -1,0 +1,1099 @@
+{
+  "indicators": [
+    {
+      "id": "bp",
+      "name": "Blood pressure",
+      "shortName": "Blood pressure",
+      "icon": "gauge",
+      "metrics": [
+        {
+          "key": "systolic",
+          "label": "Systolic",
+          "unit": "mmHg",
+          "decimals": 0,
+          "normalRange": {
+            "min": 90,
+            "max": 129
+          },
+          "amber": {
+            "low": 90,
+            "high": 130
+          },
+          "red": {
+            "low": 80,
+            "high": 140
+          }
+        },
+        {
+          "key": "diastolic",
+          "label": "Diastolic",
+          "unit": "mmHg",
+          "decimals": 0,
+          "normalRange": {
+            "min": 60,
+            "max": 79
+          },
+          "amber": {
+            "low": 60,
+            "high": 80
+          },
+          "red": {
+            "low": 50,
+            "high": 90
+          }
+        }
+      ],
+      "hazards": [
+        "gravity",
+        "isolation",
+        "hostile"
+      ],
+      "bodyRegions": [
+        "heart"
+      ],
+      "deviceName": "Blood-pressure monitor (simulated)",
+      "deviceVerified": false,
+      "inputType": "sensor-sim",
+      "autoLogged": false,
+      "cadenceHours": 24,
+      "captureDurationSec": 6,
+      "weight": 15,
+      "thresholdSource": "clinical-reference",
+      "todo": "Verify the low-pressure (hypotension) cut-offs; AHA categories cover the high side only.",
+      "whyItMatters": "Without gravity, body fluids shift towards your head and your heart and blood vessels adapt. Stress and poor sleep can also push pressure up.",
+      "plainMeaning": {
+        "nominal": "Your blood pressure is in the normal range.",
+        "watch": "A little above (or below) your normal. Rest, then measure again.",
+        "act": "Clearly outside the safe range. Follow the steps now and watch the escalation rule.",
+        "stale": "Not measured recently. Take a reading to update."
+      },
+      "howToSteps": [
+        {
+          "text": "Sit still for 5 minutes with your feet anchored and your back supported.",
+          "videoTimestampSec": 0
+        },
+        {
+          "text": "Wrap the cuff around your bare upper arm, about 2 cm above the elbow crease.",
+          "videoTimestampSec": 7
+        },
+        {
+          "text": "Rest your arm at heart height. Don't talk or move.",
+          "videoTimestampSec": 15
+        },
+        {
+          "text": "Press start and wait while the cuff inflates and slowly releases.",
+          "videoTimestampSec": 21
+        },
+        {
+          "text": "Read both numbers: top (systolic) and bottom (diastolic).",
+          "videoTimestampSec": 28
+        }
+      ],
+      "videoFile": "videos/bp.mp4",
+      "captionsFile": "videos/bp.vtt",
+      "recoveryActions": [
+        {
+          "kind": "immediate",
+          "text": "Sit and rest for 10 minutes, then measure again."
+        },
+        {
+          "kind": "nutrition",
+          "text": "Keep salt low today and drink water as planned."
+        },
+        {
+          "kind": "sleep",
+          "text": "Protect a full sleep period tonight."
+        },
+        {
+          "kind": "exercise",
+          "text": "Do your scheduled aerobic exercise; avoid heavy lifting until the next reading."
+        }
+      ],
+      "remeasureHours": 4,
+      "escalationRule": {
+        "afterHours": 12,
+        "redFlags": [
+          "Chest pain or pressure",
+          "Very bad headache or blurred vision",
+          "Weak or numb on one side, or trouble speaking"
+        ],
+        "onboard": "Tell the Crew Medical Officer (CMO). Rest, re-measure every 4 h, and follow the on-board medical guide: high blood pressure.",
+        "earth": "Send a Ground Link report so the flight surgeon has the record. A reply can take weeks, so never wait for it before acting."
+      },
+      "glossary": {
+        "Systolic": "The top number: pressure while your heart beats.",
+        "Diastolic": "The bottom number: pressure while your heart rests between beats.",
+        "mmHg": "Millimetres of mercury, the unit used for blood pressure.",
+        "CMO": "Crew Medical Officer: the crewmate trained in first aid and the on-board medical kit."
+      },
+      "sources": [
+        {
+          "title": "American Heart Association: Understanding blood pressure readings",
+          "url": "https://www.heart.org/en/health-topics/high-blood-pressure/understanding-blood-pressure-readings",
+          "usedFor": "High-side thresholds (Elevated / Stage 1 / Stage 2)"
+        },
+        {
+          "title": "NASA Human Research Program: Hazards of human spaceflight",
+          "url": "https://www.nasa.gov/hrp/hazards/",
+          "usedFor": "Fluid shift and cardiovascular adaptation context"
+        }
+      ]
+    },
+    {
+      "id": "hr",
+      "name": "Heart rate and HRV",
+      "shortName": "Heart rate",
+      "icon": "heart-pulse",
+      "metrics": [
+        {
+          "key": "hr",
+          "label": "Resting heart rate",
+          "unit": "bpm",
+          "decimals": 0,
+          "normalRange": {
+            "min": 50,
+            "max": 89
+          },
+          "amber": {
+            "low": 45,
+            "high": 90
+          },
+          "red": {
+            "low": 40,
+            "high": 100
+          }
+        },
+        {
+          "key": "hrv",
+          "label": "HRV (RMSSD)",
+          "unit": "ms",
+          "decimals": 0,
+          "normalRange": {
+            "min": 25,
+            "max": 120
+          },
+          "amber": {
+            "low": 25
+          },
+          "red": {
+            "low": 15
+          }
+        }
+      ],
+      "hazards": [
+        "gravity",
+        "isolation",
+        "hostile"
+      ],
+      "bodyRegions": [
+        "heart"
+      ],
+      "deviceName": "Bio-Monitor smart shirt",
+      "deviceVerified": true,
+      "inputType": "sensor-sim",
+      "autoLogged": false,
+      "cadenceHours": 24,
+      "captureDurationSec": 8,
+      "weight": 15,
+      "thresholdSource": "clinical-reference",
+      "todo": "HRV cut-offs are demo assumptions; HRV is mostly judged against your own baseline.",
+      "whyItMatters": "Resting heart rate and heart-rate variability (HRV) show how hard your heart is working and how well you are recovering from stress and poor sleep.",
+      "plainMeaning": {
+        "nominal": "Your heart is working at its usual pace and recovering well.",
+        "watch": "Your heart is working harder than usual, or recovering less. Rest and measure again.",
+        "act": "Your heart rate is clearly outside the safe range. Follow the steps now.",
+        "stale": "Not measured recently. Take a reading to update."
+      },
+      "howToSteps": [
+        {
+          "text": "Put on the Bio-Monitor shirt and check that the sensors touch your skin.",
+          "videoTimestampSec": 0
+        },
+        {
+          "text": "Lie or sit still and breathe normally for 1 minute.",
+          "videoTimestampSec": 8
+        },
+        {
+          "text": "Press start and stay still while the ECG trace records.",
+          "videoTimestampSec": 16
+        },
+        {
+          "text": "Check the trace looks steady, then save the reading.",
+          "videoTimestampSec": 24
+        }
+      ],
+      "videoFile": "videos/hr.mp4",
+      "captionsFile": "videos/hr.vtt",
+      "recoveryActions": [
+        {
+          "kind": "immediate",
+          "text": "Rest for 15 minutes; slow breathing, 6 breaths per minute."
+        },
+        {
+          "kind": "nutrition",
+          "text": "Drink water and skip caffeine for the rest of the day."
+        },
+        {
+          "kind": "sleep",
+          "text": "Aim for a full 8-hour sleep period tonight."
+        },
+        {
+          "kind": "crew",
+          "text": "Tell a crewmate how you feel."
+        }
+      ],
+      "remeasureHours": 6,
+      "escalationRule": {
+        "afterHours": 12,
+        "redFlags": [
+          "Chest pain",
+          "Fainting or nearly fainting",
+          "Heart racing at rest for more than 10 minutes"
+        ],
+        "onboard": "Tell the CMO. Lie down, record an ECG with the Bio-Monitor every 2 h, and follow the on-board medical guide: heart rhythm.",
+        "earth": "Send a Ground Link report so the flight surgeon has the record. A reply can take weeks, so never wait for it before acting."
+      },
+      "glossary": {
+        "HRV": "Heart-rate variability: small changes in time between beats. Higher usually means better recovery.",
+        "bpm": "Beats per minute.",
+        "ECG": "Electrocardiogram: a recording of your heart's electrical activity.",
+        "CMO": "Crew Medical Officer: the crewmate trained in first aid and the on-board medical kit."
+      },
+      "sources": [
+        {
+          "title": "American Heart Association: Target heart rates",
+          "url": "https://www.heart.org/en/healthy-living/fitness/fitness-basics/target-heart-rates",
+          "usedFor": "Resting heart rate normal range (60–100 bpm; widened for trained crew)"
+        },
+        {
+          "title": "Shaffer & Ginsberg (2017) An overview of heart rate variability metrics and norms, Front. Public Health",
+          "url": "https://doi.org/10.3389/fpubh.2017.00258",
+          "usedFor": "RMSSD as the HRV measure"
+        },
+        {
+          "title": "Canadian Space Agency: Bio-Monitor",
+          "url": "https://www.asc-csa.gc.ca/eng/sciences/bio-monitor.asp",
+          "usedFor": "Device name only (linked, not copied)"
+        }
+      ]
+    },
+    {
+      "id": "spo2",
+      "name": "Blood oxygen (SpO₂)",
+      "shortName": "SpO₂",
+      "icon": "wind",
+      "metrics": [
+        {
+          "key": "spo2",
+          "label": "SpO₂",
+          "unit": "%",
+          "decimals": 0,
+          "normalRange": {
+            "min": 95,
+            "max": 100
+          },
+          "amber": {
+            "low": 95
+          },
+          "red": {
+            "low": 92
+          }
+        }
+      ],
+      "hazards": [
+        "hostile",
+        "gravity"
+      ],
+      "bodyRegions": [
+        "lungs",
+        "heart"
+      ],
+      "deviceName": "Pulse oximeter (simulated)",
+      "deviceVerified": false,
+      "inputType": "sensor-sim",
+      "autoLogged": false,
+      "cadenceHours": 24,
+      "captureDurationSec": 5,
+      "weight": 10,
+      "thresholdSource": "clinical-reference",
+      "whyItMatters": "Shows how much oxygen your blood carries. Cabin air problems or a chest infection can lower it.",
+      "plainMeaning": {
+        "nominal": "Your blood is carrying a normal amount of oxygen.",
+        "watch": "Slightly low. Check the cabin air reading and measure again.",
+        "act": "Low oxygen. Follow the steps now.",
+        "stale": "Not measured recently. Take a reading to update."
+      },
+      "howToSteps": [
+        {
+          "text": "Warm your hands and remove any nail coating from the test finger.",
+          "videoTimestampSec": 0
+        },
+        {
+          "text": "Clip the oximeter on your index finger, nail side up.",
+          "videoTimestampSec": 7
+        },
+        {
+          "text": "Rest your hand still at chest height for 30 seconds.",
+          "videoTimestampSec": 13
+        },
+        {
+          "text": "Read the steady number once the pulse wave is regular.",
+          "videoTimestampSec": 20
+        }
+      ],
+      "videoFile": "videos/spo2.mp4",
+      "captionsFile": "videos/spo2.vtt",
+      "recoveryActions": [
+        {
+          "kind": "immediate",
+          "text": "Check the cabin O₂/CO₂ display and move to a well-ventilated module."
+        },
+        {
+          "kind": "immediate",
+          "text": "Sit upright and take slow, deep breaths for 5 minutes, then re-measure."
+        },
+        {
+          "kind": "crew",
+          "text": "Ask a crewmate to check their own reading to rule out a cabin issue."
+        }
+      ],
+      "remeasureHours": 1,
+      "escalationRule": {
+        "afterHours": 1,
+        "redFlags": [
+          "Hard to breathe while resting",
+          "Blue lips or fingertips",
+          "Confused or very drowsy"
+        ],
+        "onboard": "Check the cabin air display first. If the air is fine, tell the CMO, sit upright and start oxygen from the medical kit as the on-board guide shows.",
+        "earth": "Send a Ground Link report so the flight surgeon has the record. A reply can take weeks, so never wait for it before acting."
+      },
+      "glossary": {
+        "SpO₂": "Peripheral oxygen saturation: the share of your red blood cells carrying oxygen.",
+        "CMO": "Crew Medical Officer: the crewmate trained in first aid and the on-board medical kit."
+      },
+      "sources": [
+        {
+          "title": "MedlinePlus: Pulse oximetry",
+          "url": "https://medlineplus.gov/lab-tests/pulse-oximetry/",
+          "usedFor": "Normal range (95–100 %)"
+        }
+      ]
+    },
+    {
+      "id": "temp",
+      "name": "Body temperature",
+      "shortName": "Temperature",
+      "icon": "thermometer",
+      "metrics": [
+        {
+          "key": "temp",
+          "label": "Temperature",
+          "unit": "°C",
+          "decimals": 1,
+          "normalRange": {
+            "min": 36.1,
+            "max": 37.2
+          },
+          "amber": {
+            "low": 36.0,
+            "high": 37.3
+          },
+          "red": {
+            "low": 35.0,
+            "high": 38.0
+          }
+        }
+      ],
+      "hazards": [
+        "radiation",
+        "hostile",
+        "isolation"
+      ],
+      "bodyRegions": [
+        "skin"
+      ],
+      "deviceName": "Bio-Monitor smart shirt",
+      "deviceVerified": true,
+      "inputType": "sensor-sim",
+      "autoLogged": true,
+      "cadenceHours": 24,
+      "captureDurationSec": 5,
+      "weight": 10,
+      "altUnit": {
+        "unit": "°F",
+        "factor": 1.8,
+        "offset": 32,
+        "decimals": 1
+      },
+      "thresholdSource": "clinical-reference",
+      "whyItMatters": "Your immune system changes in space. A fever can be the first sign of an infection.",
+      "plainMeaning": {
+        "nominal": "Your temperature is normal.",
+        "watch": "Slightly raised (or low). Measure again in a few hours.",
+        "act": "Fever (or too cold). Follow the steps now.",
+        "stale": "Not measured recently. Take a reading to update."
+      },
+      "howToSteps": [
+        {
+          "text": "Wear the Bio-Monitor shirt for at least 10 minutes before reading.",
+          "videoTimestampSec": 0
+        },
+        {
+          "text": "Avoid exercise or hot drinks for 20 minutes.",
+          "videoTimestampSec": 8
+        },
+        {
+          "text": "Press start and stay still for 30 seconds.",
+          "videoTimestampSec": 15
+        }
+      ],
+      "videoFile": "videos/temp.mp4",
+      "captionsFile": "videos/temp.vtt",
+      "recoveryActions": [
+        {
+          "kind": "immediate",
+          "text": "Rest, drink fluids and note any other symptoms (cough, sore throat, rash)."
+        },
+        {
+          "kind": "crew",
+          "text": "Limit close contact with crewmates until the next reading."
+        },
+        {
+          "kind": "sleep",
+          "text": "Take an extra rest period if the schedule allows."
+        }
+      ],
+      "remeasureHours": 4,
+      "escalationRule": {
+        "afterHours": 8,
+        "redFlags": [
+          "Temperature above 39 °C",
+          "Stiff neck or confusion",
+          "A rash that does not fade when you press a glass on it"
+        ],
+        "onboard": "Tell the CMO. Rest in your own crew quarters, drink fluids, and take fever medicine from the kit as the on-board guide shows.",
+        "earth": "Send a Ground Link report so the flight surgeon has the record. A reply can take weeks, so never wait for it before acting."
+      },
+      "glossary": {
+        "Fever": "A body temperature of 38.0 °C or higher.",
+        "CMO": "Crew Medical Officer: the crewmate trained in first aid and the on-board medical kit."
+      },
+      "sources": [
+        {
+          "title": "MedlinePlus: Body temperature norms",
+          "url": "https://medlineplus.gov/ency/article/001982.htm",
+          "usedFor": "Normal range and fever threshold"
+        }
+      ]
+    },
+    {
+      "id": "sleep",
+      "name": "Sleep",
+      "shortName": "Sleep",
+      "icon": "moon",
+      "metrics": [
+        {
+          "key": "hours",
+          "label": "Sleep duration",
+          "unit": "h",
+          "decimals": 1,
+          "normalRange": {
+            "min": 7,
+            "max": 10
+          },
+          "amber": {
+            "low": 7
+          },
+          "red": {
+            "low": 5
+          }
+        },
+        {
+          "key": "quality",
+          "label": "Sleep quality",
+          "unit": "/10",
+          "decimals": 0,
+          "normalRange": {
+            "min": 6,
+            "max": 10
+          },
+          "amber": {
+            "low": 6
+          },
+          "red": {
+            "low": 3
+          }
+        }
+      ],
+      "hazards": [
+        "isolation",
+        "distance",
+        "hostile"
+      ],
+      "bodyRegions": [
+        "brain"
+      ],
+      "deviceName": "Actigraphy watch (simulated)",
+      "deviceVerified": false,
+      "inputType": "manual",
+      "autoLogged": true,
+      "cadenceHours": 24,
+      "captureDurationSec": 4,
+      "weight": 15,
+      "thresholdSource": "clinical-reference",
+      "todo": "Quality cut-offs are demo assumptions.",
+      "whyItMatters": "Noise, light, workload and no day–night cycle make sleep hard in space. Poor sleep affects mood, focus and your heart.",
+      "plainMeaning": {
+        "nominal": "You are getting enough sleep.",
+        "watch": "Less sleep than you need. Protect tonight's sleep period.",
+        "act": "Severe lack of sleep. Follow the recovery plan today.",
+        "stale": "No sleep log for last night. Add one to update."
+      },
+      "howToSteps": [
+        {
+          "text": "Wear the actigraphy watch through your sleep period.",
+          "videoTimestampSec": 0
+        },
+        {
+          "text": "When you wake, check the hours it logged.",
+          "videoTimestampSec": 8
+        },
+        {
+          "text": "Rate how rested you feel from 1 to 10.",
+          "videoTimestampSec": 14
+        }
+      ],
+      "videoFile": "videos/sleep.mp4",
+      "captionsFile": "videos/sleep.vtt",
+      "recoveryActions": [
+        {
+          "kind": "sleep",
+          "text": "Lights out at 22:00; no screens for 1 h before."
+        },
+        {
+          "kind": "exercise",
+          "text": "20 minutes of morning exercise, not in the 3 h before sleep."
+        },
+        {
+          "kind": "nutrition",
+          "text": "No caffeine after 14:00."
+        },
+        {
+          "kind": "crew",
+          "text": "Crew check-in: talk with a crewmate today."
+        }
+      ],
+      "remeasureHours": 24,
+      "escalationRule": {
+        "afterHours": 48,
+        "redFlags": [
+          "Falling asleep during tasks",
+          "Confused or making unusual mistakes",
+          "Feeling unsafe to operate equipment"
+        ],
+        "onboard": "Tell the CMO and the commander. Do no safety-critical tasks (EVA, docking, piloting) until you have slept; the schedule is changed on board.",
+        "earth": "Send a Ground Link report so the flight surgeon has the record. A reply can take weeks, so never wait for it before acting."
+      },
+      "glossary": {
+        "Actigraphy": "Measuring sleep from wrist movement.",
+        "CMO": "Crew Medical Officer: the crewmate trained in first aid and the on-board medical kit."
+      },
+      "sources": [
+        {
+          "title": "Watson et al. (2015) Recommended amount of sleep for a healthy adult (AASM/SRS), J Clin Sleep Med",
+          "url": "https://doi.org/10.5664/jcsm.4758",
+          "usedFor": "7 h minimum for adults"
+        },
+        {
+          "title": "NASA Human Research Program: Hazards of human spaceflight",
+          "url": "https://www.nasa.gov/hrp/hazards/",
+          "usedFor": "Isolation and confinement context"
+        }
+      ]
+    },
+    {
+      "id": "mood",
+      "name": "Mood, stress and reaction time",
+      "shortName": "Mood / stress",
+      "icon": "brain",
+      "metrics": [
+        {
+          "key": "mood",
+          "label": "Mood",
+          "unit": "/10",
+          "decimals": 0,
+          "normalRange": {
+            "min": 6,
+            "max": 10
+          },
+          "amber": {
+            "low": 6
+          },
+          "red": {
+            "low": 3
+          }
+        },
+        {
+          "key": "reaction",
+          "label": "Reaction time",
+          "unit": "ms",
+          "decimals": 0,
+          "normalRange": {
+            "min": 180,
+            "max": 340
+          },
+          "amber": {
+            "high": 340
+          },
+          "red": {
+            "high": 450
+          }
+        }
+      ],
+      "hazards": [
+        "isolation",
+        "distance"
+      ],
+      "bodyRegions": [
+        "brain"
+      ],
+      "deviceName": "Self-report + reaction test (in app)",
+      "deviceVerified": false,
+      "inputType": "manual",
+      "autoLogged": false,
+      "cadenceHours": 24,
+      "captureDurationSec": 30,
+      "weight": 15,
+      "thresholdSource": "demo-assumption",
+      "todo": "Replace with validated scales (e.g. NASA Cognition battery PVT norms) before any real use.",
+      "whyItMatters": "Isolation, confinement and being far from home can slowly wear down mood and focus. A quick test catches the change early.",
+      "plainMeaning": {
+        "nominal": "Your mood and reaction time are at your usual level.",
+        "watch": "Mood is lower or reactions slower than usual. Take a break and talk to someone.",
+        "act": "Mood is very low or reactions much slower. Follow the plan and tell the crew.",
+        "stale": "No check-in recently. Take the 30-second check."
+      },
+      "howToSteps": [
+        {
+          "text": "Find a quiet spot and rate your mood from 1 (very low) to 10 (great).",
+          "videoTimestampSec": 0
+        },
+        {
+          "text": "Start the reaction test: tap as soon as the target lights up.",
+          "videoTimestampSec": 8
+        },
+        {
+          "text": "Five targets appear over about 20 seconds. Stay focused.",
+          "videoTimestampSec": 15
+        }
+      ],
+      "videoFile": "videos/mood.mp4",
+      "captionsFile": "videos/mood.vtt",
+      "recoveryActions": [
+        {
+          "kind": "crew",
+          "text": "Crew check-in: share how you feel with a crewmate."
+        },
+        {
+          "kind": "immediate",
+          "text": "Schedule a private call or message to family when the link allows."
+        },
+        {
+          "kind": "exercise",
+          "text": "Do 20 minutes of exercise you enjoy."
+        },
+        {
+          "kind": "sleep",
+          "text": "Keep a regular sleep time tonight."
+        }
+      ],
+      "remeasureHours": 24,
+      "escalationRule": {
+        "afterHours": 48,
+        "redFlags": [
+          "Thoughts of harming yourself",
+          "Not eating or drinking",
+          "Unable to do your daily tasks"
+        ],
+        "onboard": "Tell the commander or CMO today. Use the buddy system (a crewmate checks on you) and the on-board psychological support kit. Never stay alone with these thoughts.",
+        "earth": "Send a Ground Link report so the flight surgeon has the record. A reply can take weeks, so never wait for it before acting."
+      },
+      "glossary": {
+        "Reaction time": "How fast you respond to a target, in milliseconds. Tiredness slows it down.",
+        "CMO": "Crew Medical Officer: the crewmate trained in first aid and the on-board medical kit."
+      },
+      "sources": [
+        {
+          "title": "Basner et al. (2015) Development and validation of the Cognition test battery for spaceflight, Aerosp Med Hum Perform",
+          "url": "https://doi.org/10.3357/AMHP.4314.2015",
+          "usedFor": "Reaction-time testing as a spaceflight measure"
+        },
+        {
+          "title": "NASA Human Research Program: Hazards of human spaceflight",
+          "url": "https://www.nasa.gov/hrp/hazards/",
+          "usedFor": "Isolation and distance context"
+        }
+      ]
+    },
+    {
+      "id": "glucose",
+      "name": "Blood glucose",
+      "shortName": "Glucose",
+      "icon": "droplet",
+      "metrics": [
+        {
+          "key": "glucose",
+          "label": "Fasting glucose",
+          "unit": "mg/dL",
+          "decimals": 0,
+          "normalRange": {
+            "min": 70,
+            "max": 99
+          },
+          "amber": {
+            "low": 70,
+            "high": 100
+          },
+          "red": {
+            "low": 54,
+            "high": 180
+          }
+        }
+      ],
+      "hazards": [
+        "gravity",
+        "radiation",
+        "isolation"
+      ],
+      "bodyRegions": [
+        "gut"
+      ],
+      "deviceName": "Glucose meter (simulated)",
+      "deviceVerified": false,
+      "inputType": "sensor-sim",
+      "autoLogged": false,
+      "cadenceHours": 72,
+      "captureDurationSec": 5,
+      "weight": 10,
+      "altUnit": {
+        "unit": "mmol/L",
+        "factor": 0.0555,
+        "offset": 0,
+        "decimals": 1
+      },
+      "thresholdSource": "clinical-reference",
+      "whyItMatters": "Less movement and changes in diet and hormones in space can change how your body handles sugar.",
+      "plainMeaning": {
+        "nominal": "Your blood sugar is normal.",
+        "watch": "A little high (or low). Check what you ate and measure again.",
+        "act": "Blood sugar is far from normal. Follow the steps now.",
+        "stale": "Not measured recently. Take a reading to update."
+      },
+      "howToSteps": [
+        {
+          "text": "Measure before breakfast (fasting) and wash and dry your hands.",
+          "videoTimestampSec": 0
+        },
+        {
+          "text": "Insert a test strip and prick the side of your fingertip.",
+          "videoTimestampSec": 8
+        },
+        {
+          "text": "Touch the drop to the strip and wait for the number.",
+          "videoTimestampSec": 15
+        },
+        {
+          "text": "Dispose of the lancet in the sharps container.",
+          "videoTimestampSec": 22
+        }
+      ],
+      "videoFile": "videos/glucose.mp4",
+      "captionsFile": "videos/glucose.vtt",
+      "recoveryActions": [
+        {
+          "kind": "nutrition",
+          "text": "If low: eat 15 g of fast sugar (juice pouch), re-measure after 15 minutes."
+        },
+        {
+          "kind": "nutrition",
+          "text": "If high: drink water, choose a low-sugar menu item for the next meal."
+        },
+        {
+          "kind": "exercise",
+          "text": "Do your scheduled exercise session."
+        }
+      ],
+      "remeasureHours": 2,
+      "escalationRule": {
+        "afterHours": 4,
+        "redFlags": [
+          "Confused, shaking or sweating",
+          "Very thirsty and passing a lot of urine",
+          "Hard to wake up"
+        ],
+        "onboard": "If low: eat 15 g of fast sugar now and re-measure in 15 minutes. Tell the CMO and follow the on-board medical guide: blood sugar.",
+        "earth": "Send a Ground Link report so the flight surgeon has the record. A reply can take weeks, so never wait for it before acting."
+      },
+      "glossary": {
+        "Fasting": "No food for at least 8 hours.",
+        "mg/dL": "Milligrams per decilitre; 18 mg/dL ≈ 1 mmol/L.",
+        "CMO": "Crew Medical Officer: the crewmate trained in first aid and the on-board medical kit."
+      },
+      "sources": [
+        {
+          "title": "American Diabetes Association: Standards of Care in Diabetes",
+          "url": "https://professional.diabetes.org/standards-of-care",
+          "usedFor": "Fasting range, level 1/2 hypoglycaemia (70 / 54 mg/dL)"
+        }
+      ]
+    },
+    {
+      "id": "weight",
+      "name": "Body mass (weight)",
+      "shortName": "Body mass",
+      "icon": "scale",
+      "metrics": [
+        {
+          "key": "mass",
+          "label": "Body mass",
+          "unit": "kg",
+          "decimals": 1,
+          "normalRange": {
+            "min": 0,
+            "max": 500
+          },
+          "amber": {},
+          "red": {}
+        },
+        {
+          "key": "change",
+          "label": "Change since launch",
+          "unit": "%",
+          "decimals": 1,
+          "normalRange": {
+            "min": -5,
+            "max": 5
+          },
+          "amber": {
+            "low": -5,
+            "high": 5
+          },
+          "red": {
+            "low": -10,
+            "high": 10
+          }
+        }
+      ],
+      "hazards": [
+        "gravity",
+        "isolation",
+        "hostile"
+      ],
+      "bodyRegions": [
+        "gut",
+        "musculoskeletal"
+      ],
+      "deviceName": "Body-mass measurement device (simulated)",
+      "deviceVerified": false,
+      "inputType": "sensor-sim",
+      "autoLogged": false,
+      "cadenceHours": 168,
+      "captureDurationSec": 6,
+      "weight": 8,
+      "altUnit": {
+        "unit": "lb",
+        "factor": 2.2046,
+        "offset": 0,
+        "decimals": 1
+      },
+      "thresholdSource": "clinical-reference",
+      "todo": "The ±5 % / ±10 % cut-offs follow the clinical rule of thumb for significant unintended weight change; verify the ISS body-mass device name (SLAMMD) before naming it.",
+      "whyItMatters": "Without gravity a normal scale doesn't work, so mass is measured by a device that gently pushes you. Losing weight in space often means you are eating too little and losing muscle and bone.",
+      "plainMeaning": {
+        "nominal": "Your weight is steady compared with launch day.",
+        "watch": "You have lost (or gained) more than 5 % since launch. Eat every planned meal and keep exercising.",
+        "act": "More than 10 % change since launch. Follow the plan today and tell the CMO.",
+        "stale": "Not measured this week. Take a reading to update."
+      },
+      "howToSteps": [
+        {
+          "text": "Measure at the same time each week, before breakfast, after using the toilet.",
+          "videoTimestampSec": 0
+        },
+        {
+          "text": "Wear the same light clothing as last time and empty your pockets.",
+          "videoTimestampSec": 7
+        },
+        {
+          "text": "Sit in the device, hold the handles, tuck your legs in and stay relaxed.",
+          "videoTimestampSec": 13
+        },
+        {
+          "text": "Press start. The device gently moves you back and forth and works out your mass.",
+          "videoTimestampSec": 20
+        }
+      ],
+      "videoFile": "videos/weight.mp4",
+      "captionsFile": "videos/weight.vtt",
+      "recoveryActions": [
+        {
+          "kind": "nutrition",
+          "text": "Eat every planned meal, plus one extra snack a day until your weight is steady."
+        },
+        {
+          "kind": "nutrition",
+          "text": "Drink your full water ration; log what you eat for 3 days."
+        },
+        {
+          "kind": "exercise",
+          "text": "Keep your resistance exercise (squats, deadlifts on the trainer) every day."
+        },
+        {
+          "kind": "crew",
+          "text": "Eat at least one meal a day together with the crew."
+        }
+      ],
+      "remeasureHours": 72,
+      "escalationRule": {
+        "afterHours": 168,
+        "redFlags": [
+          "Lost more than 2 kg in one week without trying",
+          "Can't keep food down",
+          "Feeling very weak or dizzy when you move"
+        ],
+        "onboard": "Tell the CMO. Add the extra meals from the food reserve, log everything you eat, and follow the on-board medical guide: weight loss.",
+        "earth": "Send a Ground Link report so the flight surgeon has the record. A reply can take weeks, so never wait for it before acting."
+      },
+      "glossary": {
+        "Body mass": "How much of you there is, in kilograms. In space we measure mass, not weight.",
+        "CMO": "Crew Medical Officer: the crewmate trained in first aid and the on-board medical kit."
+      },
+      "sources": [
+        {
+          "title": "NASA Human Research Program: Hazards of human spaceflight",
+          "url": "https://www.nasa.gov/hrp/hazards/",
+          "usedFor": "Muscle, bone and nutrition risks in altered gravity"
+        },
+        {
+          "title": "MedlinePlus: Weight loss, unintentional",
+          "url": "https://medlineplus.gov/ency/article/003107.htm",
+          "usedFor": "Unintended weight change of 5 % or more as a warning sign"
+        }
+      ]
+    },
+    {
+      "id": "radiation",
+      "name": "Radiation dose",
+      "shortName": "Radiation",
+      "icon": "radiation",
+      "metrics": [
+        {
+          "key": "dose",
+          "label": "Cumulative dose",
+          "unit": "mSv",
+          "decimals": 0,
+          "normalRange": {
+            "min": 0,
+            "max": 299
+          },
+          "amber": {
+            "high": 300
+          },
+          "red": {
+            "high": 480
+          },
+          "cumulative": true
+        }
+      ],
+      "hazards": [
+        "radiation"
+      ],
+      "bodyRegions": [
+        "whole"
+      ],
+      "deviceName": "Personal dosimeter (simulated)",
+      "deviceVerified": false,
+      "inputType": "sensor-sim",
+      "autoLogged": true,
+      "cadenceHours": 24,
+      "captureDurationSec": 3,
+      "weight": 10,
+      "thresholdSource": "NASA",
+      "todo": "Career limit (600 mSv) is from NASA-STD-3001; the 50 % / 80 % amber and red fractions are our demo assumption.",
+      "whyItMatters": "Outside Earth's magnetic field you get far more radiation. It adds up over the mission and raises long-term cancer risk.",
+      "plainMeaning": {
+        "nominal": "Your total dose is well within the mission limit.",
+        "watch": "You have used half of your career dose limit. Use shielded areas when you can.",
+        "act": "Close to your career limit. Follow shielding steps and contact ground.",
+        "stale": "No dosimeter reading recently. Check the dosimeter."
+      },
+      "howToSteps": [
+        {
+          "text": "Keep the dosimeter clipped to your chest pocket at all times.",
+          "videoTimestampSec": 0
+        },
+        {
+          "text": "Once a day, hold it near the reader to sync.",
+          "videoTimestampSec": 7
+        },
+        {
+          "text": "During a solar storm alert, go to the shielded shelter.",
+          "videoTimestampSec": 14
+        }
+      ],
+      "videoFile": "videos/radiation.mp4",
+      "captionsFile": "videos/radiation.vtt",
+      "recoveryActions": [
+        {
+          "kind": "immediate",
+          "text": "Spend sleep and rest periods in the most shielded module."
+        },
+        {
+          "kind": "immediate",
+          "text": "Follow solar particle event alerts; shelter when told."
+        },
+        {
+          "kind": "nutrition",
+          "text": "Keep a normal, balanced diet; no supplements without ground advice."
+        }
+      ],
+      "remeasureHours": 24,
+      "escalationRule": {
+        "afterHours": 0,
+        "redFlags": [
+          "Solar storm alert",
+          "Nausea or vomiting after a radiation event"
+        ],
+        "onboard": "Go to the shielded shelter during any solar storm alert. Tell the CMO, who logs the dose and follows the on-board radiation guide.",
+        "earth": "Send a Ground Link report so the flight surgeon has the record. A reply can take weeks, so never wait for it before acting."
+      },
+      "glossary": {
+        "mSv": "Millisievert: a unit of radiation dose to the body.",
+        "Career limit": "The total dose NASA allows over a whole career.",
+        "CMO": "Crew Medical Officer: the crewmate trained in first aid and the on-board medical kit."
+      },
+      "sources": [
+        {
+          "title": "NASA-STD-3001 Space Flight Human-System Standard, Vol. 1 (career limit 600 mSv)",
+          "url": "https://www.nasa.gov/ochmo/human-spaceflight-and-aviation-standards/",
+          "usedFor": "600 mSv career effective-dose limit"
+        },
+        {
+          "title": "Zeitlin et al. (2013) Measurements of energetic particle radiation in transit to Mars on the Mars Science Laboratory, Science",
+          "url": "https://doi.org/10.1126/science.1235989",
+          "usedFor": "~1.8 mSv/day dose rate during Mars cruise (simulation input)"
+        }
+      ]
+    }
+  ],
+  "readiness": {
+    "penalty": {
+      "nominal": 0,
+      "watch": 0.5,
+      "act": 1,
+      "stale": 0.25
+    },
+    "note": "Score = 100 − Σ(weight × penalty), with weights summing to 100. Weights live on each indicator."
+  }
+}

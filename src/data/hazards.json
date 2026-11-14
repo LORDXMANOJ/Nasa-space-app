@@ -1,0 +1,107 @@
+{
+  "hazards": [
+    {
+      "id": "radiation",
+      "name": "Space radiation",
+      "short": "Radiation",
+      "plain": "Beyond Earth's magnetic field, high-energy particles pass through the spacecraft and your body. The dose adds up over the mission.",
+      "effects": "Long-term cancer risk, possible effects on the brain, heart and immune system.",
+      "source": {
+        "title": "NASA Human Research Program: Hazards of human spaceflight",
+        "url": "https://www.nasa.gov/hrp/hazards/"
+      }
+    },
+    {
+      "id": "isolation",
+      "name": "Isolation and confinement",
+      "short": "Isolation",
+      "plain": "Months in a small space with the same few people, with little privacy and a fixed routine.",
+      "effects": "Low mood, stress, poor sleep, slower thinking, team friction.",
+      "source": {
+        "title": "NASA Human Research Program: Hazards of human spaceflight",
+        "url": "https://www.nasa.gov/hrp/hazards/"
+      }
+    },
+    {
+      "id": "distance",
+      "name": "Distance from Earth",
+      "short": "Distance",
+      "plain": "Far from Earth, help is slow. Signals take up to 22 minutes each way, relay slots are scheduled, and during solar conjunction there is no contact for about two weeks. A reply from the flight surgeon can take weeks, so the crew must handle problems on board.",
+      "effects": "Medical decisions happen on board with basic training; feeling cut off from family and ground support.",
+      "source": {
+        "title": "NASA Human Research Program: Hazards of human spaceflight",
+        "url": "https://www.nasa.gov/hrp/hazards/"
+      }
+    },
+    {
+      "id": "gravity",
+      "name": "Altered gravity",
+      "short": "Gravity",
+      "plain": "Weightlessness in transit, then one-third (Mars) or one-sixth (Moon) of Earth's gravity on the surface.",
+      "effects": "Fluid shift to the head, heart and blood-vessel changes, bone and muscle loss, vision changes.",
+      "source": {
+        "title": "NASA Human Research Program: Hazards of human spaceflight",
+        "url": "https://www.nasa.gov/hrp/hazards/"
+      }
+    },
+    {
+      "id": "hostile",
+      "name": "Hostile and closed environment",
+      "short": "Closed environment",
+      "plain": "Recycled air and water, noise, CO₂ build-up, microbes that change in space, and dust on the Moon or Mars.",
+      "effects": "Headaches, poor sleep, infections, skin and breathing problems.",
+      "source": {
+        "title": "NASA Human Research Program: Hazards of human spaceflight",
+        "url": "https://www.nasa.gov/hrp/hazards/"
+      }
+    }
+  ],
+  "environments": [
+    {
+      "id": "spacecraft",
+      "name": "Spacecraft (Mars transit)",
+      "doseRate": 1.8,
+      "emphasis": [
+        "radiation",
+        "isolation",
+        "distance",
+        "gravity"
+      ],
+      "commDelayDays": 14
+    },
+    {
+      "id": "station",
+      "name": "Space station (low Earth orbit)",
+      "doseRate": 0.5,
+      "emphasis": [
+        "gravity",
+        "hostile",
+        "isolation"
+      ],
+      "commDelayDays": 0
+    },
+    {
+      "id": "rover",
+      "name": "Pressurised rover",
+      "doseRate": 0.7,
+      "emphasis": [
+        "hostile",
+        "isolation",
+        "radiation"
+      ],
+      "commDelayDays": 3
+    },
+    {
+      "id": "base",
+      "name": "Lunar / Mars base",
+      "doseRate": 0.7,
+      "emphasis": [
+        "gravity",
+        "hostile",
+        "radiation"
+      ],
+      "commDelayDays": 7
+    }
+  ],
+  "environmentNote": "Dose rates are simulation inputs: ~1.8 mSv/day in Mars cruise (Zeitlin et al. 2013); surface values are rounded demo assumptions (TODO verify). Report turnaround (commDelayDays) includes relay scheduling and blackouts such as Mars solar conjunction (~2 weeks); it is a demo assumption, not the raw light-time."
+}

@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --ground: #0a0f1c;
+        --panel: #111a2e;
+        --panel-2: #17223a;
+        --line: #2a3a5c;
+        --ink: #e8eef9;
+        --ink-dim: #9aa8c4;
+        --accent: #8fa8ff;
+        --nominal: #46c38b;
+        --watch: #f2b13c;
+        --act: #f0565c;
+        --sans: "Montserrat", sans-serif;
+        --mono: "IBM Plex Mono", monospace;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--ground); }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; color: var(--ink); font-family: var(--sans); background: var(--ground); }
+
+      /* ---------- persistent background ---------- */
+      .bg { position: absolute; inset: 0; }
+      .glow { position: absolute; width: 1400px; height: 1400px; left: 260px; top: -360px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(143,168,255,0.20) 0%, rgba(143,168,255,0.06) 40%, rgba(143,168,255,0) 70%); }
+      .grid { position: absolute; inset: -80px; opacity: 0.16;
+        background-image: linear-gradient(var(--line) 2px, transparent 2px), linear-gradient(90deg, var(--line) 2px, transparent 2px);
+        background-size: 120px 120px; }
+      .star { position: absolute; border-radius: 50%; background: #dfe7ff; }
+      .hud { position: absolute; left: 80px; right: 80px; top: 40px; display: flex; justify-content: space-between; align-items: center;
+        font: 700 20px var(--mono); letter-spacing: 0.12em; color: var(--ink-dim); }
+      .hud .brand { display: flex; align-items: center; gap: 14px; color: var(--ink); }
+      .hud .tag { border: 2px solid var(--line); padding: 8px 16px; border-radius: 8px; }
+
+      /* ---------- shared pieces ---------- */
+      .scene { width: 100%; height: 100%; }
+      .sc { position: absolute; inset: 0; }
+      .mono { font-family: var(--mono); }
+      .chip { display: inline-flex; align-items: center; gap: 10px; padding: 6px 16px 6px 12px; border-radius: 999px;
+        font: 700 18px var(--mono); letter-spacing: 0.06em; text-transform: uppercase; border: 2px solid currentColor; white-space: nowrap; }
+      .chip .sh { display: block; width: 16px; height: 16px; background: currentColor; }
+      .nom { color: var(--nominal); } .nom .sh { border-radius: 50%; }
+      .wat { color: var(--watch); } .wat .sh { clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+      .act { color: var(--act); } .act .sh { clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%); }
+      .hz { display: inline-flex; padding: 6px 14px; border-radius: 8px; background: var(--panel-2); border: 2px solid var(--line);
+        font: 700 18px var(--mono); color: var(--ink-dim); letter-spacing: 0.04em; }
+      .eyebrow { font: 700 22px var(--mono); letter-spacing: 0.16em; color: var(--accent); text-transform: uppercase; }
+      .h1 { font-weight: 900; font-size: 76px; letter-spacing: -0.03em; line-height: 1.02; }
+      .panel { background: var(--panel); border: 2px solid var(--line); border-radius: 22px; }
+
+      /* ---------- captions ---------- */
+      .cap { position: absolute; left: 0; right: 0; bottom: 44px; display: flex; justify-content: center; }
+      .cap span { background: rgba(10,15,28,0.88); border: 2px solid var(--line); border-radius: 14px; padding: 12px 28px;
+        font: 700 32px var(--sans); color: var(--ink); max-width: 1500px; text-align: center; }
+
+      /* ---------- S1 hook ---------- */
+      #s1 .copy { position: absolute; left: 120px; top: 190px; width: 1500px; }
+      #s1 .bar { display: inline-block; font: 700 28px var(--mono); letter-spacing: 0.14em; color: var(--ink-dim); }
+      #s1 .big { display: flex; align-items: baseline; gap: 34px; margin-top: 36px; }
+      #s1 .num { font: 700 240px var(--mono); color: var(--ink); letter-spacing: -0.04em; line-height: 0.9; }
+      #s1 .unit { font-weight: 900; font-size: 120px; letter-spacing: -0.04em; color: var(--accent); }
+      #s1 .sub { margin-top: 22px; font-weight: 400; font-size: 58px; color: var(--ink); }
+      #s1 .route { position: absolute; left: 120px; right: 120px; top: 760px; height: 120px; }
+      #s1 .earth { position: absolute; left: 0; top: 34px; width: 52px; height: 52px; border-radius: 50%;
+        background: radial-gradient(circle at 35% 35%, #9fd3ff, #2f6fd6 60%, #163a7a); }
+      #s1 .mars { position: absolute; right: 0; top: -10px; width: 140px; height: 140px; border-radius: 50%;
+        background: radial-gradient(circle at 35% 35%, #f3a27a, #c4532f 60%, #6a2414); }
+      #s1 .path { position: absolute; left: 70px; right: 160px; top: 58px; height: 4px;
+        background: repeating-linear-gradient(90deg, var(--ink-dim) 0 14px, transparent 14px 28px); transform-origin: left center; }
+      #s1 .ship { position: absolute; right: 190px; top: 44px; width: 32px; height: 32px; border-radius: 50%; background: var(--accent); }
+      #s1 .lbl { position: absolute; top: 100px; font: 700 20px var(--mono); letter-spacing: 0.12em; color: var(--ink-dim); }
+
+      /* ---------- S2 dashboard ---------- */
+      #s2 .left { position: absolute; left: 100px; top: 230px; width: 520px; }
+      #s2 .word { display: block; font-weight: 900; font-size: 74px; letter-spacing: -0.04em; line-height: 1.05; }
+      #s2 .word.a { color: var(--accent); }
+      #s2 .note { margin-top: 34px; font-size: 32px; color: var(--ink-dim); line-height: 1.35; }
+      .win { position: absolute; left: 640px; top: 150px; width: 1200px; height: 740px; overflow: hidden;
+        background: var(--panel); border: 2px solid var(--line); border-radius: 24px; box-shadow: 0 40px 120px rgba(0,0,0,0.45); }
+      .win .top { height: 62px; display: flex; align-items: center; justify-content: space-between; padding: 0 28px;
+        border-bottom: 2px solid var(--line); font: 700 18px var(--mono); letter-spacing: 0.1em; color: var(--ink-dim); }
+      .sim { color: var(--watch); border: 2px solid var(--watch); padding: 4px 12px; border-radius: 6px; }
+      .win .rail { position: absolute; left: 0; top: 62px; bottom: 0; width: 86px; border-right: 2px solid var(--line);
+        display: flex; flex-direction: column; align-items: center; gap: 22px; padding-top: 26px; }
+      .win .rail i { display: block; width: 36px; height: 36px; border-radius: 10px; border: 3px solid var(--line); }
+      .win .rail i.on { border-color: var(--accent); background: rgba(143,168,255,0.18); }
+      .win .body { position: absolute; left: 86px; right: 0; top: 62px; bottom: 0; padding: 26px 30px; }
+      .row1 { display: flex; gap: 26px; height: 236px; }
+      .ring { width: 236px; height: 236px; position: relative; flex: none; }
+      .ring svg { width: 236px; height: 236px; }
+      .ring .val { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+      .ring .val b { font: 700 72px var(--mono); line-height: 1; }
+      .ring .val small { font: 700 16px var(--mono); letter-spacing: 0.12em; color: var(--ink-dim); margin-top: 6px; }
+      .brief { flex: 1; background: var(--panel-2); border: 2px solid var(--line); border-radius: 18px; padding: 26px 30px; }
+      .brief .t { font: 700 18px var(--mono); letter-spacing: 0.14em; color: var(--accent); }
+      .brief .s { margin-top: 14px; font-size: 34px; font-weight: 700; line-height: 1.25; }
+      .brief .due { margin-top: 22px; display: flex; gap: 14px; }
+      .btn { display: inline-flex; align-items: center; padding: 12px 22px; border-radius: 12px; background: var(--accent); color: #0a0f1c;
+        font: 700 20px var(--sans); }
+      .btn.ghost { background: transparent; color: var(--ink); border: 2px solid var(--line); }
+      .tiles { margin-top: 22px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+      .tile { height: 176px; background: var(--panel-2); border: 2px solid var(--line); border-radius: 16px; padding: 18px 20px; position: relative; }
+      .tile .n { font: 700 17px var(--mono); letter-spacing: 0.08em; color: var(--ink-dim); text-transform: uppercase; }
+      .tile .v { margin-top: 8px; font: 700 40px var(--mono); letter-spacing: -0.02em; }
+      .tile .v small { font-size: 20px; color: var(--ink-dim); margin-left: 6px; }
+      .tile .chip { position: absolute; left: 18px; bottom: 16px; font-size: 15px; padding: 4px 12px 4px 10px; }
+      .tile .chip .sh { width: 13px; height: 13px; }
+      .tile svg { position: absolute; right: 16px; bottom: 20px; width: 92px; height: 34px; }
+
+      /* ---------- S3 measure ---------- */
+      #s3 .head { position: absolute; left: 100px; top: 140px; right: 100px; display: flex; align-items: center; gap: 24px; }
+      #s3 .head .h1 { font-size: 72px; }
+      #s3 .steps { position: absolute; left: 100px; top: 290px; width: 430px; display: flex; flex-direction: column; gap: 22px; }
+      .step { display: flex; align-items: center; gap: 20px; padding: 20px 24px; border-radius: 18px; border: 2px solid var(--line); background: var(--panel); }
+      .step .k { flex: none; width: 52px; height: 52px; border-radius: 50%; border: 3px solid var(--line); display: flex; align-items: center; justify-content: center;
+        font: 700 24px var(--mono); color: var(--ink-dim); }
+      .step .l { font-size: 28px; font-weight: 700; color: var(--ink-dim); }
+      .step .hl { position: absolute; inset: -2px; border-radius: 18px; border: 3px solid var(--accent); background: rgba(143,168,255,0.10); opacity: 0; }
+      .step { position: relative; }
+      #s3 .gauge { position: absolute; left: 590px; top: 290px; width: 560px; height: 560px; padding: 34px; text-align: center; }
+      #s3 .gauge svg { width: 480px; height: 300px; }
+      #s3 .read { margin-top: -40px; font: 700 96px var(--mono); letter-spacing: -0.03em; }
+      #s3 .read small { font-size: 30px; color: var(--ink-dim); }
+      #s3 .dev { margin-top: 18px; font: 700 20px var(--mono); color: var(--ink-dim); letter-spacing: 0.06em; }
+      #s3 .result { position: absolute; left: 1200px; top: 290px; width: 620px; height: 560px; padding: 36px 38px; }
+      #s3 .result .big { font: 700 84px var(--mono); letter-spacing: -0.03em; margin-top: 18px; }
+      #s3 .result .big small { font-size: 28px; color: var(--ink-dim); }
+      #s3 .result .delta { margin-top: 6px; font: 700 26px var(--mono); color: var(--watch); }
+      #s3 .result .mean { margin-top: 22px; font-size: 30px; line-height: 1.35; }
+      #s3 .result .why { margin-top: 22px; font: 400 19px var(--mono); color: var(--ink-dim); line-height: 1.5; border-top: 2px solid var(--line); padding-top: 16px; }
+
+      /* ---------- S4 body ---------- */
+      #s4 .list { position: absolute; left: 100px; top: 170px; width: 470px; display: flex; flex-direction: column; gap: 14px; }
+      #s4 .list .eyebrow { margin-bottom: 10px; }
+      .reg { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-radius: 14px; background: var(--panel); border: 2px solid var(--line); }
+      .reg span { font-size: 24px; font-weight: 700; }
+      .reg .chip { font-size: 15px; padding: 4px 12px 4px 10px; }
+      .reg .chip .sh { width: 13px; height: 13px; }
+      .reg.sel { border-color: var(--act); }
+      #s4 .stage { position: absolute; left: 610px; top: 130px; width: 620px; height: 780px; overflow: hidden; }
+      #s4 .fig { position: absolute; left: 110px; top: 10px; width: 400px; height: 800px; }
+      #s4 .fig svg { width: 400px; height: 800px; overflow: visible; }
+      #s4 .scan { position: absolute; left: 60px; width: 500px; top: 0; height: 4px; background: var(--accent); opacity: 0.5; }
+      #s4 .callout { position: absolute; }
+      #s4 .rp { position: absolute; left: 1270px; top: 170px; width: 560px; height: 700px; padding: 34px 36px; }
+      #s4 .rp .h1 { font-size: 56px; margin-top: 10px; }
+      #s4 .rp .fn { margin-top: 14px; font-size: 25px; color: var(--ink-dim); line-height: 1.35; }
+      #s4 .rp .m { margin-top: 22px; display: flex; flex-direction: column; gap: 12px; }
+      #s4 .rp .m div { display: flex; justify-content: space-between; font: 700 22px var(--mono); padding-bottom: 10px; border-bottom: 2px solid var(--line); }
+      #s4 .rp .m em { font-style: normal; color: var(--ink-dim); font-weight: 400; }
+      #s4 .rp svg { margin-top: 20px; width: 488px; height: 90px; }
+      #s4 .rp .cause { margin-top: 14px; display: flex; gap: 12px; align-items: center; font-size: 22px; color: var(--ink-dim); }
+
+      /* ---------- S5 recovery ---------- */
+      #s5 .head { position: absolute; left: 100px; top: 140px; }
+      #s5 .card { position: absolute; left: 100px; top: 280px; width: 1040px; height: 420px; padding: 30px 36px; display: flex; flex-direction: column; gap: 14px; }
+      .ck { display: flex; align-items: center; gap: 22px; padding: 14px 0; border-bottom: 2px solid var(--line); }
+      .ck:last-child { border-bottom: none; }
+      .ck .box { position: relative; flex: none; width: 44px; height: 44px; border-radius: 10px; border: 3px solid var(--ink-dim); }
+      .ck .fill { position: absolute; inset: -3px; border-radius: 10px; background: var(--nominal); opacity: 0; }
+      .ck .tick { position: absolute; left: 8px; top: 6px; width: 26px; height: 26px; }
+      .ck .tx { font-size: 32px; font-weight: 700; }
+      .ck .tx em { font-style: normal; font-weight: 400; color: var(--ink-dim); font-size: 24px; margin-left: 12px; }
+      #s5 .timer { position: absolute; left: 1190px; top: 280px; width: 630px; height: 420px; padding: 30px; display: flex; align-items: center; gap: 30px; }
+      #s5 .timer svg { width: 260px; height: 260px; flex: none; }
+      #s5 .timer .t1 { font: 700 20px var(--mono); letter-spacing: 0.14em; color: var(--accent); }
+      #s5 .timer .t2 { margin-top: 10px; font: 700 64px var(--mono); }
+      #s5 .timer .t3 { margin-top: 10px; font-size: 24px; color: var(--ink-dim); line-height: 1.35; }
+      #s5 .esc { position: absolute; left: 100px; right: 100px; top: 740px; height: 132px; padding: 0 34px; display: flex; align-items: center; gap: 28px;
+        border-radius: 20px; border: 3px solid var(--act); background: rgba(240,86,92,0.10); }
+      #s5 .esc .oct { flex: none; width: 60px; height: 60px; background: var(--act); clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%); }
+      #s5 .esc .tx { font-size: 32px; font-weight: 700; line-height: 1.3; flex: 1; }
+      #s5 .esc .src { font: 700 18px var(--mono); color: var(--ink-dim); letter-spacing: 0.06em; text-align: right; }
+
+      /* ---------- S6 ground link ---------- */
+      #s6 .head { position: absolute; left: 100px; top: 140px; }
+      #s6 .lane { position: absolute; left: 100px; right: 100px; top: 420px; height: 300px; }
+      #s6 .node { position: absolute; top: 40px; width: 340px; text-align: center; }
+      #s6 .node .o { width: 150px; height: 150px; margin: 0 auto; border-radius: 50%; }
+      #s6 .node .nl { margin-top: 18px; font: 700 22px var(--mono); letter-spacing: 0.12em; color: var(--ink-dim); }
+      #s6 .shipo { background: var(--panel-2); border: 4px solid var(--accent); }
+      #s6 .eartho { background: radial-gradient(circle at 35% 35%, #9fd3ff, #2f6fd6 60%, #163a7a); }
+      #s6 .dash { position: absolute; left: 260px; right: 260px; top: 113px; height: 4px; transform-origin: left center;
+        background: repeating-linear-gradient(90deg, var(--ink-dim) 0 14px, transparent 14px 28px); }
+      #s6 .lt { position: absolute; left: 0; right: 0; top: 240px; text-align: center; font: 700 22px var(--mono); color: var(--ink-dim); letter-spacing: 0.12em; }
+      #s6 .rep { position: absolute; left: 300px; top: 20px; width: 400px; height: 186px; padding: 20px 24px; background: var(--panel); border: 3px solid var(--accent); border-radius: 18px; }
+      #s6 .rep .a { font: 700 18px var(--mono); letter-spacing: 0.12em; color: var(--accent); }
+      #s6 .rep .b { margin-top: 10px; font-size: 28px; font-weight: 700; line-height: 1.2; }
+      #s6 .rep .c { margin-top: 10px; font: 400 18px var(--mono); color: var(--ink-dim); }
+      #s6 .states { position: absolute; left: 100px; top: 770px; display: flex; align-items: center; gap: 22px; }
+      #s6 .st { position: relative; padding: 12px 22px; border-radius: 12px; border: 2px solid var(--line); font: 700 22px var(--mono); letter-spacing: 0.08em; color: var(--ink-dim); }
+      #s6 .st .on { position: absolute; inset: -2px; border-radius: 12px; border: 3px solid var(--accent); background: rgba(143,168,255,0.14); opacity: 0; }
+      #s6 .st.done .on { border-color: var(--nominal); background: rgba(70,195,139,0.16); }
+      #s6 .arrow { font: 700 26px var(--mono); color: var(--line); }
+      #s6 .eta { margin-left: 34px; font: 700 26px var(--mono); color: var(--ink); }
+
+      /* ---------- S7 close ---------- */
+      #s7 .recap { position: absolute; left: 100px; right: 100px; top: 220px; display: flex; gap: 40px; align-items: center; }
+      #s7 .mini { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+      #s7 .mt { position: relative; height: 118px; padding: 16px 20px; border-radius: 16px; background: var(--panel); border: 2px solid var(--line); }
+      #s7 .mt .n { font: 700 17px var(--mono); color: var(--ink-dim); letter-spacing: 0.08em; text-transform: uppercase; }
+      #s7 .mt .chip { position: absolute; left: 18px; bottom: 14px; font-size: 15px; padding: 4px 12px 4px 10px; }
+      #s7 .mt .chip .sh { width: 13px; height: 13px; }
+      #s7 .mt .was { opacity: 1; }
+      #s7 .mt .now { opacity: 0; }
+      #s7 .lock { position: absolute; left: 0; right: 0; top: 250px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+      #s7 .lock .name { margin-top: 30px; font-weight: 900; font-size: 112px; letter-spacing: -0.04em; line-height: 1; }
+      #s7 .lock .ev { margin-top: 24px; font: 700 28px var(--mono); letter-spacing: 0.14em; color: var(--accent); }
+      #s7 .lock .dis { margin-top: 40px; font-size: 26px; color: var(--ink-dim); max-width: 1200px; line-height: 1.4; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="60" data-width="1920" data-height="1080">
+      <!-- persistent background (untimed) -->
+      <div class="bg" id="bg">
+        <div class="grid" id="grid"></div>
+        <div class="glow" id="glow"></div>
+        <div id="stars"></div>
+      </div>
+
+      <!-- persistent HUD -->
+      <div id="hud" class="clip" data-start="0" data-duration="60" data-track-index="9">
+        <div class="hud">
+          <div class="brand">
+            <svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" fill="none" stroke="#8fa8ff" stroke-width="3"/><polyline points="6,21 14,21 17,13 22,28 25,21 34,21" fill="none" stroke="#e8eef9" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg>
+            ASTRONAUT HEALTH MONITOR
+          </div>
+          <div class="tag">CONCEPT PREVIEW · SIMULATED DATA</div>
+        </div>
+      </div>
+
+      <!-- ================= S1 HOOK 0–7 ================= -->
+      <div id="s1" class="scene clip" data-start="0" data-duration="7" data-track-index="1">
+        <div class="sc" id="s1-sc">
+          <div class="copy">
+            <div class="bar" id="s1-bar">DAY 120 · MARS TRANSIT · COMM DELAY 12 MIN</div>
+            <div class="big"><div class="num" id="s1-num">12</div><div class="unit" id="s1-unit">light-minutes</div></div>
+            <div class="sub" id="s1-sub">from the nearest doctor.</div>
+          </div>
+          <div class="route">
+            <div class="path" id="s1-path"></div>
+            <div class="earth" id="s1-earth"></div>
+            <div class="mars" id="s1-mars"></div>
+            <div class="ship" id="s1-ship"></div>
+            <div class="lbl" style="left: -6px">EARTH</div>
+            <div class="lbl" style="right: 170px">YOU</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= S2 DASHBOARD 7–15.5 ================= -->
+      <div id="s2" class="scene clip" data-start="7" data-duration="8.5" data-track-index="1">
+        <div class="sc" id="s2-sc">
+          <div class="left">
+            <span class="word" id="w1">Check.</span>
+            <span class="word" id="w2">Understand.</span>
+            <span class="word a" id="w3">Act.</span>
+            <p class="note" id="s2-note">A desktop health monitor that works with zero network.</p>
+          </div>
+          <div class="win" id="win">
+            <div class="top"><span>DAY 120 · MARS TRANSIT · DELAY 12 MIN</span><span class="sim">SIMULATED DEMO DATA</span></div>
+            <div class="rail"><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="body">
+              <div class="row1">
+                <div class="ring">
+                  <svg viewBox="0 0 236 236"><circle cx="118" cy="118" r="98" fill="none" stroke="#2a3a5c" stroke-width="18"/>
+                    <circle id="ring-arc" cx="118" cy="118" r="98" fill="none" stroke="#f2b13c" stroke-width="18" stroke-linecap="round" pathLength="100" stroke-dasharray="100 120" stroke-dashoffset="110" transform="rotate(-90 118 118)"/></svg>
+                  <div class="val"><b id="ring-num">0</b><small>READINESS</small></div>
+                </div>
+                <div class="brief" id="brief">
+                  <div class="t">TODAY'S BRIEF</div>
+                  <div class="s">2 measurements due. Sleep has dropped 5 nights in a row.</div>
+                  <div class="due"><span class="btn">Start next measurement</span><span class="btn ghost">See recovery plan</span></div>
+                </div>
+              </div>
+              <div class="tiles" id="tiles">
+                <div class="tile"><div class="n">Blood pressure</div><div class="v">138/88<small>mmHg</small></div><span class="chip wat"><i class="sh"></i>Watch</span><svg viewBox="0 0 92 34"><polyline points="2,28 20,26 38,22 56,18 74,12 90,6" fill="none" stroke="#f2b13c" stroke-width="3"/></svg></div>
+                <div class="tile"><div class="n">Heart rate</div><div class="v">78<small>bpm</small></div><span class="chip wat"><i class="sh"></i>Watch</span><svg viewBox="0 0 92 34"><polyline points="2,26 20,25 38,22 56,20 74,14 90,10" fill="none" stroke="#f2b13c" stroke-width="3"/></svg></div>
+                <div class="tile"><div class="n">SpO₂</div><div class="v">97<small>%</small></div><span class="chip nom"><i class="sh"></i>Nominal</span><svg viewBox="0 0 92 34"><polyline points="2,16 20,15 38,17 56,16 74,15 90,16" fill="none" stroke="#46c38b" stroke-width="3"/></svg></div>
+                <div class="tile"><div class="n">Temperature</div><div class="v">36.8<small>°C</small></div><span class="chip nom"><i class="sh"></i>Nominal</span><svg viewBox="0 0 92 34"><polyline points="2,17 20,16 38,18 56,17 74,16 90,17" fill="none" stroke="#46c38b" stroke-width="3"/></svg></div>
+                <div class="tile"><div class="n">Sleep</div><div class="v">4.6<small>h</small></div><span class="chip act"><i class="sh"></i>Act</span><svg viewBox="0 0 92 34"><polyline points="2,6 20,10 38,14 56,20 74,25 90,30" fill="none" stroke="#f0565c" stroke-width="3"/></svg></div>
+                <div class="tile"><div class="n">Mood / stress</div><div class="v">3<small>/10</small></div><span class="chip wat"><i class="sh"></i>Watch</span><svg viewBox="0 0 92 34"><polyline points="2,8 20,10 38,14 56,18 74,22 90,26" fill="none" stroke="#f2b13c" stroke-width="3"/></svg></div>
+                <div class="tile"><div class="n">Glucose</div><div class="v">96<small>mg/dL</small></div><span class="chip nom"><i class="sh"></i>Nominal</span><svg viewBox="0 0 92 34"><polyline points="2,18 20,16 38,19 56,17 74,18 90,17" fill="none" stroke="#46c38b" stroke-width="3"/></svg></div>
+                <div class="tile"><div class="n">Radiation</div><div class="v">216<small>mSv</small></div><span class="chip nom"><i class="sh"></i>Nominal</span><svg viewBox="0 0 92 34"><polyline points="2,30 20,26 38,22 56,18 74,14 90,10" fill="none" stroke="#46c38b" stroke-width="3"/></svg></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= S3 MEASURE 15.5–25.5 ================= -->
+      <div id="s3" class="scene clip" data-start="15.5" data-duration="10" data-track-index="1">
+        <div class="sc" id="s3-sc">
+          <div class="head" id="s3-head"><div class="h1">Blood pressure</div><span class="hz">ALTERED GRAVITY</span><span class="hz">ISOLATION</span></div>
+          <div class="steps">
+            <div class="step" id="st1"><div class="hl"></div><div class="k">1</div><div class="l">Why it matters in space</div></div>
+            <div class="step" id="st2"><div class="hl"></div><div class="k">2</div><div class="l">How-to video + steps</div></div>
+            <div class="step" id="st3"><div class="hl"></div><div class="k">3</div><div class="l">Take the reading</div></div>
+            <div class="step" id="st4"><div class="hl"></div><div class="k">4</div><div class="l">Result and next step</div></div>
+          </div>
+          <div class="gauge panel" id="gauge">
+            <svg viewBox="0 0 480 300"><path d="M40 270 A200 200 0 0 1 440 270" fill="none" stroke="#2a3a5c" stroke-width="28" stroke-linecap="round"/>
+              <path id="g-arc" d="M40 270 A200 200 0 0 1 440 270" fill="none" stroke="#8fa8ff" stroke-width="28" stroke-linecap="round" pathLength="100" stroke-dasharray="100 120" stroke-dashoffset="110"/></svg>
+            <div class="read"><span id="sys">0</span>/<span id="dia">0</span><small> mmHg</small></div>
+            <div class="dev">BLOOD-PRESSURE MONITOR (SIMULATED)</div>
+          </div>
+          <div class="result panel" id="result">
+            <span class="chip wat"><i class="sh"></i>Watch</span>
+            <div class="big">138/88<small> mmHg</small></div>
+            <div class="delta">+12 vs your baseline</div>
+            <div class="mean">A little above your normal. Rest 10 minutes, then measure again.</div>
+            <div class="why">WHY THIS STATUS? 3-day upward trend · baseline z = 2.1 · source: clinical reference range</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= S4 BODY 25.5–35 ================= -->
+      <div id="s4" class="scene clip" data-start="25.5" data-duration="9.5" data-track-index="1">
+        <div class="sc" id="s4-sc">
+          <div class="list" id="s4-list">
+            <div class="eyebrow">3D Body Report</div>
+            <div class="reg sel" id="r-brain"><span>Brain &amp; sleep</span><span class="chip act"><i class="sh"></i>Act</span></div>
+            <div class="reg" id="r-heart"><span>Heart &amp; vessels</span><span class="chip wat"><i class="sh"></i>Watch</span></div>
+            <div class="reg"><span>Lungs</span><span class="chip nom"><i class="sh"></i>Nominal</span></div>
+            <div class="reg"><span>Bones &amp; muscles</span><span class="chip nom"><i class="sh"></i>Nominal</span></div>
+            <div class="reg"><span>Gut &amp; metabolism</span><span class="chip nom"><i class="sh"></i>Nominal</span></div>
+            <div class="reg"><span>Skin &amp; immune</span><span class="chip nom"><i class="sh"></i>Nominal</span></div>
+          </div>
+          <div class="stage">
+            <div class="fig" id="fig">
+              <svg viewBox="0 0 400 800">
+                <defs>
+                  <radialGradient id="gAct"><stop offset="0" stop-color="#f0565c" stop-opacity="0.95"/><stop offset="1" stop-color="#f0565c" stop-opacity="0"/></radialGradient>
+                  <radialGradient id="gWat"><stop offset="0" stop-color="#f2b13c" stop-opacity="0.95"/><stop offset="1" stop-color="#f2b13c" stop-opacity="0"/></radialGradient>
+                </defs>
+                <g fill="rgba(143,168,255,0.10)" stroke="#8fa8ff" stroke-width="3">
+                  <ellipse cx="200" cy="92" rx="56" ry="66"/>
+                  <path d="M178 156 L222 156 L224 184 L176 184 Z"/>
+                  <path d="M118 190 Q200 170 282 190 L296 430 Q200 458 104 430 Z"/>
+                </g>
+                <g fill="none" stroke="#8fa8ff" stroke-opacity="0.75" stroke-width="34" stroke-linecap="round">
+                  <path d="M114 206 Q84 300 78 430"/>
+                  <path d="M286 206 Q316 300 322 430"/>
+                  <path d="M160 452 L150 760"/>
+                  <path d="M240 452 L250 760"/>
+                </g>
+                <circle id="glow-brain" cx="200" cy="84" r="70" fill="url(#gAct)" opacity="0"/>
+                <circle id="glow-heart" cx="220" cy="262" r="58" fill="url(#gWat)" opacity="0"/>
+              </svg>
+            </div>
+            <div class="scan" id="scan"></div>
+          </div>
+          <div class="rp panel" id="rp">
+            <span class="chip act"><i class="sh"></i>Act</span>
+            <div class="h1">Brain &amp; sleep</div>
+            <div class="fn">Controls mood, focus and reaction time. It recovers during sleep.</div>
+            <div class="m">
+              <div><em>Sleep, 5-night avg</em><span>4.6 h</span></div>
+              <div><em>Mood</em><span>3 / 10</span></div>
+              <div><em>Reaction time</em><span>+18% slower</span></div>
+            </div>
+            <svg viewBox="0 0 488 90"><line x1="0" y1="30" x2="488" y2="30" stroke="#46c38b" stroke-opacity="0.35" stroke-width="22"/>
+              <polyline id="rp-line" points="0,24 80,28 160,40 240,52 320,62 400,72 488,80" fill="none" stroke="#f0565c" stroke-width="5" pathLength="100" stroke-dasharray="100 120" stroke-dashoffset="110"/></svg>
+            <div class="cause">Likely cause <span class="hz">ISOLATION &amp; CONFINEMENT</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= S5 RECOVERY 35–44 ================= -->
+      <div id="s5" class="scene clip" data-start="35" data-duration="9" data-track-index="1">
+        <div class="sc" id="s5-sc">
+          <div class="head" id="s5-head"><div class="eyebrow">Recovery plan</div><div class="h1" style="margin-top: 10px">Brain &amp; sleep</div></div>
+          <div class="card panel" id="s5-card">
+            <div class="ck" id="c1"><div class="box"><div class="fill"></div><svg class="tick" viewBox="0 0 26 26"><polyline points="3,14 10,21 23,5" fill="none" stroke="#0a0f1c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" pathLength="100" stroke-dasharray="100 120" stroke-dashoffset="110"/></svg></div><div class="tx">Lights out at 22:00<em>no screens for 1 h before</em></div></div>
+            <div class="ck" id="c2"><div class="box"><div class="fill"></div><svg class="tick" viewBox="0 0 26 26"><polyline points="3,14 10,21 23,5" fill="none" stroke="#0a0f1c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" pathLength="100" stroke-dasharray="100 120" stroke-dashoffset="110"/></svg></div><div class="tx">20 min morning exercise<em>treadmill or cycle</em></div></div>
+            <div class="ck" id="c3"><div class="box"><div class="fill"></div><svg class="tick" viewBox="0 0 26 26"><polyline points="3,14 10,21 23,5" fill="none" stroke="#0a0f1c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" pathLength="100" stroke-dasharray="100 120" stroke-dashoffset="110"/></svg></div><div class="tx">Crew check-in<em>talk with a crewmate today</em></div></div>
+            <div class="ck" id="c4"><div class="box"><div class="fill"></div><svg class="tick" viewBox="0 0 26 26"><polyline points="3,14 10,21 23,5" fill="none" stroke="#0a0f1c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" pathLength="100" stroke-dasharray="100 120" stroke-dashoffset="110"/></svg></div><div class="tx">No caffeine after 14:00</div></div>
+          </div>
+          <div class="timer panel" id="s5-timer">
+            <svg viewBox="0 0 260 260"><circle cx="130" cy="130" r="108" fill="none" stroke="#2a3a5c" stroke-width="18"/>
+              <circle id="t-arc" cx="130" cy="130" r="108" fill="none" stroke="#8fa8ff" stroke-width="18" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="0" transform="rotate(-90 130 130)"/></svg>
+            <div><div class="t1">RE-MEASURE IN</div><div class="t2"><span id="t-h">4</span> h</div><div class="t3">Sleep, mood and reaction-time test</div></div>
+          </div>
+          <div class="esc" id="esc"><div class="oct"></div><div class="tx">Contact the flight surgeon if still Act after 12 h, or right away if confusion or chest pain occurs.</div><div class="src">SOURCE: DEMO ASSUMPTION</div></div>
+        </div>
+      </div>
+
+      <!-- ================= S6 GROUND LINK 44–51 ================= -->
+      <div id="s6" class="scene clip" data-start="44" data-duration="7" data-track-index="1">
+        <div class="sc" id="s6-sc">
+          <div class="head" id="s6-head"><div class="eyebrow">Ground Link</div><div class="h1" style="margin-top: 10px">Send summary to flight surgeon</div></div>
+          <div class="lane">
+            <div class="dash" id="s6-dash"></div>
+            <div class="lt">12 LIGHT-MINUTES</div>
+            <div class="node" style="left: 0"><div class="o shipo"></div><div class="nl">SPACECRAFT</div></div>
+            <div class="node" style="right: 0"><div class="o eartho"></div><div class="nl">EARTH · FLIGHT SURGEON</div></div>
+            <div class="rep" id="rep"><div class="a">HEALTH SUMMARY · DAY 120</div><div class="b">Brain &amp; sleep: Act. Heart: Watch.</div><div class="c">PDF + JSON · 1 page</div></div>
+          </div>
+          <div class="states">
+            <div class="st" id="q1"><div class="on"></div>QUEUED</div><span class="arrow">→</span>
+            <div class="st" id="q2"><div class="on"></div>IN TRANSIT</div><span class="arrow">→</span>
+            <div class="st done" id="q3"><div class="on"></div>DELIVERED</div>
+            <div class="eta">Arrives in <span id="eta">12</span> min</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= S7 CLOSE 51–60 ================= -->
+      <div id="s7" class="scene clip" data-start="51" data-duration="9" data-track-index="1">
+        <div class="sc" id="s7-sc">
+          <div class="recap" id="recap">
+            <div class="ring" style="width: 236px; height: 236px">
+              <svg viewBox="0 0 236 236"><circle cx="118" cy="118" r="98" fill="none" stroke="#2a3a5c" stroke-width="18"/>
+                <circle id="ring2-arc" cx="118" cy="118" r="98" fill="none" stroke="#46c38b" stroke-width="18" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="28" transform="rotate(-90 118 118)"/></svg>
+              <div class="val"><b id="ring2-num">72</b><small>READINESS</small></div>
+            </div>
+            <div class="mini" id="mini">
+              <div class="mt"><div class="n">Blood pressure</div><span class="chip wat was"><i class="sh"></i>Watch</span><span class="chip nom now"><i class="sh"></i>Nominal</span></div>
+              <div class="mt"><div class="n">Heart rate</div><span class="chip wat was"><i class="sh"></i>Watch</span><span class="chip nom now"><i class="sh"></i>Nominal</span></div>
+              <div class="mt"><div class="n">SpO₂</div><span class="chip nom"><i class="sh"></i>Nominal</span></div>
+              <div class="mt"><div class="n">Temperature</div><span class="chip nom"><i class="sh"></i>Nominal</span></div>
+              <div class="mt"><div class="n">Sleep</div><span class="chip act was"><i class="sh"></i>Act</span><span class="chip nom now"><i class="sh"></i>Nominal</span></div>
+              <div class="mt"><div class="n">Mood / stress</div><span class="chip wat was"><i class="sh"></i>Watch</span><span class="chip nom now"><i class="sh"></i>Nominal</span></div>
+              <div class="mt"><div class="n">Glucose</div><span class="chip nom"><i class="sh"></i>Nominal</span></div>
+              <div class="mt"><div class="n">Radiation</div><span class="chip nom"><i class="sh"></i>Nominal</span></div>
+            </div>
+          </div>
+          <div class="lock" id="lock">
+            <svg id="mark" width="150" height="150" viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" fill="none" stroke="#8fa8ff" stroke-width="2.4"/><polyline points="6,21 14,21 17,13 22,28 25,21 34,21" fill="none" stroke="#e8eef9" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/></svg>
+            <div class="name" id="lk-name">Astronaut Health Monitor</div>
+            <div class="ev" id="lk-ev">NASA SPACE APPS 2026 · THE NEXT FRONTIER</div>
+            <div class="dis" id="lk-dis">Concept preview with simulated data. A decision-support tool, not a medical diagnosis. Consult the flight surgeon.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= CAPTIONS ================= -->
+      <div class="cap clip" id="cap1" data-start="0.6" data-duration="2.3" data-track-index="5"><span>Day one-twenty of a Mars transit.</span></div>
+      <div class="cap clip" id="cap2" data-start="2.9" data-duration="3.6" data-track-index="5"><span>The nearest doctor is twelve light-minutes away.</span></div>
+      <div class="cap clip" id="cap3" data-start="7.4" data-duration="3.99" data-track-index="5"><span>Astronaut Health Monitor lets the crew check, understand,</span></div>
+      <div class="cap clip" id="cap4" data-start="11.39" data-duration="3.6" data-track-index="5"><span>and act on their own health. Completely offline.</span></div>
+      <div class="cap clip" id="cap5" data-start="15.9" data-duration="3.28" data-track-index="5"><span>Every check is guided: why it matters in space,</span></div>
+      <div class="cap clip" id="cap6" data-start="19.18" data-duration="4.3" data-track-index="5"><span>a short how-to, then a reading explained in plain English.</span></div>
+      <div class="cap clip" id="cap7" data-start="25.9" data-duration="1.93" data-track-index="5"><span>The body report shows where.</span></div>
+      <div class="cap clip" id="cap8" data-start="27.83" data-duration="3.66" data-track-index="5"><span>After five nights of poor sleep, the brain flags Act,</span></div>
+      <div class="cap clip" id="cap9" data-start="31.49" data-duration="2.3" data-track-index="5"><span>and the heart turns to Watch.</span></div>
+      <div class="cap clip" id="cap10" data-start="35.4" data-duration="4.18" data-track-index="5"><span>A recovery plan follows. Sleep, exercise, a crew check-in,</span></div>
+      <div class="cap clip" id="cap11" data-start="39.58" data-duration="4.0" data-track-index="5"><span>and a clear rule for when to call the flight surgeon.</span></div>
+      <div class="cap clip" id="cap12" data-start="44.4" data-duration="3.9" data-track-index="5"><span>One click sends a report to Earth, light-delay and all.</span></div>
+      <div class="cap clip" id="cap13" data-start="51.6" data-duration="2.96" data-track-index="5"><span>Days later, everything is back to Nominal.</span></div>
+      <div class="cap clip" id="cap14" data-start="54.56" data-duration="4.6" data-track-index="5"><span>Your health, readable, even millions of kilometres from home.</span></div>
+
+      <!-- ================= VOICE-OVER ================= -->
+      <audio id="vo1" src="assets/vo/line1.wav" data-start="0.6" data-duration="5.66" data-track-index="7"></audio>
+      <audio id="vo2" src="assets/vo/line2.wav" data-start="7.4" data-duration="7.34" data-track-index="7"></audio>
+      <audio id="vo3" src="assets/vo/line3.wav" data-start="15.9" data-duration="7.32" data-track-index="7"></audio>
+      <audio id="vo4" src="assets/vo/line4.wav" data-start="25.9" data-duration="7.6" data-track-index="7"></audio>
+      <audio id="vo5" src="assets/vo/line5.wav" data-start="35.4" data-duration="8.0" data-track-index="7"></audio>
+      <audio id="vo6" src="assets/vo/line6.wav" data-start="44.4" data-duration="3.7" data-track-index="7"></audio>
+      <audio id="vo7" src="assets/vo/line7.wav" data-start="51.6" data-duration="7.26" data-track-index="7"></audio>
+    </div>
+
+    <script>
+      // Seeded star field (deterministic).
+      (function () {
+        let s = 120;
+        const rnd = () => ((s = (s * 16807) % 2147483647) / 2147483647);
+        const host = document.getElementById("stars");
+        for (let i = 0; i < 90; i++) {
+          const d = document.createElement("div");
+          d.className = "star";
+          const size = 2 + Math.floor(rnd() * 3);
+          d.style.width = d.style.height = size + "px";
+          d.style.left = Math.floor(rnd() * 1920) + "px";
+          d.style.top = Math.floor(rnd() * 1080) + "px";
+          d.style.opacity = (0.25 + rnd() * 0.55).toFixed(2);
+          host.appendChild(d);
+        }
+      })();
+
+      const tl = gsap.timeline({ paused: true });
+      const E = "power3.out";
+
+      // ambient background
+      tl.fromTo("#glow", { scale: 0.92, x: -60 }, { scale: 1.08, x: 60, duration: 30, ease: "sine.inOut", yoyo: true, repeat: 1 }, 0);
+      tl.fromTo("#grid", { x: 0, y: 0 }, { x: -120, y: -60, duration: 60, ease: "none" }, 0);
+      tl.fromTo("#stars", { x: 0 }, { x: -80, duration: 60, ease: "none" }, 0);
+      tl.fromTo("#hud .hud", { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 0.1);
+
+      // scene crossfades
+      const scenes = [["#s1-sc", 0, 7], ["#s2-sc", 7, 8.5], ["#s3-sc", 15.5, 10], ["#s4-sc", 25.5, 9.5], ["#s5-sc", 35, 9], ["#s6-sc", 44, 7], ["#s7-sc", 51, 9]];
+      scenes.forEach(([id, st, du], i) => {
+        if (i > 0) tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.45, ease: "power2.out" }, st);
+        if (i < scenes.length - 1) tl.to(id, { opacity: 0, duration: 0.4, ease: "power2.in" }, st + du - 0.45);
+      });
+
+      // ---- S1 ----
+      tl.fromTo("#s1-bar", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 1.3, ease: "steps(26)" }, 0.3);
+      tl.fromTo("#s1-num", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.7, ease: "back.out(1.6)" }, 3.0);
+      tl.fromTo("#s1-unit", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.6, ease: E }, 3.3);
+      tl.fromTo("#s1-sub", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 4.1);
+      tl.fromTo("#s1-path", { scaleX: 0 }, { scaleX: 1, duration: 2.2, ease: "power2.inOut" }, 1.0);
+      tl.fromTo("#s1-earth", { scale: 0 }, { scale: 1, duration: 0.6, ease: "back.out(2)" }, 0.8);
+      tl.fromTo("#s1-mars", { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.0, ease: E }, 1.6);
+      tl.fromTo("#s1-ship", { scale: 0 }, { scale: 1, duration: 0.5, ease: "back.out(2.4)" }, 2.6);
+      tl.to("#s1-ship", { scale: 1.35, duration: 0.6, ease: "sine.inOut", yoyo: true, repeat: 5 }, 3.2);
+
+      // ---- S2 ----
+      tl.fromTo("#win", { opacity: 0, x: 160, rotationY: -16, transformPerspective: 1800 }, { opacity: 1, x: 0, rotationY: 0, duration: 1.2, ease: E }, 7.2);
+      tl.fromTo("#brief", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 8.0);
+      tl.fromTo("#ring-arc", { strokeDashoffset: 110 }, { strokeDashoffset: 28, duration: 1.6, ease: "power2.out" }, 8.2);
+      tl.fromTo("#ring-num", { innerText: 0 }, { innerText: 72, snap: { innerText: 1 }, duration: 1.6, ease: "power2.out" }, 8.2);
+      tl.fromTo("#tiles .tile", { opacity: 0, y: 30, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, stagger: 0.09, ease: "back.out(1.4)" }, 8.6);
+      tl.fromTo("#w1", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.45, ease: E }, 9.5);
+      tl.fromTo("#w2", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.45, ease: E }, 10.2);
+      tl.fromTo("#w3", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(2)" }, 11.4);
+      tl.fromTo("#s2-note", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 12.6);
+      tl.to("#win", { scale: 1.02, duration: 3, ease: "sine.inOut" }, 12.2);
+
+      // ---- S3 ----
+      tl.fromTo("#s3-head", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 15.6);
+      tl.fromTo("#s3 .step", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, stagger: 0.1, ease: "power2.out" }, 15.8);
+      tl.fromTo("#gauge", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 16.1);
+      [["#st1 .hl", 16.4], ["#st2 .hl", 19.2], ["#st3 .hl", 20.4], ["#st4 .hl", 22.4]].forEach(([el, t], i, a) => {
+        tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, t);
+        if (i < a.length - 1) tl.to(el, { opacity: 0, duration: 0.3 }, a[i + 1][1]);
+      });
+      tl.fromTo("#g-arc", { strokeDashoffset: 110 }, { strokeDashoffset: 30, duration: 1.8, ease: "power1.inOut" }, 20.5);
+      tl.fromTo("#sys", { innerText: 0 }, { innerText: 138, snap: { innerText: 1 }, duration: 1.8, ease: "power1.inOut" }, 20.5);
+      tl.fromTo("#dia", { innerText: 0 }, { innerText: 88, snap: { innerText: 1 }, duration: 1.8, ease: "power1.inOut" }, 20.5);
+      tl.fromTo("#result", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.6, ease: "back.out(1.3)" }, 22.1);
+
+      // ---- S4 ----
+      tl.fromTo("#s4-list .reg", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, stagger: 0.08, ease: "power2.out" }, 25.7);
+      tl.fromTo("#fig", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8, ease: E }, 25.6);
+      tl.fromTo("#scan", { y: 0, opacity: 0 }, { y: 760, opacity: 0.6, duration: 2.6, ease: "none" }, 26.2);
+      tl.to("#scan", { opacity: 0, duration: 0.3 }, 28.8);
+      tl.fromTo("#glow-brain", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "power2.out" }, 29.4);
+      tl.to("#glow-brain", { opacity: 0.55, duration: 0.8, ease: "sine.inOut", yoyo: true, repeat: 5 }, 30.0);
+      tl.fromTo("#glow-heart", { opacity: 0 }, { opacity: 0.9, duration: 0.6, ease: "power2.out" }, 31.6);
+      tl.fromTo("#r-brain", { scale: 1 }, { scale: 1.04, duration: 0.3, yoyo: true, repeat: 1, ease: "power1.inOut" }, 29.4);
+      tl.fromTo("#r-heart", { scale: 1 }, { scale: 1.04, duration: 0.3, yoyo: true, repeat: 1, ease: "power1.inOut" }, 31.6);
+      tl.fromTo("#fig", { scale: 1, transformOrigin: "50% 12%" }, { scale: 1.45, duration: 1.4, ease: "power2.inOut" }, 32.0);
+      tl.fromTo("#rp", { opacity: 0, x: 80 }, { opacity: 1, x: 0, duration: 0.6, ease: E }, 32.3);
+      tl.fromTo("#rp-line", { strokeDashoffset: 110 }, { strokeDashoffset: 0, duration: 1.0, ease: "power1.out" }, 32.8);
+
+      // ---- S5 ----
+      tl.fromTo("#s5-head", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 35.1);
+      tl.fromTo("#s5-card", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 35.3);
+      tl.fromTo("#s5-timer", { opacity: 0, x: 50 }, { opacity: 1, x: 0, duration: 0.5, ease: "back.out(1.3)" }, 35.6);
+      [36.4, 37.4, 38.4, 39.4].forEach((t, i) => {
+        const c = "#c" + (i + 1);
+        tl.fromTo(c + " .fill", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2)" }, t);
+        tl.fromTo(c + " .tick polyline", { strokeDashoffset: 110 }, { strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }, t + 0.1);
+        tl.to(c + " .tx", { opacity: 0.55, duration: 0.3 }, t + 0.25);
+      });
+      tl.fromTo("#t-arc", { strokeDashoffset: 0 }, { strokeDashoffset: 25, duration: 7, ease: "none" }, 36);
+      tl.fromTo("#esc", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.4)" }, 39.4);
+
+      // ---- S6 ----
+      tl.fromTo("#s6-head", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 44.1);
+      tl.fromTo("#s6-dash", { scaleX: 0 }, { scaleX: 1, duration: 1.0, ease: "power2.inOut" }, 44.3);
+      tl.fromTo("#q1 .on", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 44.6);
+      tl.to("#q1 .on", { opacity: 0, duration: 0.25 }, 45.6);
+      tl.fromTo("#q2 .on", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 45.6);
+      tl.to("#q2 .on", { opacity: 0, duration: 0.25 }, 49.4);
+      tl.fromTo("#q3 .on", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 49.4);
+      tl.fromTo("#rep", { x: 0, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 44.6);
+      tl.to("#rep", { x: 720, duration: 3.6, ease: "power1.inOut" }, 45.7);
+      tl.fromTo("#eta", { innerText: 12 }, { innerText: 0, snap: { innerText: 1 }, duration: 3.6, ease: "none" }, 45.7);
+      tl.to("#rep", { borderColor: "#46c38b", duration: 0.3 }, 49.3);
+
+      // ---- S7 ----
+      tl.fromTo("#recap", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 51.1);
+      tl.to("#s7 .was", { opacity: 0, duration: 0.25, stagger: 0.25 }, 52.2);
+      tl.to("#s7 .now", { opacity: 1, duration: 0.25, stagger: 0.25 }, 52.2);
+      tl.fromTo("#ring2-arc", { strokeDashoffset: 28 }, { strokeDashoffset: 9, duration: 1.4, ease: "power2.out" }, 52.4);
+      tl.fromTo("#ring2-num", { innerText: 72 }, { innerText: 91, snap: { innerText: 1 }, duration: 1.4, ease: "power2.out" }, 52.4);
+      tl.to("#recap", { opacity: 0, y: -40, duration: 0.5, ease: "power2.in" }, 54.6);
+      tl.fromTo("#mark", { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.8, ease: "back.out(1.8)" }, 55.0);
+      tl.fromTo("#lk-name", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7, ease: E }, 55.3);
+      tl.fromTo("#lk-ev", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 55.7);
+      tl.fromTo("#lk-dis", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 55.6);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

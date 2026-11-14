@@ -1,0 +1,12 @@
+{
+  "regions": [
+    { "id": "brain", "name": "Brain & sleep", "function": "Controls mood, focus, memory and reaction time. It recovers during sleep.", "pos3d": [0, 1.62, 0.02], "radius": 0.15, "pos2d": [100, 34] },
+    { "id": "eyes", "name": "Eyes", "function": "Vision. Fluid shift in weightlessness can change the shape of the eye (SANS).", "pos3d": [0, 1.58, 0.13], "radius": 0.06, "pos2d": [100, 42], "stretch": true },
+    { "id": "heart", "name": "Heart & vessels", "function": "Pumps blood and oxygen around your body. Adapts quickly to changes in gravity.", "pos3d": [0.07, 1.22, 0.1], "radius": 0.12, "pos2d": [108, 118] },
+    { "id": "lungs", "name": "Lungs", "function": "Bring oxygen in and carry CO₂ out. Sensitive to cabin air quality and dust.", "pos3d": [-0.1, 1.25, 0.06], "radius": 0.13, "pos2d": [88, 112] },
+    { "id": "musculoskeletal", "name": "Bones & muscles", "function": "Hold you up and move you. Without gravity they lose strength unless you exercise.", "pos3d": [0.16, 0.55, 0], "radius": 0.13, "pos2d": [118, 300], "stretch": true },
+    { "id": "gut", "name": "Gut & metabolism", "function": "Turns food into energy and controls blood sugar.", "pos3d": [0, 0.98, 0.1], "radius": 0.13, "pos2d": [100, 170] },
+    { "id": "skin", "name": "Skin & immune", "function": "Your first defence against germs. The immune system can weaken in space.", "pos3d": [-0.3, 1.0, 0.02], "radius": 0.08, "pos2d": [60, 190] },
+    { "id": "whole", "name": "Whole body (radiation)", "function": "Radiation passes through every tissue, so its dose is tracked for the whole body.", "pos3d": [0, 0.3, 0], "radius": 0.1, "pos2d": [100, 395] }
+  ]
+}

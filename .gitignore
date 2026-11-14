@@ -1,0 +1,16 @@
+node_modules/
+dist/
+release/
+*.log
+.DS_Store
+coverage/
+# HyperFrames working dirs
+videos/**/node_modules/
+videos/**/.hyperframes/
+videos/**/snaps/
+videos/**/.media/
+*.mp4
+!assets/videos/*.mp4
+.court/
+videos/**/.thumbnails/
+videos/**/assets/vo/*.wav
