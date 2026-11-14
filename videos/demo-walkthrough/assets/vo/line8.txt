@@ -1,0 +1,1 @@
+Then one tap sends a consult packet to the flight surgeon. In solar conjunction, it simply waits in the queue.

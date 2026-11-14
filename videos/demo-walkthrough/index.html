@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "DynaPuff"; font-weight: 600; src: url("assets/fonts/dynapuff-latin-600-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Shantell Sans"; font-weight: 400; src: url("assets/fonts/shantell-sans-latin-400-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Shantell Sans"; font-weight: 700; src: url("assets/fonts/shantell-sans-latin-700-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Shantell Sans"; font-weight: 800; src: url("assets/fonts/shantell-sans-latin-800-normal.woff2") format("woff2"); }
+      :root {
+        --dust: #dad7cd; --sage: #a3b18a; --fern: #588157; --hunter: #3a5a40; --pine: #344e41;
+        --paper: #f6f5f0; --amber: #e0a33a; --red: #b3261e;
+        --display: "DynaPuff", sans-serif; --sans: "Shantell Sans", sans-serif;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--dust); }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--dust); color: var(--pine); font-family: var(--sans); }
+      .scene { position: absolute; inset: 0; }
+      .frame { position: absolute; left: 160px; top: 34px; width: 1600px; height: 900px; border-radius: 22px; overflow: hidden;
+        border: 3px solid var(--pine); background: var(--paper); box-shadow: 0 24px 60px rgba(38,58,48,0.28); opacity: 0; }
+      .shot { position: absolute; inset: 0; opacity: 0; }
+      .zoom { position: absolute; left: 0; top: 0; width: 1600px; height: 900px; transform-origin: 50% 50%; }
+      .zoom img { display: block; width: 1600px; height: 900px; }
+      .ring { position: absolute; width: 130px; height: 130px; margin: -65px 0 0 -65px; border-radius: 50%;
+        border: 6px solid var(--amber); box-shadow: 0 0 0 6px rgba(224,163,58,0.25); opacity: 0; }
+      .cap { position: absolute; left: 0; right: 0; top: 962px; display: flex; justify-content: center; }
+      .cap span { background: var(--pine); color: var(--dust); border-radius: 16px; padding: 12px 30px; font: 700 34px var(--sans); max-width: 1700px; text-align: center; }
+      #intro, #outro { position: absolute; inset: 0; }
+      #intro .t1 { position: absolute; left: 160px; top: 150px; width: 1600px; font: 600 92px/1.08 var(--display); color: var(--pine); }
+      #intro .t1 b { color: var(--hunter); font-weight: 600; }
+      #intro .t2 { position: absolute; left: 160px; top: 420px; font: 700 52px var(--sans); color: var(--red); }
+      #intro .route { position: absolute; left: 200px; right: 200px; top: 640px; height: 200px; }
+      #i-earth { position: absolute; left: 0; top: 50px; width: 96px; height: 96px; border-radius: 50%; background: var(--fern); border: 5px solid var(--pine); }
+      #i-mars { position: absolute; right: 0; top: 30px; width: 136px; height: 136px; border-radius: 50%; background: #c4612f; border: 5px solid #7a3417; }
+      #i-path { position: absolute; left: 120px; right: 160px; top: 96px; height: 6px; transform-origin: left center;
+        background: repeating-linear-gradient(90deg, var(--pine) 0 18px, transparent 18px 34px); }
+      #i-pulse { position: absolute; left: 110px; top: 89px; width: 20px; height: 20px; border-radius: 50%; background: var(--amber); }
+      .lbl { position: absolute; top: 172px; font: 700 30px var(--sans); color: var(--pine); }
+      #outro { background: var(--pine); opacity: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+      #outro .o { font: 600 104px/1.1 var(--display); color: var(--dust); }
+      #outro #o-2 { color: var(--sage); }
+      #outro .meta { margin-top: 54px; font: 700 32px var(--sans); color: var(--dust); opacity: 0.85; }
+      #outro .meta small { display: block; margin-top: 12px; font-weight: 400; font-size: 30px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="77.72" data-width="1920" data-height="1080">
+      <div id="intro" class="clip" data-start="0" data-duration="9.65" data-track-index="1">
+        <p class="t1" id="i-t1">On Mars, Earth's answer takes up to <b><span id="i-min">22</span> minutes</b> each way.</p>
+        <p class="t2" id="i-t2">In solar conjunction: no answer for weeks.</p>
+        <div class="route">
+          <div id="i-path"></div><div id="i-pulse"></div>
+          <div id="i-earth"></div>
+          <div id="i-mars"></div>
+          <span class="lbl" style="left:4px">Earth</span>
+          <span class="lbl" style="right:24px">Mars</span>
+        </div>
+      </div>
+      <div id="sc1" class="scene clip" data-start="9.65" data-duration="6.96" data-track-index="1"><div class="frame" id="sc1f"><div class="shot" id="s1k0"><div class="zoom" id="s1k0z" style="transform-origin:34% 60%"><img src="assets/shots/01-welcome.png" alt="" /><div class="ring" id="s1k0r" style="left:542px;top:538px"></div></div></div><div class="shot" id="s1k1"><div class="zoom" id="s1k1z" style="transform-origin:50% 45%"><img src="assets/shots/02-pick.png" alt="" /></div></div></div></div><div id="sc2" class="scene clip" data-start="16.61" data-duration="7.48" data-track-index="1"><div class="frame" id="sc2f"><div class="shot" id="s2k0"><div class="zoom" id="s2k0z" style="transform-origin:42% 45%"><img src="assets/shots/03-earth.png" alt="" /></div></div></div></div><div id="sc3" class="scene clip" data-start="24.09" data-duration="8.13" data-track-index="1"><div class="frame" id="sc3f"><div class="shot" id="s3k0"><div class="zoom" id="s3k0z" style="transform-origin:50% 40%"><img src="assets/shots/04-today.png" alt="" /></div></div><div class="shot" id="s3k1"><div class="zoom" id="s3k1z" style="transform-origin:40% 82%"><img src="assets/shots/05-filled.png" alt="" /><div class="ring" id="s3k1r" style="left:394px;top:850px"></div></div></div></div></div><div id="sc4" class="scene clip" data-start="32.22" data-duration="11.33" data-track-index="1"><div class="frame" id="sc4f"><div class="shot" id="s4k0"><div class="zoom" id="s4k0z" style="transform-origin:36% 58%"><img src="assets/shots/06-results3d.png" alt="" /><div class="ring" id="s4k0r" style="left:592px;top:496px"></div></div></div><div class="shot" id="s4k1"><div class="zoom" id="s4k1z" style="transform-origin:49% 48%"><img src="assets/shots/08-body2d.png" alt="" /></div></div></div></div><div id="sc5" class="scene clip" data-start="43.55" data-duration="10.1" data-track-index="1"><div class="frame" id="sc5f"><div class="shot" id="s5k0"><div class="zoom" id="s5k0z" style="transform-origin:67% 24%"><img src="assets/shots/07-decision.png" alt="" /><div class="ring" id="s5k0r" style="left:1238px;top:174px"></div></div></div></div></div><div id="sc6" class="scene clip" data-start="53.65" data-duration="6.84" data-track-index="1"><div class="frame" id="sc6f"><div class="shot" id="s6k0"><div class="zoom" id="s6k0z" style="transform-origin:34% 70%"><img src="assets/shots/09-recovery.png" alt="" /></div></div></div></div><div id="sc7" class="scene clip" data-start="60.49" data-duration="8.64" data-track-index="1"><div class="frame" id="sc7f"><div class="shot" id="s7k0"><div class="zoom" id="s7k0z" style="transform-origin:45% 38%"><img src="assets/shots/10-consult.png" alt="" /></div></div><div class="shot" id="s7k1"><div class="zoom" id="s7k1z" style="transform-origin:76% 36%"><img src="assets/shots/11-queued.png" alt="" /><div class="ring" id="s7k1r" style="left:1062px;top:349px"></div></div></div></div></div>
+      <div id="outro" class="clip" data-start="69.13" data-duration="8.59" data-track-index="1">
+        <p class="o" id="o-1">Everything runs on board.</p>
+        <p class="o" id="o-2">Nothing waits for Earth.</p>
+        <p class="meta" id="o-meta">Astronaut Health Monitor · NASA Space Apps 2026<small>Prototype with simulated crew and data. It does not diagnose.</small></p>
+      </div>
+      <div class="cap clip" id="cap0" data-start="0.9" data-duration="4.37" data-track-index="5"><span>On Mars, Earth's answer takes up to twenty-two minutes each way.</span></div>
+      <div class="cap clip" id="cap1" data-start="5.27" data-duration="3.48" data-track-index="5"><span>In solar conjunction, there is no answer for weeks.</span></div>
+      <div class="cap clip" id="cap2" data-start="10.25" data-duration="2.54" data-track-index="5"><span>So the check-up has to happen on board.</span></div>
+      <div class="cap clip" id="cap3" data-start="12.79" data-duration="2.93" data-track-index="5"><span>The app opens with one question: who are you?</span></div>
+      <div class="cap clip" id="cap4" data-start="17.21" data-duration="5.97" data-track-index="5"><span>Ines picks herself, and sees the readings she took on Earth before launch. That is her normal.</span></div>
+      <div class="cap clip" id="cap5" data-start="24.69" data-duration="3.93" data-track-index="5"><span>Next, today's readings. Her wearable has filled most of them.</span></div>
+      <div class="cap clip" id="cap6" data-start="28.62" data-duration="2.71" data-track-index="5"><span>She measures the rest, and rates her mood.</span></div>
+      <div class="cap clip" id="cap7" data-start="32.82" data-duration="2.14" data-track-index="5"><span>Her results light up the body.</span></div>
+      <div class="cap clip" id="cap8" data-start="34.96" data-duration="4.06" data-track-index="5"><span>Heart and skin turn red: a fever, with a fast heart rate.</span></div>
+      <div class="cap clip" id="cap9" data-start="39.02" data-duration="3.63" data-track-index="5"><span>The line drawing marks the same places with arrows.</span></div>
+      <div class="cap clip" id="cap10" data-start="44.15" data-duration="4.26" data-track-index="5"><span>Can it wait for Earth? This fever is safe for about an hour.</span></div>
+      <div class="cap clip" id="cap11" data-start="48.41" data-duration="4.33" data-track-index="5"><span>Earth's reply takes sixty-four minutes. So: act on board now.</span></div>
+      <div class="cap clip" id="cap12" data-start="54.25" data-duration="3.15" data-track-index="5"><span>The crew follows a short, drug-free checklist,</span></div>
+      <div class="cap clip" id="cap13" data-start="57.4" data-duration="2.19" data-track-index="5"><span>and the medical officer decides.</span></div>
+      <div class="cap clip" id="cap14" data-start="61.09" data-duration="3.8" data-track-index="5"><span>Then one tap sends a consult packet to the flight surgeon.</span></div>
+      <div class="cap clip" id="cap15" data-start="64.89" data-duration="3.34" data-track-index="5"><span>In solar conjunction, it simply waits in the queue.</span></div>
+      <div class="cap clip" id="cap16" data-start="69.73" data-duration="3.39" data-track-index="5"><span>Everything runs on board. Nothing waits for Earth.</span></div>
+      <audio id="vo1" src="assets/vo/line1.wav" data-start="0.9" data-duration="7.85" data-track-index="7"></audio>
+      <audio id="vo2" src="assets/vo/line2.wav" data-start="10.25" data-duration="5.46" data-track-index="7"></audio>
+      <audio id="vo3" src="assets/vo/line3.wav" data-start="17.21" data-duration="5.97" data-track-index="7"></audio>
+      <audio id="vo4" src="assets/vo/line4.wav" data-start="24.69" data-duration="6.63" data-track-index="7"></audio>
+      <audio id="vo5" src="assets/vo/line5.wav" data-start="32.82" data-duration="9.83" data-track-index="7"></audio>
+      <audio id="vo6" src="assets/vo/line6.wav" data-start="44.15" data-duration="8.6" data-track-index="7"></audio>
+      <audio id="vo7" src="assets/vo/line7.wav" data-start="54.25" data-duration="5.33" data-track-index="7"></audio>
+      <audio id="vo8" src="assets/vo/line8.wav" data-start="61.09" data-duration="7.15" data-track-index="7"></audio>
+      <audio id="vo9" src="assets/vo/line9.wav" data-start="69.73" data-duration="3.39" data-track-index="7"></audio>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.set("#s1k0", {opacity:1}, 9.65);
+      tl.fromTo("#s1k0z", {scale:1}, {scale:1.16, duration:3.63, ease:"sine.inOut"}, 9.65);
+      tl.fromTo("#s1k0r", {opacity:0, scale:0.4}, {opacity:1, scale:1, duration:0.5, ease:"back.out(2)"}, 10.75);
+      tl.to("#s1k0r", {scale:1.18, duration:0.55, ease:"sine.inOut", yoyo:true, repeat:3}, 11.25);
+      tl.fromTo("#s1k1", {opacity:0}, {opacity:1, duration:0.45, ease:"power2.out"}, 12.78);
+      tl.fromTo("#s1k1z", {scale:1}, {scale:1.08, duration:4.33, ease:"sine.inOut"}, 12.78);
+      tl.fromTo("#sc1f", {opacity:0, y:24}, {opacity:1, y:0, duration:0.5, ease:"power3.out"}, 9.65);
+      tl.to("#sc1f", {opacity:0, duration:0.35, ease:"power2.in"}, 16.26);
+      tl.set("#s2k0", {opacity:1}, 16.61);
+      tl.fromTo("#s2k0z", {scale:1}, {scale:1.14, duration:7.98, ease:"sine.inOut"}, 16.61);
+      tl.fromTo("#sc2f", {opacity:0, y:24}, {opacity:1, y:0, duration:0.5, ease:"power3.out"}, 16.61);
+      tl.to("#sc2f", {opacity:0, duration:0.35, ease:"power2.in"}, 23.74);
+      tl.set("#s3k0", {opacity:1}, 24.09);
+      tl.fromTo("#s3k0z", {scale:1}, {scale:1.08, duration:3.91, ease:"sine.inOut"}, 24.09);
+      tl.fromTo("#s3k1", {opacity:0}, {opacity:1, duration:0.45, ease:"power2.out"}, 27.50);
+      tl.fromTo("#s3k1z", {scale:1}, {scale:1.14, duration:5.22, ease:"sine.inOut"}, 27.50);
+      tl.fromTo("#s3k1r", {opacity:0, scale:0.4}, {opacity:1, scale:1, duration:0.5, ease:"back.out(2)"}, 29.10);
+      tl.to("#s3k1r", {scale:1.18, duration:0.55, ease:"sine.inOut", yoyo:true, repeat:3}, 29.60);
+      tl.fromTo("#sc3f", {opacity:0, y:24}, {opacity:1, y:0, duration:0.5, ease:"power3.out"}, 24.09);
+      tl.to("#sc3f", {opacity:0, duration:0.35, ease:"power2.in"}, 31.87);
+      tl.set("#s4k0", {opacity:1}, 32.22);
+      tl.fromTo("#s4k0z", {scale:1}, {scale:1.26, duration:6.73, ease:"sine.inOut"}, 32.22);
+      tl.fromTo("#s4k0r", {opacity:0, scale:0.4}, {opacity:1, scale:1, duration:0.5, ease:"back.out(2)"}, 33.82);
+      tl.to("#s4k0r", {scale:1.18, duration:0.55, ease:"sine.inOut", yoyo:true, repeat:3}, 34.32);
+      tl.fromTo("#s4k1", {opacity:0}, {opacity:1, duration:0.45, ease:"power2.out"}, 38.45);
+      tl.fromTo("#s4k1z", {scale:1}, {scale:1.16, duration:5.60, ease:"sine.inOut"}, 38.45);
+      tl.fromTo("#sc4f", {opacity:0, y:24}, {opacity:1, y:0, duration:0.5, ease:"power3.out"}, 32.22);
+      tl.to("#sc4f", {opacity:0, duration:0.35, ease:"power2.in"}, 43.20);
+      tl.set("#s5k0", {opacity:1}, 43.55);
+      tl.fromTo("#s5k0z", {scale:1}, {scale:1.36, duration:10.60, ease:"sine.inOut"}, 43.55);
+      tl.fromTo("#s5k0r", {opacity:0, scale:0.4}, {opacity:1, scale:1, duration:0.5, ease:"back.out(2)"}, 45.15);
+      tl.to("#s5k0r", {scale:1.18, duration:0.55, ease:"sine.inOut", yoyo:true, repeat:3}, 45.65);
+      tl.fromTo("#sc5f", {opacity:0, y:24}, {opacity:1, y:0, duration:0.5, ease:"power3.out"}, 43.55);
+      tl.to("#sc5f", {opacity:0, duration:0.35, ease:"power2.in"}, 53.30);
+      tl.set("#s6k0", {opacity:1}, 53.65);
+      tl.fromTo("#s6k0z", {scale:1}, {scale:1.26, duration:7.34, ease:"sine.inOut"}, 53.65);
+      tl.fromTo("#sc6f", {opacity:0, y:24}, {opacity:1, y:0, duration:0.5, ease:"power3.out"}, 53.65);
+      tl.to("#sc6f", {opacity:0, duration:0.35, ease:"power2.in"}, 60.14);
+      tl.set("#s7k0", {opacity:1}, 60.49);
+      tl.fromTo("#s7k0z", {scale:1}, {scale:1.08, duration:4.13, ease:"sine.inOut"}, 60.49);
+      tl.fromTo("#s7k1", {opacity:0}, {opacity:1, duration:0.45, ease:"power2.out"}, 64.12);
+      tl.fromTo("#s7k1z", {scale:1}, {scale:1.42, duration:5.51, ease:"sine.inOut"}, 64.12);
+      tl.fromTo("#s7k1r", {opacity:0, scale:0.4}, {opacity:1, scale:1, duration:0.5, ease:"back.out(2)"}, 65.72);
+      tl.to("#s7k1r", {scale:1.18, duration:0.55, ease:"sine.inOut", yoyo:true, repeat:3}, 66.22);
+      tl.fromTo("#sc7f", {opacity:0, y:24}, {opacity:1, y:0, duration:0.5, ease:"power3.out"}, 60.49);
+      tl.to("#sc7f", {opacity:0, duration:0.35, ease:"power2.in"}, 68.78);
+      tl.fromTo("#cap0 span", {opacity:0, y:10}, {opacity:1, y:0, duration:0.25, ease:"power2.out"}, 0.90);
+      tl.fromTo("#cap1 span", {opacity:0, y:10}, {opacity:1, y:0, duration:0.25, ease:"power2.out"}, 5.27);
+      tl.fromTo("#cap2 span", {opacity:0, y:10}, {opacity:1, y:0, duration:0.25, ease:"power2.out"}, 10.25);
+      tl.fromTo("#cap3 span", {opacity:0, y:10}, {opacity:1, y:0, duration:0.25, ease:"power2.out"}, 12.79);
+      tl.fromTo("#cap4 span", {opacity:0, y:10}, {opacity:1, y:0, duration:0.25, ease:"power2.out"}, 17.21);
+      tl.fromTo("#cap5 span", {opacity:0, y:10}, {opacity:1, y:0, duration:0.25, ease:"power2.out"}, 24.69);
+      tl.fromTo("#cap6 span", {opacity:0, y:10}, {opacity:1, y:0, duration:0.25, ease:"power2.out"}, 28.62);
+      tl.fromTo("#cap7 span", {opacity:0, y:10}, {opacity:1, y:0, duration:0.25, ease:"power2.out"}, 32.82);
+      tl.fromTo("#cap8 span", {opacity:0, y:10}, {opacity:1, y:0, duration:0.25, ease:"power2.out"}, 34.96);
+      tl.fromTo("#cap9 span", {opacity:0, y:10}, {opacity:1, y:0, duration:0.25, ease:"power2.out"}, 39.02);
+      tl.fromTo("#cap10 span", {opacity:0, y:10}, {opacity:1, y:0, duration:0.25, ease:"power2.out"}, 44.15);
+      tl.fromTo("#cap11 span", {opacity:0, y:10}, {opacity:1, y:0, duration:0.25, ease:"power2.out"}, 48.41);
+      tl.fromTo("#cap12 span", {opacity:0, y:10}, {opacity:1, y:0, duration:0.25, ease:"power2.out"}, 54.25);
+      tl.fromTo("#cap13 span", {opacity:0, y:10}, {opacity:1, y:0, duration:0.25, ease:"power2.out"}, 57.40);
+      tl.fromTo("#cap14 span", {opacity:0, y:10}, {opacity:1, y:0, duration:0.25, ease:"power2.out"}, 61.09);
+      tl.fromTo("#cap15 span", {opacity:0, y:10}, {opacity:1, y:0, duration:0.25, ease:"power2.out"}, 64.89);
+      tl.fromTo("#cap16 span", {opacity:0, y:10}, {opacity:1, y:0, duration:0.25, ease:"power2.out"}, 69.73);
+      tl.fromTo("#i-earth", {scale:0}, {scale:1, duration:0.6, ease:"back.out(2)"}, 0.3);
+      tl.fromTo("#i-path", {scaleX:0}, {scaleX:1, duration:2.4, ease:"power2.inOut"}, 0.7);
+      tl.fromTo("#i-mars", {scale:0.5, opacity:0}, {scale:1, opacity:1, duration:0.8, ease:"power3.out"}, 1.6);
+      tl.fromTo("#i-pulse", {x:0, opacity:1}, {x:1240, duration:2.6, ease:"none", repeat:2}, 3.1);
+      tl.fromTo("#i-t1", {opacity:0, y:40}, {opacity:1, y:0, duration:0.7, ease:"power3.out"}, 0.90);
+      tl.fromTo("#i-min", {innerText:0}, {innerText:22, snap:{innerText:1}, duration:2.2, ease:"power2.out"}, 2.10);
+      tl.fromTo("#i-t2", {opacity:0, y:24}, {opacity:1, y:0, duration:0.6, ease:"power2.out"}, 5.23);
+      tl.to("#i-pulse", {opacity:0, duration:0.3}, 5.23);
+      tl.to("#i-path", {opacity:0.25, duration:0.6}, 5.23);
+      tl.to("#intro", {opacity:0, duration:0.35, ease:"power2.in"}, 9.30);
+      tl.fromTo("#outro", {opacity:0}, {opacity:1, duration:0.5}, 69.13);
+      tl.fromTo("#o-1", {opacity:0, y:40}, {opacity:1, y:0, duration:0.7, ease:"power3.out"}, 69.53);
+      tl.fromTo("#o-2", {opacity:0, y:40}, {opacity:1, y:0, duration:0.7, ease:"power3.out"}, 71.43);
+      tl.fromTo("#o-meta", {opacity:0}, {opacity:1, duration:0.6}, 70.13);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
