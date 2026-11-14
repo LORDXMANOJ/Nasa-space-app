@@ -1,38 +1,38 @@
-/* App shell: navigation rail, mission bar, footer, presenter panel. */
+/* App shell in the procedure-sheet world: binder tab rail, ruled title-block strip, document footer. */
 .rail {
   grid-area: rail;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 2px;
-  padding: var(--sp-3) var(--sp-2);
+  padding: 0 0 var(--sp-3);
   background: var(--surface-0);
-  border-right: var(--bw) solid var(--border);
+  border-right: var(--bw) solid var(--border-strong);
   overflow-y: auto;
 }
 .rail-brand {
   display: grid;
   place-items: center;
-  height: calc(var(--bar-h) - var(--sp-3));
+  height: var(--bar-h);
   margin-bottom: var(--sp-2);
-  color: var(--accent);
+  border-bottom: var(--bw-strong) solid var(--rule);
+  color: var(--text);
 }
 .rail a {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: var(--sp-2) 2px;
-  min-height: 60px;
+  gap: 3px;
+  padding: var(--sp-2) 4px;
+  min-height: 58px;
   justify-content: center;
-  border-radius: var(--r-md);
   color: var(--text-dim);
   text-decoration: none;
   font-size: 0.72rem;
-  font-weight: 500;
+  font-weight: 600;
   text-align: center;
   line-height: 1.15;
+  border-left: 4px solid transparent;
   transition:
     background var(--dur) var(--ease-out),
     color var(--dur) var(--ease-out);
@@ -40,83 +40,79 @@
 .rail a svg {
   width: 22px;
   height: 22px;
+  stroke-width: 1.75;
 }
 .rail a:hover {
   background: var(--surface-2);
   color: var(--text);
 }
 .rail a.active {
-  background: var(--accent-wash);
+  border-left-color: var(--text);
+  background: var(--surface-2);
   color: var(--text);
-}
-.rail a.active::before {
-  content: "";
-  position: absolute;
-  left: -8px;
-  top: 14px;
-  bottom: 14px;
-  width: 3px;
-  border-radius: 0 3px 3px 0;
-  background: var(--accent);
+  font-weight: 800;
 }
 .rail .dot {
   position: absolute;
-  top: 6px;
-  right: 14px;
+  top: 8px;
+  right: 18px;
   width: 9px;
   height: 9px;
-  border-radius: 50%;
   background: var(--act);
-  box-shadow: 0 0 0 2px var(--surface-0);
 }
 
+/* Title block: ruled cells, like the header strip of a procedure page. */
 .bar {
   grid-area: bar;
   display: flex;
-  align-items: center;
-  gap: var(--sp-5);
-  padding: 0 var(--sp-6) 0 var(--sp-8);
-  border-bottom: var(--bw) solid var(--border);
+  align-items: stretch;
+  border-bottom: var(--bw-strong) solid var(--rule);
   background: var(--surface-0);
   font-size: var(--fs-sm);
   color: var(--text-dim);
   white-space: nowrap;
   overflow: hidden;
 }
-.bar strong {
-  color: var(--text);
-  font-weight: 600;
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-}
-.bar .crew {
-  color: var(--text);
-  font-weight: 600;
-}
-.bar .sep {
-  width: var(--bw);
-  height: 22px;
-  background: var(--border);
-}
 .bar .item {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
+  padding: 0 var(--sp-5);
+  border-right: var(--bw) solid var(--border-strong);
+}
+.bar .item:first-child {
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 .bar .item svg {
   width: 16px;
   height: 16px;
 }
+.bar .sep {
+  display: none;
+}
+.bar strong {
+  color: var(--text);
+  font-weight: 700;
+}
+.bar .crew {
+  color: var(--text);
+  font-weight: 700;
+}
+.bar .spacer {
+  flex: 1;
+}
 .sim-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px;
-  border: var(--bw) solid var(--watch);
-  border-radius: var(--r-sm);
-  color: var(--watch);
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  padding: 0 var(--sp-5);
+  background: var(--watch-fill);
+  color: var(--text);
+  font-weight: 800;
+  letter-spacing: 0.08em;
   font-size: 0.75rem;
 }
 
@@ -125,8 +121,8 @@
   display: flex;
   align-items: center;
   gap: var(--sp-3);
-  padding: 0 var(--sp-8);
-  border-top: var(--bw) solid var(--border);
+  padding: 0 var(--sp-6);
+  border-top: var(--bw) solid var(--border-strong);
   background: var(--surface-0);
   font-size: var(--fs-sm);
   color: var(--text-dim);
@@ -145,30 +141,27 @@
   right: var(--sp-6);
   top: calc(var(--bar-h) + var(--sp-4));
   z-index: 70;
-  width: 360px;
+  width: 380px;
   padding: var(--sp-5);
-  border-radius: var(--r-lg);
-  background: var(--surface-3);
-  border: var(--bw) solid var(--accent);
+  background: var(--surface-0);
+  border: var(--bw-strong) solid var(--text);
   box-shadow: var(--shadow-pop);
-  animation: slide-in var(--dur-slow) var(--ease-out);
 }
 .presenter h2 {
-  font-size: var(--fs-md);
+  font-size: var(--fs-sm);
 }
 .presenter .seg button {
-  white-space: nowrap;
   padding: 0 var(--sp-3);
 }
 .kbd {
   display: inline-block;
   min-width: 1.6em;
-  padding: 1px 6px;
-  border-radius: 5px;
-  border: var(--bw) solid var(--border-strong);
-  background: var(--surface-2);
-  font-family: var(--font-mono);
+  padding: 0 6px;
+  border: var(--bw) solid var(--text-dim);
+  border-bottom-width: 2px;
+  background: var(--surface-0);
   font-size: var(--fs-label);
+  font-weight: 700;
   text-align: center;
 }
 

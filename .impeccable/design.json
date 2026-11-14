@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-14T11:00:00Z",
+  "title": "Design System: Astronaut Health Monitor",
+  "extensions": {
+    "colorMeta": {
+      "ink": { "role": "neutral", "displayName": "Ink" },
+      "paper": { "role": "neutral", "displayName": "Paper" },
+      "binder": { "role": "neutral", "displayName": "Binder grey" },
+      "procedure-blue": { "role": "primary", "displayName": "Procedure blue" },
+      "warning-red": { "role": "status", "displayName": "Warning red" },
+      "caution-amber": { "role": "status", "displayName": "Caution amber" },
+      "nominal": { "role": "status", "displayName": "Nominal green" }
+    },
+    "typographyMeta": {
+      "page-title": { "displayName": "Page title", "purpose": "One per screen, sentence case." },
+      "section-heading": { "displayName": "Section heading", "purpose": "Caps heading under a 2px ink rule." },
+      "block-label": { "displayName": "Block label", "purpose": "WARNING / CAUTION / NOTE strip." }
+    },
+    "shadows": [{ "name": "pop", "value": "0 18px 48px rgba(16,19,24,0.18)", "purpose": "Modals, popovers, presenter panel only." }],
+    "motion": [{ "name": "ease-out", "value": "cubic-bezier(0.2, 0.8, 0.2, 1)", "purpose": "State changes, 100 to 220 ms." }],
+    "breakpoints": [
+      { "name": "stack-dashboard", "value": "1100px" },
+      { "name": "stack-panels", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main action on a screen, e.g. Start daily check-in.",
+      "html": "<button class=\"ds-btn\">Start daily check-in</button>",
+      "css": ".ds-btn { background: #0b4f9c; color: #fff; border: 2px solid #0b4f9c; border-radius: 0; height: 44px; padding: 0 20px; font: 700 16px 'Public Sans', sans-serif; } .ds-btn:hover { background: #083d7a; border-color: #083d7a; }"
+    },
+    {
+      "name": "Warning Block",
+      "kind": "custom",
+      "refersTo": "block-warning-head",
+      "description": "Most urgent Act alert, leads the page.",
+      "html": "<section class=\"ds-block\"><div class=\"ds-block-head\">WARNING</div><div class=\"ds-block-body\">Fever with fast heart rate. Act on board now.</div></section>",
+      "css": ".ds-block { border: 2px solid #b3261e; background: #fff; font-family: 'Public Sans', sans-serif; } .ds-block-head { background: #b3261e; color: #fff; text-align: center; font-weight: 800; letter-spacing: .18em; font-size: 14px; padding: 4px; } .ds-block-body { padding: 20px 24px; color: #101318; }"
+    },
+    {
+      "name": "Status Mark",
+      "kind": "chip",
+      "refersTo": "status-mark",
+      "description": "Shape + word + colour, never colour alone.",
+      "html": "<span class=\"ds-mark\">&#9650; WATCH</span>",
+      "css": ".ds-mark { color: #8a5300; font: 800 13px 'Public Sans', sans-serif; letter-spacing: .06em; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The crew procedure page",
+    "overview": "Every screen is one white procedure sheet on a grey binder ground: rules, tables, numbered steps and standard WARNING / CAUTION blocks instead of cards. The most urgent alert leads; the Can-this-wait-for-Earth timing table is the signature.",
+    "keyCharacteristics": ["Paper and ink", "Zero radius", "Status colour only for status", "Public Sans throughout", "Tables and steps, not cards"],
+    "rules": [
+      { "name": "The status-only rule", "body": "Red, amber and green appear only in status marks, WARNING / CAUTION blocks and the safe-wait bar.", "section": "colors" },
+      { "name": "Rules, not boxes", "body": "Sections are separated by 2px ink rules; nothing floats in a rounded card.", "section": "elevation" }
+    ],
+    "dos": ["Lead with the most urgent block", "Use tables and numbered steps", "Pair colour with shape and word"],
+    "donts": ["No cards, rounded corners, gradients or glows", "No status colours as decoration", "No label above the page title"]
+  }
+}

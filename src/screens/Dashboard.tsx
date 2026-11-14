@@ -1,37 +1,41 @@
 /**
- * Mission Dashboard: answers "Am I OK, and what do I do next?" in three seconds.
- * Today's brief + one primary action, readiness ring with "Why?", the most urgent alert with its
- * "Can this wait for Earth?" Decision Panel, the nine indicator tiles, and light gamification (routine only).
+ * Dashboard as a crew procedure page: the most urgent alert first as a WARNING / CAUTION block with the
+ * "Can this wait for Earth?" timing table, then today's line and primary action, then the readings log (a table,
+ * not cards), other alerts, and routine patches. Answers "Am I OK, and what do I do next?" in three seconds.
  */
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Award, CheckCircle2, ChevronDown, GraduationCap, Satellite, Stethoscope } from "lucide-react";
+import { CheckCircle2, ChevronDown, Circle, GraduationCap, OctagonAlert, Satellite, Stethoscope, TriangleAlert } from "lucide-react";
 import { INDICATORS } from "../data";
-import { IndicatorTile } from "../components/IndicatorTile";
 import { DecisionPanel } from "../components/DecisionPanel";
-import { StatusBadge, StatusShape } from "../components/status";
-import { ReadinessRing } from "../components/ui";
+import { StatusBadge } from "../components/status";
+import { Sparkline } from "../components/ui";
 import { BASELINE_DAYS } from "../engine/detectors";
+import { formatDuration } from "../engine/missions";
+import { ago, displayValue, formatPrimary } from "../lib/format";
 import { useHealth } from "../store/health";
 import { useMission } from "../store/mission";
 
 export function Dashboard() {
   const h = useHealth();
+  const settings = useMission((s) => s.settings);
   const completions = useMission((s) => s.completions);
   const outbox = useMission((s) => s.outbox);
   const checks = useMission((s) => s.checks);
   const [why, setWhy] = useState(false);
 
   const top = h.alerts[0];
+  const rest = h.alerts.slice(1);
   const dueIds = new Set(h.due.map((d) => d.id));
   const firstName = h.profile.name.split(" ")[0];
   const totalDone = Object.values(completions).reduce((a, b) => a + b, 0);
-  const badges = [
+  const patches = [
     { id: "first", label: "First check-in", earned: totalDone > 0 },
     { id: "full", label: "Full check-in day", earned: h.due.length === 0 },
     { id: "recovery", label: "Recovery step done", earned: Object.values(checks).some(Boolean) },
     { id: "ground", label: "Consult Packet sent", earned: outbox.length > 0 },
   ];
+  const score = h.readiness.score;
 
   return (
     <div className="page">
@@ -42,140 +46,224 @@ export function Dashboard() {
             {h.profile.role}. Day {h.day}, {h.link.preset.name}.
           </p>
         </div>
-      </div>
-
-      {h.learning && (
-        <div className="banner banner--info learning" style={{ marginBottom: "var(--sp-5)" }}>
-          <GraduationCap aria-hidden />
-          <span>
-            Learning your normal: days 1 to {BASELINE_DAYS} teach the app your personal baseline. Until then only the fixed safety rules can flag
-            anything.
+        <div className="readiness">
+          <span className="label">Crew readiness</span>
+          <span className="figure">
+            {score}
+            <small> / 100</small>
           </span>
-        </div>
-      )}
-
-      <section className="dash-hero">
-        <div className="card reveal">
-          <div className="label">Today's brief</div>
-          <p className="brief-text">{h.brief}</p>
-          <div className="row" style={{ marginTop: "var(--sp-5)" }}>
-            {h.due.length > 0 ? (
-              <Link className="btn btn--primary btn--lg" to="/checkin">
-                <Stethoscope aria-hidden /> Start daily check-in (~1 min)
-              </Link>
-            ) : (
-              <span className="row" style={{ color: "var(--nominal)", fontWeight: 600 }}>
-                <CheckCircle2 aria-hidden /> Check-in done for today
-              </span>
-            )}
-            {top && (
-              <Link className={`btn btn--lg${top.status === "act" ? " btn--danger" : ""}`} to="/recovery">
-                Open the plan
-              </Link>
-            )}
+          <div className="meter" role="img" aria-label={`Readiness ${score} of 100`}>
+            <span style={{ width: `${score}%` }} />
+            <i style={{ left: "65%" }} title="Watch below 65" />
+            <i style={{ left: "85%" }} title="Nominal from 85" />
           </div>
-          {h.due.length > 0 && (
-            <div className="due">
-              <span className="label">Still to take</span>
-              {h.due.map((d) => (
-                <Link key={d.id} className="chip" to={`/measure/${d.id}`}>
-                  {d.shortName}
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="card ready reveal">
-          <ReadinessRing score={h.readiness.score} />
-          <div className="stack" style={{ gap: "var(--sp-2)", flex: 1, minWidth: 160 }}>
-            <div className="label">Crew readiness</div>
-            <p className="dim">One number for how ready you are for today's work, from all nine indicators.</p>
-            <button className="btn btn--ghost btn--sm" aria-expanded={why} onClick={() => setWhy((w) => !w)} style={{ alignSelf: "flex-start" }}>
-              Why {h.readiness.score}? <ChevronDown style={{ transform: why ? "rotate(180deg)" : undefined }} />
-            </button>
-          </div>
+          <button className="btn btn--ghost btn--sm" aria-expanded={why} onClick={() => setWhy((w) => !w)}>
+            Why {score}? <ChevronDown width={14} style={{ transform: why ? "rotate(180deg)" : undefined }} />
+          </button>
           {why && (
             <ul className="why-list">
               {h.readiness.breakdown
                 .filter((b) => b.loss > 0)
                 .map((b) => (
                   <li key={b.indicator.id}>
-                    <StatusBadge status={b.status} />
-                    <span>{b.indicator.shortName}</span>
-                    <span className="num dim">−{b.loss.toFixed(1)}</span>
+                    <span>
+                      <StatusBadge status={b.status} /> {b.indicator.shortName}
+                    </span>
+                    <span className="num">−{b.loss.toFixed(1)}</span>
                   </li>
                 ))}
               {h.readiness.breakdown.every((b) => b.loss === 0) && <li className="dim">Nothing is pulling your score down.</li>}
-              <li className="dim" style={{ fontSize: "var(--fs-sm)" }}>
-                Each indicator has a weight. Watch costs half of it, Act all of it, Stale a quarter. <Link to="/how#readiness">How it works</Link>
+              <li className="dim">
+                Watch costs half an indicator's weight, Act all of it. <Link to="/how#readiness">How it works</Link>
               </li>
             </ul>
           )}
         </div>
-      </section>
+      </div>
+
+      {h.learning && (
+        <div className="banner banner--info learning" style={{ marginBottom: "var(--sp-6)" }}>
+          <GraduationCap aria-hidden />
+          <span>
+            Learning your normal: days 1 to {BASELINE_DAYS} teach the app your personal baseline. Until then only the fixed safety rules can flag anything.
+          </span>
+        </div>
+      )}
 
       {top && (
-        <section className="card reveal" style={{ marginTop: "var(--sp-5)" }} aria-labelledby="top-alert">
-          <div className="alert-card">
-            <div className="row">
-              <span className={`s-${top.status}`}>
-                <StatusShape status={top.status} size={22} />
-              </span>
-              <h2 id="top-alert">{top.title}</h2>
-              <StatusBadge status={top.status} />
-              <span className="spacer" style={{ flex: 1 }} />
-              <span className="chip">Detector: {top.detector}</span>
-              <span className="chip">Confidence: {top.confidence}</span>
+        <section className={`block block--${top.status}`} aria-labelledby="top-alert" style={{ marginBottom: "var(--sp-8)" }}>
+          <div className="block-head">
+            {top.status === "act" ? <OctagonAlert aria-hidden /> : <TriangleAlert aria-hidden />}
+            {top.status === "act" ? "Warning" : "Caution"}
+          </div>
+          <div className="block-body alert-grid">
+            <div className="stack" style={{ gap: "var(--sp-3)" }}>
+              <div className="alert-head">
+                <h3 id="top-alert">{top.title}</h3>
+                <StatusBadge status={top.status} large />
+              </div>
+              <p>{top.reason}</p>
+              <p className="meta">
+                <span>
+                  Detector <b>{top.detector}</b>
+                </span>
+                <span>
+                  Confidence <b>{top.confidence}</b>
+                </span>
+              </p>
+              <div className="row" style={{ marginTop: "var(--sp-2)" }}>
+                <Link className={`btn${top.status === "act" ? " btn--danger" : " btn--primary"}`} to="/recovery">
+                  Open the plan
+                </Link>
+                <Link className="btn" to="/consult">
+                  Build Consult Packet
+                </Link>
+              </div>
             </div>
-            <p style={{ color: "var(--text-soft)", maxWidth: "85ch" }}>{top.reason}</p>
-            <DecisionPanel
-              title={top.title}
-              tHarmMin={top.tHarmMin}
-              tHarmSource={top.tHarmSource}
-              assumption={top.assumption}
-              reply={h.link.reply}
-              verdict={top.verdict}
-            />
-            {h.alerts.length > 1 && (
-              <Link to="/recovery" className="btn btn--ghost btn--sm" style={{ alignSelf: "flex-start" }}>
-                See all {h.alerts.length} alerts and their plans
-              </Link>
-            )}
+            <DecisionPanel title={top.title} tHarmMin={top.tHarmMin} tHarmSource={top.tHarmSource} assumption={top.assumption} reply={h.link.reply} verdict={top.verdict} compact />
           </div>
         </section>
       )}
 
-      <section aria-labelledby="vitals" style={{ marginTop: "var(--sp-8)" }}>
-        <div className="row" style={{ marginBottom: "var(--sp-4)" }}>
-          <h2 id="vitals">Your indicators</h2>
-          <span className="spacer" style={{ flex: 1 }} />
-          <Link to="/trends" className="btn btn--ghost btn--sm">
-            All trends
-          </Link>
-        </div>
-        <div className="tiles">
-          {INDICATORS.map((ind) => (
-            <IndicatorTile key={ind.id} ind={ind} evaluation={h.evals[ind.id]} readings={h.history[ind.id]} day={h.day} due={dueIds.has(ind.id)} />
-          ))}
-        </div>
-      </section>
+      <div className="dash-grid">
+        <div className="stack" style={{ gap: "var(--sp-8)" }}>
+          <section className="card" aria-labelledby="today">
+            <h2 id="today">Today</h2>
+            <p className="brief-text" style={{ marginTop: "var(--sp-2)" }}>
+              {h.brief}
+            </p>
+            <div className="row" style={{ marginTop: "var(--sp-4)" }}>
+              {h.due.length > 0 ? (
+                <Link className="btn btn--primary btn--lg" to="/checkin">
+                  <Stethoscope aria-hidden /> Start daily check-in
+                </Link>
+              ) : (
+                <span className="row" style={{ color: "var(--nominal)", fontWeight: 700 }}>
+                  <CheckCircle2 aria-hidden /> Check-in done for today
+                </span>
+              )}
+              {h.due.length > 0 && (
+                <span className="due">
+                  <span className="dim">Still to take:</span>
+                  {h.due.map((d) => (
+                    <Link key={d.id} className="chip" to={`/measure/${d.id}`}>
+                      {d.shortName}
+                    </Link>
+                  ))}
+                </span>
+              )}
+            </div>
+          </section>
 
-      <section className="dash-foot" aria-label="Routine and Consult Packets">
-        <div className="card card--tight row" aria-label="Mission patches for keeping the routine">
-          <Award aria-hidden style={{ color: "var(--accent)" }} />
-          <span className="label">Routine patches</span>
-          {badges.map((b) => (
-            <span key={b.id} className={`patch${b.earned ? " is-earned" : ""}`} title={b.earned ? "Earned for keeping the routine" : "Not earned yet"}>
-              {b.label}
-            </span>
-          ))}
+          <section className="card" aria-labelledby="readings">
+            <div className="row">
+              <h2 id="readings">Readings</h2>
+              <span className="spacer" />
+              <Link to="/trends" className="btn btn--ghost btn--sm">
+                All trends
+              </Link>
+            </div>
+            <table className="table readings">
+              <thead>
+                <tr>
+                  <th scope="col">Reading</th>
+                  <th scope="col">Latest</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Last 10</th>
+                  <th scope="col">Measured</th>
+                  <th scope="col">
+                    <span className="sr-only">Action</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {INDICATORS.map((ind) => {
+                  const list = h.history[ind.id];
+                  const latest = list[list.length - 1];
+                  const v = formatPrimary(ind, latest?.values, settings);
+                  const s = h.evals[ind.id].status;
+                  return (
+                    <tr key={ind.id} className={`is-${s}`}>
+                      <td>
+                        <Link to={`/trends?ind=${ind.id}`} className="tile-link">
+                          {ind.shortName}
+                        </Link>
+                      </td>
+                      <td className="num">
+                        {v.text}
+                        <span className="unit">{v.unit}</span>
+                      </td>
+                      <td>
+                        <StatusBadge status={s} />
+                      </td>
+                      <td className="spark-cell">
+                        <Sparkline values={list.slice(-10).map((r) => displayValue(ind, r.values[0], settings))} status={s} height={24} />
+                      </td>
+                      <td className="dim">{ago(h.day, latest?.day)}</td>
+                      <td style={{ textAlign: "right" }}>
+                        {dueIds.has(ind.id) ? (
+                          <Link className="btn btn--sm btn--primary" to={`/measure/${ind.id}`}>
+                            Measure
+                          </Link>
+                        ) : (
+                          <Link className="btn btn--sm btn--ghost" to={`/measure/${ind.id}`}>
+                            How to
+                          </Link>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </section>
         </div>
-        <Link to="/consult" className="card card--tight row ground-mini">
-          <Satellite aria-hidden />
-          <span>{outbox.length === 0 ? "No Consult Packets sent yet" : `${outbox.length} Consult Packet${outbox.length > 1 ? "s" : ""} in the outbox`}</span>
-        </Link>
-      </section>
+
+        <aside className="stack" style={{ gap: "var(--sp-8)" }}>
+          <section className="card" aria-labelledby="others">
+            <h2 id="others">Other alerts</h2>
+            {rest.length === 0 ? (
+              <p className="dim">None.</p>
+            ) : (
+              <ul className="why-list" style={{ marginTop: "var(--sp-2)" }}>
+                {rest.map((a) => (
+                  <li key={a.id}>
+                    <Link to="/recovery" className="tile-link">
+                      <StatusBadge status={a.status} /> {a.title}
+                    </Link>
+                    <span className="dim" title="Safe wait">
+                      {formatDuration(a.tHarmMin)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          <section className="card" aria-labelledby="routine">
+            <h2 id="routine">Routine</h2>
+            <ul className="why-list" style={{ marginTop: "var(--sp-2)" }}>
+              {patches.map((p) => (
+                <li key={p.id}>
+                  <span className={`patch${p.earned ? " is-earned" : ""}`}>
+                    {p.earned ? <CheckCircle2 aria-hidden style={{ color: "var(--nominal)" }} /> : <Circle aria-hidden />}
+                    {p.label}
+                  </span>
+                  <span className="sr-only">{p.earned ? "earned" : "not yet"}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="card" aria-labelledby="packets">
+            <h2 id="packets">Consult Packets</h2>
+            <Link to="/consult" className="row tile-link" style={{ marginTop: "var(--sp-2)" }}>
+              <Satellite width={18} aria-hidden />
+              {outbox.length === 0 ? "None sent yet" : `${outbox.length} in the outbox`}
+            </Link>
+          </section>
+        </aside>
+      </div>
     </div>
   );
 }

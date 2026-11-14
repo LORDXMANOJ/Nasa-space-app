@@ -96,30 +96,29 @@ export function Shell({ children }: { children: ReactNode }) {
       </nav>
 
       <header className="bar">
+        <span className="item">Health check</span>
         <span className="item">
           <Activity aria-hidden />
           <span>
             Day <strong>{day}</strong>
           </span>
         </span>
-        <span className="sep" />
         <span className="item">{env.name}</span>
-        <span className="sep" />
         <span className="item" title="Time to get an answer from the flight surgeon on Earth (signal out + review + signal back)">
           <Satellite aria-hidden />
           {health.link.conjunction ? (
-            <span style={{ color: "var(--act)", fontWeight: 600 }}>No contact: solar conjunction</span>
+            <span style={{ color: "var(--act)", fontWeight: 700 }}>No contact: solar conjunction</span>
           ) : (
             <>
               Earth reply <strong>{formatDuration(health.link.reply.totalMin)}</strong>
             </>
           )}
         </span>
-        <span className="sep" />
         <span className="item">
           <span className="crew">{health.profile.name}</span>
+          <span>{health.profile.role}</span>
         </span>
-        <span className="spacer" style={{ flex: 1 }} />
+        <span className="spacer" />
         {lowPower && (
           <span className="item" title="Low-power mode: 3D and animation off">
             <Zap aria-hidden />

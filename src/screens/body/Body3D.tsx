@@ -11,8 +11,8 @@ import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { REGIONS, type RegionId } from "../../data";
 import type { Status } from "../../engine/alerts";
 
-const HEX: Record<Status, string> = { nominal: "#46c38b", watch: "#f2b13c", act: "#f0565c", stale: "#7a869a" };
-const SKIN = new THREE.MeshStandardMaterial({ color: "#8fa8ff", transparent: true, opacity: 0.2, roughness: 0.6, metalness: 0.1, emissive: "#24315e", emissiveIntensity: 0.4, depthWrite: false });
+const HEX: Record<Status, string> = { nominal: "#1d6b43", watch: "#f2b13c", act: "#b3261e", stale: "#9aa1ab" };
+const SKIN = new THREE.MeshStandardMaterial({ color: "#8b94a3", transparent: true, opacity: 0.32, roughness: 0.8, metalness: 0, depthWrite: false });
 
 interface Props {
   status: Record<RegionId, Status>;
@@ -42,7 +42,7 @@ function Figure() {
       <Part pos={[0.1, 0.42, 0]} r={0.065} len={0.7} />
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
         <ringGeometry args={[0.45, 0.47, 64]} />
-        <meshBasicMaterial color="#2a3a5c" />
+        <meshBasicMaterial color="#c7ccd3" />
       </mesh>
     </group>
   );
@@ -56,7 +56,7 @@ function Hotspot({ id, s, selected, onSelect, reduced }: { id: RegionId; s: Stat
     const k = 1 + Math.sin(clock.elapsedTime * 2.6) * 0.12;
     ref.current.scale.setScalar(k);
   });
-  const opacity = s === "act" ? 0.7 : s === "watch" ? 0.55 : s === "nominal" ? 0.22 : 0.1;
+  const opacity = s === "act" ? 0.85 : s === "watch" ? 0.8 : s === "nominal" ? 0.35 : 0.18;
   return (
     <group position={r.pos3d}>
       <mesh
@@ -69,12 +69,12 @@ function Hotspot({ id, s, selected, onSelect, reduced }: { id: RegionId; s: Stat
         onPointerOut={() => (document.body.style.cursor = "")}
       >
         <sphereGeometry args={[r.radius * 0.72, 24, 16]} />
-        <meshBasicMaterial color={HEX[s]} transparent opacity={opacity} blending={THREE.AdditiveBlending} depthWrite={false} />
+        <meshBasicMaterial color={HEX[s]} transparent opacity={opacity} depthWrite={false} />
       </mesh>
       {selected && (
         <mesh>
           <torusGeometry args={[r.radius * 0.72 + 0.035, 0.007, 8, 48]} />
-          <meshBasicMaterial color="#e8eef9" />
+          <meshBasicMaterial color="#101318" />
         </mesh>
       )}
     </group>

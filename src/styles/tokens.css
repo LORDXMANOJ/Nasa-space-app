@@ -1,68 +1,74 @@
 /*
- * Design tokens. Three layers: primitive → semantic → component.
- * Components use semantic/component tokens only; never raw hex values.
- * Themes: default (dark), [data-theme="hc"] (high contrast). [data-text="large"] scales rem by 125 %.
+ * Design tokens: the "crew procedure sheet" world.
+ * White paper on a light grey binder ground, near-black ink, one procedure-blue for actions.
+ * Status colours live only inside status marks and WARNING / CAUTION blocks. Zero radius: paper has no rounded corners.
+ * Themes: default (paper), [data-theme="hc"] (high contrast). [data-text="large"] scales rem by 125 %.
  */
 :root {
   /* ---- primitives ---- */
-  --p-space-950: #0a0f1c;
-  --p-space-900: #0e1526;
-  --p-space-850: #111a2e;
-  --p-space-800: #17223a;
-  --p-space-750: #1d2a46;
-  --p-space-700: #2a3a5c;
-  --p-space-600: #3a4d75;
-  --p-mist-400: #9aa8c4;
-  --p-mist-200: #c9d4ea;
-  --p-mist-100: #e8eef9;
-  --p-peri-400: #8fa8ff;
-  --p-peri-300: #b0c2ff;
-  --p-green-400: #46c38b;
+  --p-ink-950: #101318;
+  --p-ink-800: #2b313a;
+  --p-ink-600: #4d5562;
+  --p-ink-500: #5f6876;
+  --p-rule-300: #c7ccd3;
+  --p-rule-200: #dde1e6;
+  --p-paper: #ffffff;
+  --p-binder: #e9ecef;
+  --p-binder-dark: #dfe3e7;
+  --p-blue-700: #0b4f9c;
+  --p-blue-800: #083d7a;
+  --p-blue-50: #e8f0fa;
+  --p-green-700: #1d6b43;
+  --p-amber-700: #8a5300;
   --p-amber-400: #f2b13c;
-  --p-red-400: #f0565c;
-  --p-slate-400: #7a869a;
+  --p-amber-50: #fff6e0;
+  --p-red-700: #b3261e;
+  --p-red-50: #fdecea;
+  --p-slate-500: #6b7380;
 
   /* ---- semantic ---- */
-  --bg: var(--p-space-950);
-  --surface-0: var(--p-space-900);
-  --surface-1: var(--p-space-850);
-  --surface-2: var(--p-space-800);
-  --surface-3: var(--p-space-750);
-  --border: var(--p-space-700);
-  --border-strong: var(--p-space-600);
-  --text: var(--p-mist-100);
-  --text-dim: var(--p-mist-400);
-  --text-soft: var(--p-mist-200);
-  --accent: var(--p-peri-400);
-  --accent-hover: var(--p-peri-300);
-  --accent-ink: var(--p-space-950);
-  --accent-wash: rgba(143, 168, 255, 0.14);
-  --focus: var(--p-peri-300);
+  --bg: var(--p-binder);
+  --surface-0: var(--p-paper);
+  --surface-1: var(--p-paper);
+  --surface-2: #f4f6f8;
+  --surface-3: var(--p-binder-dark);
+  --border: var(--p-rule-200);
+  --border-strong: var(--p-rule-300);
+  --rule: var(--p-ink-950);
+  --text: var(--p-ink-950);
+  --text-soft: var(--p-ink-800);
+  --text-dim: var(--p-ink-600);
+  --accent: var(--p-blue-700);
+  --accent-hover: var(--p-blue-800);
+  --accent-ink: #ffffff;
+  --accent-wash: var(--p-blue-50);
+  --focus: var(--p-blue-700);
 
-  --nominal: var(--p-green-400);
-  --watch: var(--p-amber-400);
-  --act: var(--p-red-400);
-  --stale: var(--p-slate-400);
-  --nominal-wash: rgba(70, 195, 139, 0.12);
-  --watch-wash: rgba(242, 177, 60, 0.12);
-  --act-wash: rgba(240, 86, 92, 0.13);
-  --stale-wash: rgba(122, 134, 154, 0.14);
+  --nominal: var(--p-green-700);
+  --watch: var(--p-amber-700);
+  --act: var(--p-red-700);
+  --stale: var(--p-slate-500);
+  --watch-fill: var(--p-amber-400);
+  --nominal-wash: #e8f4ee;
+  --watch-wash: var(--p-amber-50);
+  --act-wash: var(--p-red-50);
+  --stale-wash: #eef0f2;
 
-  --shadow-pop: 0 24px 60px rgba(2, 6, 16, 0.55);
-  --backdrop: rgba(5, 8, 16, 0.72);
+  --shadow-pop: 0 18px 48px rgba(16, 19, 24, 0.18);
+  --backdrop: rgba(16, 19, 24, 0.45);
 
   /* ---- type ---- */
-  --font-sans: "IBM Plex Sans", system-ui, "Segoe UI", sans-serif;
+  --font-sans: "Public Sans", system-ui, "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", monospace;
-  --fs-label: 0.8125rem; /* 13: status pills and table headers only */
+  --fs-label: 0.8125rem; /* 13: status marks and table headers */
   --fs-sm: 0.875rem; /* 14 */
   --fs-base: 1rem; /* 16 */
   --fs-md: 1.125rem; /* 18 */
-  --fs-lg: 1.375rem; /* 22 */
-  --fs-xl: 1.75rem; /* 28 */
-  --fs-2xl: 2.25rem; /* 36 */
-  --fs-3xl: 3rem; /* 48: vitals hero */
-  --fs-4xl: 4rem; /* 64 */
+  --fs-lg: 1.25rem; /* 20 */
+  --fs-xl: 1.5rem; /* 24 */
+  --fs-2xl: 2rem; /* 32 */
+  --fs-3xl: 2.75rem; /* 44: readiness figure */
+  --fs-4xl: 3.5rem; /* 56 */
 
   /* ---- space (4px base) ---- */
   --sp-1: 0.25rem;
@@ -75,54 +81,48 @@
   --sp-10: 2.5rem;
   --sp-12: 3rem;
 
-  /* ---- shape ---- */
-  --r-sm: 6px;
-  --r-md: 10px;
-  --r-lg: 12px;
-  --r-xl: 16px; /* radius rule: cards 16, inner panels 12, controls 10, chips 6, status pills full */
-  --r-pill: 999px;
-  --bw: 1.5px;
+  /* ---- shape: paper has no rounded corners ---- */
+  --r-sm: 0;
+  --r-md: 0;
+  --r-lg: 0;
+  --r-xl: 0;
+  --r-pill: 0;
+  --bw: 1px;
+  --bw-strong: 2px;
 
   /* ---- motion ---- */
-  --dur-fast: 120ms;
-  --dur: 180ms;
-  --dur-slow: 240ms;
+  --dur-fast: 100ms;
+  --dur: 160ms;
+  --dur-slow: 220ms;
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-in-out: cubic-bezier(0.6, 0, 0.3, 1);
 
   /* ---- component ---- */
   --target-min: 44px;
-  --target-primary: 56px;
-  --rail-w: 92px;
-  --bar-h: 60px;
-  --footer-h: 36px;
+  --target-primary: 52px;
+  --rail-w: 88px;
+  --bar-h: 52px;
+  --footer-h: 34px;
 }
 
 [data-theme="hc"] {
-  --bg: #050912;
-  --surface-0: #050912;
-  --surface-1: #0a1020;
-  --surface-2: #0f172b;
-  --surface-3: #16203a;
-  --border: #c9d4ea;
-  --border-strong: #ffffff;
-  --text: #ffffff;
-  --text-dim: #dfe6f5;
-  --text-soft: #ffffff;
-  --accent: #b9c9ff;
-  --accent-hover: #d6e0ff;
-  --focus: #ffe066;
-  --nominal: #5ef0ad;
-  --watch: #ffc94d;
-  --act: #ff7b80;
-  --stale: #b6c0d0;
-  --nominal-wash: transparent;
-  --watch-wash: transparent;
-  --act-wash: transparent;
-  --stale-wash: transparent;
-  --accent-wash: transparent;
-  --backdrop: rgba(0, 0, 0, 0.9);
+  --bg: #ffffff;
+  --surface-2: #ffffff;
+  --surface-3: #ffffff;
+  --border: #101318;
+  --border-strong: #101318;
+  --text-soft: #000000;
+  --text-dim: #1d2128;
+  --text: #000000;
+  --accent: #003a80;
+  --accent-hover: #002855;
+  --focus: #000000;
+  --nominal: #0b4d2c;
+  --watch: #5c3800;
+  --act: #8c120c;
+  --stale: #33383f;
   --bw: 2px;
+  --bw-strong: 3px;
 }
 
 [data-text="large"] {

@@ -6,7 +6,7 @@ On long missions, help from Earth is minutes to weeks away. This app is a one-mi
 
 > Not a medical device. It flags and explains; it does not diagnose and never gives doses. The Crew Medical Officer decides.
 
-![Dashboard](docs/screenshots/05-dashboard-day23.png)
+![Dashboard](docs/screenshots/01-dashboard.png)
 
 ## Run it
 
