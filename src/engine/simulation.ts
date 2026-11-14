@@ -90,10 +90,11 @@ export function storyDrift(story: StoryId, key: string, day: number): number {
       if (day < 21) return 0;
       const n = Math.min(day, 25) - 20;
       const fade = day > 25 ? Math.max(0, 1 - (day - 25) * 0.25) : 1;
-      if (key === "sleep.hours") return -0.45 * n * fade;
+      if (key === "sleep.hours") return -0.5 * n * fade;
       if (key === "sleep.quality") return -0.7 * n * fade;
-      if (key === "mood.mood") return -0.75 * n * fade;
+      if (key === "mood.mood") return -0.6 * n * fade;
       if (key === "mood.reaction") return 12 * n * fade;
+      if (key === "hr.hr") return 1.6 * n * fade; // stress
       return 0;
     }
     case "bp-creep": {

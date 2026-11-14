@@ -51,7 +51,7 @@ describe("drift detectors", () => {
     expect(cusum(Array.from({ length: 20 }, (_, i) => ({ day: i, z: 0 }))).alarm).toBeNull();
     const r = cusum(Array.from({ length: 20 }, (_, i) => ({ day: i, z: 1.5 })));
     expect(r.alarm).toBe("up");
-    expect(r.alarmSinceDay).toBe(6); // (1.5 − 0.5) per day crosses h = 6 on the 7th value
+    expect(r.alarmSinceDay).toBe(8); // (1.5 − 0.75) per day crosses h = 6 on the 9th value
   });
   it("CUSUM ignores skipped readings", () => {
     const r = cusum([{ day: 1, z: NaN }, { day: 2, z: NaN }]);
@@ -99,12 +99,14 @@ describe("crew stories", () => {
     expect(naive).toBeGreaterThan(14);
   });
 
-  it("Priya (isolation): a detector flags the slide before the sleep rule", () => {
+  it("Priya (isolation): the slide is flagged within 2 days of starting, detectors confirm it, sleep-loss Act on day 25", () => {
     const s = story("raman");
-    const firstDetector = [21, 22, 23, 24, 25].find((d) => s.at(d).alerts.some((a) => a.kind !== "rule"));
-    const firstRule = [21, 22, 23, 24, 25, 26].find((d) => s.at(d).alerts.some((a) => a.kind === "rule"));
-    expect(firstDetector).toBeDefined();
-    expect(firstDetector!).toBeLessThan(firstRule ?? 99);
+    expect(s.at(20).alerts).toEqual([]);
+    const first = [21, 22, 23].find((d) => s.at(d).alerts.length > 0);
+    expect(first).toBeDefined();
+    const d24 = s.at(24);
+    expect(d24.alerts.some((a) => a.kind === "unusual" || a.kind === "drift")).toBe(true);
+    expect(s.at(25).alerts.some((a) => a.card?.id === "sleep-loss")).toBe(true);
   });
 
   it("Hana (BP creep): only the drift detector catches it; forecast ~13 days → can wait for Earth", () => {

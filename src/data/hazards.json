@@ -66,42 +66,38 @@
         "isolation",
         "distance",
         "gravity"
-      ],
-      "commDelayDays": 14
+      ]
     },
     {
       "id": "station",
-      "name": "Space station (low Earth orbit)",
+      "name": "Space station (ISS orbit)",
       "doseRate": 0.5,
       "emphasis": [
         "gravity",
         "hostile",
         "isolation"
-      ],
-      "commDelayDays": 0
+      ]
     },
     {
       "id": "rover",
-      "name": "Pressurised rover",
+      "name": "Lunar rover / Moon",
       "doseRate": 0.7,
       "emphasis": [
         "hostile",
         "isolation",
         "radiation"
-      ],
-      "commDelayDays": 3
+      ]
     },
     {
       "id": "base",
-      "name": "Lunar / Mars base",
+      "name": "Mars base",
       "doseRate": 0.7,
       "emphasis": [
         "gravity",
         "hostile",
         "radiation"
-      ],
-      "commDelayDays": 7
+      ]
     }
   ],
-  "environmentNote": "Dose rates are simulation inputs: ~1.8 mSv/day in Mars cruise (Zeitlin et al. 2013); surface values are rounded demo assumptions (TODO verify). Report turnaround (commDelayDays) includes relay scheduling and blackouts such as Mars solar conjunction (~2 weeks); it is a demo assumption, not the raw light-time."
+  "environmentNote": "Dose rates are simulation inputs: ~1.8 mSv/day in Mars cruise (Zeitlin et al. 2013); station and surface values are rounded demo assumptions (TODO verify). Earth reply times come from the mission presets in src/engine/missions.ts."
 }

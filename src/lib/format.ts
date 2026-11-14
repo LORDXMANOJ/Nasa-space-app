@@ -15,7 +15,8 @@ function convert(ind: Indicator, v: number, settings: Settings): { v: number; un
   const wantsAlt =
     ind.altUnit &&
     ((ind.altUnit.unit === "°F" && settings.tempUnit === "°F") ||
-      (ind.altUnit.unit === "mmol/L" && settings.glucoseUnit === "mmol/L"));
+      (ind.altUnit.unit === "mmol/L" && settings.glucoseUnit === "mmol/L") ||
+      (ind.altUnit.unit === "lb" && settings.weightUnit === "lb"));
   if (wantsAlt && ind.altUnit) {
     return { v: v * ind.altUnit.factor + ind.altUnit.offset, unit: ind.altUnit.unit, decimals: ind.altUnit.decimals };
   }

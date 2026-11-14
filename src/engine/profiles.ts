@@ -71,7 +71,7 @@ export const PROFILES: CrewProfile[] = [
     story: "isolation",
     storyTitle: "Sleep and mood slip over five days",
     storySummary:
-      "From day 21 Priya sleeps less and her mood drops a little each day (isolation hazard). The drift and unusual-day detectors catch it before the sleep rule fires on day 25.",
+      "From day 21 Priya sleeps less and her mood drops a little each day (isolation hazard). On day 22 the sleep Watch rule flags it (short sleep that is also unusual for her); by day 24 both detectors confirm the slide, and on day 25 the sleep-loss card asks for action.",
     days: { min: 11, max: 30, focus: 25 },
     baselines: base({ "sleep.hours": { mean: 7.2, sd: 0.4 }, "mood.mood": { mean: 7.2, sd: 0.7 }, "weight.mass": { mean: 58.5, sd: 0.4 } }),
   },

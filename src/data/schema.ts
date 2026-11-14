@@ -88,8 +88,6 @@ export const hazardsFileSchema = z.object({
       id: z.enum(["spacecraft", "station", "rover", "base"]),
       name: z.string(),
       doseRate: z.number(),
-      /** Report turnaround to Earth in days (relay schedule + blackouts), demo assumption. */
-      commDelayDays: z.number(),
       emphasis: z.array(z.enum(HAZARD_IDS)),
     }),
   ),

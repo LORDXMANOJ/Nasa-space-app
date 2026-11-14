@@ -1,0 +1,75 @@
+/**
+ * Root: hash router (works from file:// for the later Electron build), theme/accessibility attributes
+ * on <html>, first-run onboarding, and the screen routes. Heavy screens (3D body, charts) load lazily.
+ */
+import { lazy, Suspense, useEffect } from "react";
+import { HashRouter, Route, Routes, useLocation } from "react-router-dom";
+import { Shell } from "./layout/Shell";
+import { Onboarding } from "./layout/Onboarding";
+import { useMission } from "./store/mission";
+import { Dashboard } from "./screens/Dashboard";
+import { MeasureList, MeasureFlow } from "./screens/Measure";
+import { Recovery } from "./screens/Recovery";
+import { Hazards } from "./screens/Hazards";
+import { Consult } from "./screens/Consult";
+import { HowItDecides } from "./screens/HowItDecides";
+import { Assistant } from "./screens/Assistant";
+import { CheckIn } from "./screens/CheckIn";
+import { Settings } from "./screens/Settings";
+import { DevComponents } from "./screens/DevComponents";
+
+const BodyReport = lazy(() => import("./screens/BodyReport"));
+const Trends = lazy(() => import("./screens/Trends"));
+
+function ScrollTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    document.getElementById("main")?.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
+function useHtmlAttributes() {
+  const s = useMission((st) => st.settings);
+  useEffect(() => {
+    const h = document.documentElement;
+    h.dataset.theme = s.highContrast ? "hc" : "dark";
+    h.dataset.text = s.largeText ? "large" : "normal";
+    h.dataset.motion = s.reducedMotion || s.lowPower ? "reduced" : "full";
+    h.dataset.lowpower = String(s.lowPower);
+  }, [s]);
+}
+
+export function App() {
+  useHtmlAttributes();
+  const hydrated = useMission((s) => s.hydrated);
+  const onboarded = useMission((s) => s.onboarded);
+  if (!hydrated) return null;
+  return (
+    <HashRouter>
+      <ScrollTop />
+      <Shell>
+        <Suspense fallback={<div className="page dim">Loading…</div>}>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/measure" element={<MeasureList />} />
+            <Route path="/measure/:id" element={<MeasureFlow />} />
+            <Route path="/body" element={<BodyReport />} />
+            <Route path="/recovery" element={<Recovery />} />
+            <Route path="/trends" element={<Trends />} />
+            <Route path="/hazards" element={<Hazards />} />
+            <Route path="/checkin" element={<CheckIn />} />
+            <Route path="/consult" element={<Consult />} />
+            <Route path="/how" element={<HowItDecides />} />
+            <Route path="/sources" element={<HowItDecides />} />
+            <Route path="/assistant" element={<Assistant />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/dev/components" element={<DevComponents />} />
+            <Route path="*" element={<Dashboard />} />
+          </Routes>
+        </Suspense>
+      </Shell>
+      {!onboarded && <Onboarding />}
+    </HashRouter>
+  );
+}

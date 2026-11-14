@@ -32,6 +32,8 @@ export const statusRank = (s: Status) => RANK[s];
 
 export const Z_LIMIT = 2;
 export const TREND_SD_PER_DAY = 0.5;
+/** A core Watch limit only fires when the value is also this many sd from the person's own normal. */
+export const WATCH_GATE_Z = 2;
 
 /** Which direction is "bad" for a metric, read from its threshold bands. */
 export function badDirection(m: Metric): "high" | "low" | "both" {
@@ -89,7 +91,22 @@ function evaluateMetric(
   const results: MetricResult[] = [];
   const dir = badDirection(m);
 
-  const th = thresholdStatus(v, m);
+  let th = thresholdStatus(v, m);
+  // Personal gating: for detector-handled (core) metrics, a Watch limit only counts if the value is also
+  // unusual for THIS person. Act limits are safety rules and always count.
+  if (th === "watch" && skipStats && baseline && baseline.sd > 0) {
+    const zz = (v - baseline.mean) / baseline.sd;
+    const badZ = dir === "both" ? Math.abs(zz) : dir === "high" ? zz : -zz;
+    if (badZ < WATCH_GATE_Z) {
+      th = "nominal";
+      results.push({
+        status: "nominal",
+        rule: "none",
+        priority: 0,
+        reason: `${m.label} ${fmt(v, m)} is past the general Watch limit, but it is normal for you (within your own range), so it is not flagged.`,
+      });
+    }
+  }
   if (th !== "nominal") {
     const side = (m.red.high !== undefined && v >= m.red.high) || (m.amber.high !== undefined && v >= m.amber.high);
     const limit = th === "act" ? (side ? m.red.high : m.red.low) : side ? m.amber.high : m.amber.low;
@@ -132,7 +149,9 @@ function evaluateMetric(
     }
   }
 
-  if (results.length === 0) {
+  if (results.length === 0 || results.every((r) => r.status === "nominal")) {
+    const personal = results.find((r) => r.status === "nominal");
+    if (personal) return personal;
     return { status: "nominal", rule: "none", priority: 0, reason: `${m.label} ${fmt(v, m)} is within your normal range.` };
   }
   results.sort((a, b) => RANK[b.status] - RANK[a.status] || b.priority - a.priority);

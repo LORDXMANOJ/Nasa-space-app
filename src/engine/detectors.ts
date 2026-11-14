@@ -41,9 +41,12 @@ export const SD_FLOOR: Record<string, number> = {
   "weight.mass": 0.4,
   "weight.change": 0.5,
 };
-/** CUSUM reference value k and decision limit h, in standard deviations (chosen with the Monte Carlo check). */
-export const CUSUM_K = 0.5;
-export const CUSUM_H = 6;
+/**
+ * Tuning constants, chosen with the Monte Carlo check (src/engine/validate.ts) and documented in HOW_IT_DECIDES.md.
+ * covScale inflates the 10-day covariance to allow for estimating it from so few days.
+ * CUSUM uses reference value k and decision limit h, in (inflated) standard deviations.
+ */
+export const TUNING = { covScale: 1.35, zScale: 1.3, k: 0.75, h: 6 };
 /** Only forecast when the drift would reach the Act limit within this many days. */
 export const FORECAST_HORIZON_DAYS = 60;
 
@@ -81,7 +84,8 @@ export function learnCoreBaseline(history: Record<string, Reading[]>): CoreBasel
   const { mean, sd } = columnStats(rows, CORE_KEYS.length);
   const sdF = sd.map((s, i) => Math.max(Number.isFinite(s) ? s : 0, SD_FLOOR[CORE_KEYS[i]]));
   const { R, lambda } = shrunkCorrelation(rows, mean, sdF);
-  return { keys: CORE_KEYS, mean, sd: sdF, R, cov: covFromCorr(R, sdF), lambda, days: BASELINE_DAYS };
+  const cov = covFromCorr(R, sdF).map((row) => row.map((v) => v * TUNING.covScale));
+  return { keys: CORE_KEYS, mean, sd: sdF, R, cov, lambda, days: BASELINE_DAYS };
 }
 
 /** Per-metric personal baseline (mean, floored sd) for every metric, from mission days 1–10. */
@@ -133,7 +137,7 @@ export interface CusumResult {
 }
 
 /** Detector 2: two-sided CUSUM. S⁺ = max(0, S⁺ + z − k), S⁻ = max(0, S⁻ − z − k); alarm when either exceeds h. */
-export function cusum(zs: { day: number; z: number }[], k = CUSUM_K, h = CUSUM_H, side: "both" | "high" | "low" = "both"): CusumResult {
+export function cusum(zs: { day: number; z: number }[], k = TUNING.k, h = TUNING.h, side: "both" | "high" | "low" = "both"): CusumResult {
   let sPlus = 0;
   let sMinus = 0;
   let alarmSinceDay: number | null = null;
@@ -202,12 +206,12 @@ export function runDetectors(history: Record<string, Reading[]>, day: number): D
     const pts: { x: number; y: number }[] = [];
     for (let d = BASELINE_DAYS + 1; d <= day; d++) {
       const v = valueOn(history, key, d);
-      zs.push({ day: d, z: (v - base.mean[i]) / base.sd[i] });
+      zs.push({ day: d, z: (v - base.mean[i]) / (base.sd[i] * TUNING.zScale) });
       if (Number.isFinite(v) && d > day - 14) pts.push({ x: d, y: v });
     }
     const [indId, mKey] = key.split(".");
     const metric = indicatorById(indId).metrics.find((m) => m.key === mKey)!;
-    const res = cusum(zs, CUSUM_K, CUSUM_H, badDirection(metric));
+    const res = cusum(zs, TUNING.k, TUNING.h, badDirection(metric));
     if (!res.alarm) return;
     const limit = res.alarm === "up" ? (metric.red.high ?? metric.amber.high) : (metric.red.low ?? metric.amber.low);
     const forecast = limit !== undefined && pts.length >= 4 ? forecastToLimit(pts, day, limit, res.alarm) : undefined;
