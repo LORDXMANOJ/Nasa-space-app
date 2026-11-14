@@ -16,3 +16,4 @@ videos/**/.thumbnails/
 videos/**/assets/vo/*.wav
 videos/**/.waveform-cache/
 .playwright-mcp/
+*.tsbuildinfo
