@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>Astronaut Health Monitor</title>
+  <path d="M121.35 62.95 A50 50 0 0 1 128 68.6 A50 50 0 0 1 198.7 139.3 L128 210 L57.3 139.3 A50 50 0 0 1 63.95 62.95" fill="none" stroke="#9fcfc4" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="92.65" cy="53.95" r="15" fill="#f8fbfa"/>
+</svg>

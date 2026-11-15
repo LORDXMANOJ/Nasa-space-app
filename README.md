@@ -1,4 +1,4 @@
-<p align="center"><img src="public/icon-192.png" width="96" height="96" alt="Astronaut Health Monitor icon"></p>
+<p align="center"><img src="design/logo/final/lockup-horizontal.png" width="560" alt="Astronaut Health Monitor"></p>
 
 <h1 align="center">Astronaut Health Monitor</h1>
 
@@ -24,9 +24,9 @@ The [download page](https://lordxmanoj.github.io/Nasa-space-app/) detects your s
 |---|---|---|
 | **Windows** 10 / 11 | `AstronautHealthMonitor-Windows-Setup.exe` | One installer carrying x64 and ARM64; it installs the build that matches your PC, for your user only (no administrator rights), with Start-menu and desktop shortcuts |
 | **macOS** | `AstronautHealthMonitor-macOS.dmg` | One universal app: native on Apple silicon and Intel Macs |
-| **Debian, Ubuntu, Mint** | `…-Linux-…amd64/x64.deb` (and ARM64) | `sudo apt install ./file.deb` |
-| **RHEL, Rocky, Alma, Fedora, SUSE** | `…-Linux-…x86_64/x64.rpm` (and ARM64) | `sudo dnf install ./file.rpm` (SUSE: `zypper`) |
-| **Any other Linux** | `…-Linux-….AppImage` (x64 and ARM64) | `chmod +x`, then run; no install |
+| **Debian, Ubuntu, Mint** | `AstronautHealthMonitor-Linux-amd64.deb` (and `-arm64.deb`) | `sudo apt install ./file.deb` |
+| **RHEL, Rocky, Alma, Fedora, SUSE** | `AstronautHealthMonitor-Linux-x86_64.rpm` (and `-aarch64.rpm`) | `sudo dnf install ./file.rpm` (SUSE: `zypper`) |
+| **Any other Linux** | `AstronautHealthMonitor-Linux-x86_64.AppImage` (and `-arm64.AppImage`) | `chmod +x`, then run; no install |
 
 Linux packages follow what space programmes run: the ISS laptop network moved to **Debian**; **Red Hat Enterprise Linux** runs on ISS edge computers and Orion flight-software simulations; ESA's ground stations use **SUSE**. Details and sources: [docs/DESKTOP.md](docs/DESKTOP.md).
 

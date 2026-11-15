@@ -9,3 +9,4 @@ The full design system lives in [DESIGN.md](../DESIGN.md); this file records the
 - **Type:** Archivo (display, variable width) + IBM Plex Sans (body) + IBM Plex Mono (data). Occasion table in DESIGN.md.
 - **Motion:** app-shell track; Emil Kowalski curves; under 300ms; see DESIGN.md.
 - **Assets:** Phosphor icons; 3D organ models from Sketchfab (CC-BY 4.0); Hairline 2D body (MIT).
+- **Logo:** Orbit heart (design/logo/README.md): a heart drawn as one orbit line (45-degree square + two r50 circles) with a gap where a craft rides; teal #1a7568 line, deep teal #123631 craft; app icon on the deep-teal tile.

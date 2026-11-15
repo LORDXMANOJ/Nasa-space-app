@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>M1: Two bars, one heart</title>
+  <!-- A's two rounded bars lean together at 45 degrees and become a heart; B's craft sits in the notch -->
+  <rect x="96" y="44" width="64" height="150" rx="32" fill="#000" transform="rotate(-45 128 162)"/>
+  <rect x="96" y="44" width="64" height="150" rx="32" fill="#000" transform="rotate(45 128 162)"/>
+  <circle cx="128" cy="58" r="15" fill="#000"/>
+</svg>

@@ -6,8 +6,8 @@
 |---|---|---|
 | Windows 10 / 11 (Intel, AMD or ARM) | `AstronautHealthMonitor-Windows-Setup.exe` | One installer; it installs the build that matches your PC. No administrator rights needed. |
 | macOS (Apple silicon or Intel) | `AstronautHealthMonitor-macOS.dmg` | One universal app. Not signed yet: the first time, right-click the app and choose **Open**. |
-| Debian, Ubuntu, Mint | `AstronautHealthMonitor-Linux-x64.deb` / `-arm64.deb` | `sudo apt install ./AstronautHealthMonitor-Linux-x64.deb` |
-| RHEL, Rocky, Alma, Fedora, SUSE | `AstronautHealthMonitor-Linux-x64.rpm` / `-arm64.rpm` | `sudo dnf install ./…rpm` or `sudo zypper install ./…rpm` |
-| Any other Linux | `AstronautHealthMonitor-Linux-x64.AppImage` / `-arm64.AppImage` | `chmod +x` the file, then run it. |
+| Debian, Ubuntu, Mint | `AstronautHealthMonitor-Linux-amd64.deb` / `-arm64.deb` | `sudo apt install ./AstronautHealthMonitor-Linux-amd64.deb` |
+| RHEL, Rocky, Alma, Fedora, SUSE | `AstronautHealthMonitor-Linux-x86_64.rpm` / `-aarch64.rpm` | `sudo dnf install ./…rpm` or `sudo zypper install ./…rpm` |
+| Any other Linux | `AstronautHealthMonitor-Linux-x86_64.AppImage` / `-arm64.AppImage` | `chmod +x` the file, then run it. |
 
 Windows shows a SmartScreen notice because the installer is not code-signed yet: choose **More info → Run anyway**.

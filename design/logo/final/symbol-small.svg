@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>Astronaut Health Monitor (small sizes)</title>
+  <!-- Small-size cut for 16 to 32 px: thicker line, wider gap, bigger craft. -->
+  <path d="M126.1 66.8 A50 50 0 0 1 128 68.6 A50 50 0 0 1 198.7 139.3 L128 210 L57.3 139.3 A50 50 0 0 1 59.2 66.8" fill="none" stroke="#1a7568" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="92.65" cy="53.95" r="17" fill="#123631"/>
+</svg>

@@ -35,10 +35,10 @@ We found no public source on the operating systems used on Artemis or Gateway cr
 
 - **Windows:** one installer for x64 and ARM64. It installs for the current user, so no administrator rights are needed; it asks where to install and adds Start-menu and desktop shortcuts. Not code-signed yet, so SmartScreen may warn: **More info → Run anyway**.
 - **macOS:** open the .dmg and drag the app to Applications. Not signed or notarised yet: the first time, right-click the app and choose **Open**.
-- **Debian / Ubuntu:** `sudo apt install ./AstronautHealthMonitor-Linux-<arch>.deb`
-- **RHEL / Rocky / Alma / Fedora:** `sudo dnf install ./AstronautHealthMonitor-Linux-<arch>.rpm`
-- **SUSE:** `sudo zypper install ./AstronautHealthMonitor-Linux-<arch>.rpm`
-- **AppImage:** `chmod +x AstronautHealthMonitor-Linux-<arch>.AppImage` and run it. On Ubuntu 24.04 and newer, AppArmor can block AppImages built on Electron; use the `.deb` there.
+- **Debian / Ubuntu:** `sudo apt install ./AstronautHealthMonitor-Linux-amd64.deb` (ARM: `-arm64.deb`)
+- **RHEL / Rocky / Alma / Fedora:** `sudo dnf install ./AstronautHealthMonitor-Linux-x86_64.rpm` (ARM: `-aarch64.rpm`)
+- **SUSE:** `sudo zypper install ./AstronautHealthMonitor-Linux-x86_64.rpm`
+- **AppImage:** `chmod +x AstronautHealthMonitor-Linux-x86_64.AppImage` (ARM: `-arm64.AppImage`) and run it. On Ubuntu 24.04 and newer, AppArmor can block AppImages built on Electron; use the `.deb` there.
 
 ## How the app is built
 
