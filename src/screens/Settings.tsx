@@ -9,6 +9,7 @@ import { useLink } from "../store/health";
 import { useMission } from "../store/mission";
 import { toast, toastWhenSaved } from "../store/toast";
 import { useCrew } from "../store/crew";
+import { UpdateSettings } from "../components/UpdateNotice";
 import { missionDayOf, todayIso } from "../engine/crew";
 
 function Toggle({
@@ -248,6 +249,8 @@ export function Settings() {
             </button>
           </div>
         </section>
+
+        <UpdateSettings />
       </div>
     </div>
   );

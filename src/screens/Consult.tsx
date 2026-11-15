@@ -5,6 +5,7 @@
  * Exports as JSON and printable PDF (browser print), generated locally.
  */
 import { useEffect, useMemo, useState } from "react";
+import { infoOf } from "../store/crew";
 import { ChevronDown, Download, Printer, Send, Trash2 } from "../components/icons";
 import { INDICATORS } from "../data";
 import { formatDuration } from "../engine/missions";
@@ -46,6 +47,21 @@ export function Consult() {
       prototype: true,
       simulatedData: true,
       crew: { name: h.profile.name, role: h.profile.role },
+      ...(h.member && {
+        // recorded on Earth before launch, so the flight surgeon sees them with every packet
+        allergies: infoOf(h.member).noAllergies
+          ? "None known"
+          : infoOf(h.member).allergyList.map(
+              (a) =>
+                `${a.substance} (${a.kind.toLowerCase()}): ${a.reaction || "reaction not recorded"}, ${a.severity.toLowerCase()}`,
+            ),
+        dailyMedicines: infoOf(h.member).noMedicines
+          ? "None"
+          : infoOf(h.member).medicineList.map(
+              (m) =>
+                `${m.name}${m.amount ? `, ${m.amount}` : ""}${m.times.length ? `, ${m.times.join("/").toLowerCase()}` : ""}${m.reason ? ` (for ${m.reason})` : ""}`,
+            ),
+      }),
       missionDay: h.day,
       mission: h.link.preset.name,
       earthReply: formatDuration(h.link.reply.totalMin),

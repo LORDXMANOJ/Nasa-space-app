@@ -46,7 +46,9 @@ export function SignIn() {
             <div className="crew-pick">
               {members.map((m) => (
                 <button key={m.id} onClick={() => setPick(m)}>
-                  <strong style={{ fontFamily: "var(--font-display)", fontSize: "var(--fs-lg)" }}>{m.name}</strong>
+                  <strong style={{ fontFamily: "var(--font-display)", fontSize: "var(--fs-lg)" }}>
+                    {m.name}
+                  </strong>
                   <span className="dim">{m.role}</span>
                   <span style={{ fontSize: "var(--fs-sm)" }}>
                     {m.pinHash ? "PIN set" : "First sign-in: create a PIN"}
@@ -56,8 +58,8 @@ export function SignIn() {
             </div>
             {day < 1 && (
               <p className="ob-note">
-                Before launch you can still sign in to look around, and the recorder can keep adding Earth records
-                in Settings.
+                Before launch you can still sign in to look around, and the recorder can keep adding Earth
+                records in Settings.
               </p>
             )}
             <button
@@ -79,7 +81,15 @@ export function SignIn() {
   );
 }
 
-function PinStep({ member, onBack, launchDate }: { member: CrewMember; onBack: () => void; launchDate: string }) {
+function PinStep({
+  member,
+  onBack,
+  launchDate,
+}: {
+  member: CrewMember;
+  onBack: () => void;
+  launchDate: string;
+}) {
   const updateMember = useCrew((s) => s.updateMember);
   const creating = !member.pinHash;
   const [pin, setPin] = useState("");
@@ -138,7 +148,11 @@ function PinStep({ member, onBack, launchDate }: { member: CrewMember; onBack: (
             : "Four digits."}
         </p>
       </div>
-      <div className={`ob-pin-dots${shake ? " jiggle" : ""}`} key={shake} aria-label={`${pin.length} of 4 digits entered`}>
+      <div
+        className={`ob-pin-dots${shake ? " jiggle" : ""}`}
+        key={shake}
+        aria-label={`${pin.length} of 4 digits entered`}
+      >
         {[0, 1, 2, 3].map((i) => (
           <span key={i} className={i < pin.length ? "is-on" : ""} />
         ))}
@@ -170,7 +184,8 @@ function PinStep({ member, onBack, launchDate }: { member: CrewMember; onBack: (
         </button>
       </div>
       <p className="dim ob-help">
-        The PIN is stored on this device only, as a scrambled code. It is a convenience lock, not strong security.
+        The PIN is stored on this device only, as a scrambled code. It is a convenience lock, not strong
+        security.
       </p>
     </div>
   );

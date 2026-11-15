@@ -7,12 +7,14 @@
  * - Full screen with F11 (Ctrl+Cmd+F on macOS) or start in full screen with --fullscreen (for a fixed panel).
  * - Remembers window size, position and full-screen state between launches.
  * - Locked down: no Node in the page, sandboxed, context-isolated; links to the web open in the system browser and
- *   the window cannot be navigated anywhere else.
+ *   the window cannot be navigated anywhere else. The page reaches the shell only through electron/preload.cjs.
+ * - Updates from GitHub Releases, only when the page asks (electron/updater.cjs).
  */
 const { app, BrowserWindow, Menu, net, protocol, shell, screen } = require("electron");
 const fs = require("node:fs");
 const path = require("node:path");
 const { pathToFileURL } = require("node:url");
+const { setupUpdates } = require("./updater.cjs");
 
 const DIST = path.join(__dirname, "..", "dist");
 const SCHEME = "app";
@@ -67,7 +69,13 @@ function createWindow() {
     show: false,
     autoHideMenuBar: !isMac,
     icon: path.join(__dirname, "..", "build", "icon.png"),
-    webPreferences: { contextIsolation: true, sandbox: true, nodeIntegration: false, spellcheck: false },
+    webPreferences: {
+      contextIsolation: true,
+      sandbox: true,
+      nodeIntegration: false,
+      spellcheck: false,
+      preload: path.join(__dirname, "preload.cjs"),
+    },
   });
   const wantFull = process.argv.includes("--fullscreen") || st.fullScreen;
   win.once("ready-to-show", () => {
@@ -134,6 +142,7 @@ app.whenReady().then(() => {
     return net.fetch(pathToFileURL(fs.existsSync(file) ? file : path.join(DIST, "index.html")).toString());
   });
   buildMenu();
+  setupUpdates(() => win);
   createWindow();
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();

@@ -46,8 +46,8 @@ export const ROLE_SUGGESTIONS = [
   "Payload specialist",
 ];
 
-/** Earth days needed before the crew can finish setup. 10 is the plan; fewer works, with a warning. */
-export const MIN_EARTH_DAYS = 3;
+/** Earth days needed before the crew can finish setup. 10 is the plan; 5 is the least that gives a usable normal. */
+export const MIN_EARTH_DAYS = 5;
 
 export const completeDays = (m: CrewMember, launchDate: string) =>
   Object.entries(m.earth).filter(([d, row]) => missionDayOf(launchDate, d) <= 0 && rowComplete(row)).length;
@@ -92,7 +92,11 @@ function SetupProgress({ step }: { step: SetupStep }) {
   return (
     <ol className="ob-progress" aria-label="Setup steps">
       {steps.map((s, i) => (
-        <li key={s} className={i < at ? "is-done" : i === at ? "is-on" : ""} aria-current={i === at ? "step" : undefined}>
+        <li
+          key={s}
+          className={i < at ? "is-done" : i === at ? "is-on" : ""}
+          aria-current={i === at ? "step" : undefined}
+        >
           <span className="ob-progress-dot">{i < at ? <Check aria-hidden /> : i + 1}</span>
           <span className="ob-progress-label">{STEP_LABEL[s]}</span>
         </li>
@@ -321,8 +325,9 @@ function MissionStep({ onBack, onNext }: { onBack: () => void; onNext: () => voi
         </div>
       </fieldset>
       <p className="ob-note">
-        Routine health reports go to Earth {formatInterval(reportIntervalHours(reply.totalMin))} for this mission
-        (Earth's reply takes about {formatDuration(reply.totalMin)}). An emergency report goes at once.
+        Routine health reports go to Earth {formatInterval(reportIntervalHours(reply.totalMin))} for this
+        mission (Earth's reply takes about {formatDuration(reply.totalMin)}). An emergency report goes at
+        once.
       </p>
       <StepNav
         onBack={onBack}
@@ -351,7 +356,9 @@ function CrewStep({ onBack, onNext }: { onBack: () => void; onNext: () => void }
     <div className="stack">
       <div>
         <h1>Who is on the crew?</h1>
-        <p className="lede">Add every crew member and their role. There is no limit; crews differ by mission.</p>
+        <p className="lede">
+          Add every crew member and their role. There is no limit; crews differ by mission.
+        </p>
       </div>
       <datalist id="ob-roles">
         {ROLE_SUGGESTIONS.map((r) => (
@@ -416,7 +423,9 @@ function CrewStep({ onBack, onNext }: { onBack: () => void; onNext: () => void }
       )}
       {tried && !ok && (
         <p className="ob-error" role="alert">
-          {members.length === 0 ? "Add at least one crew member." : "Every crew member needs a name and a role."}
+          {members.length === 0
+            ? "Add at least one crew member."
+            : "Every crew member needs a name and a role."}
         </p>
       )}
       <StepNav
@@ -441,8 +450,8 @@ function RecorderStep({ onBack, onNext }: { onBack: () => void; onNext: () => vo
       <div>
         <h1>Who records the Earth data?</h1>
         <p className="lede">
-          Before launch the crew is busy, so one person enters the Earth records for everyone. It can be a crew
-          member or someone on the ground team.
+          Before launch the crew is busy, so one person enters the Earth records for everyone. It can be a
+          crew member or someone on the ground team.
         </p>
       </div>
       <div className="ob-choices">
@@ -490,7 +499,11 @@ function RecorderStep({ onBack, onNext }: { onBack: () => void; onNext: () => vo
 }
 
 export const recorderName = (recorderId: string | null, members: CrewMember[]) =>
-  !recorderId ? "Not chosen" : recorderId.startsWith("ground:") ? recorderId.slice(7) : (members.find((m) => m.id === recorderId)?.name ?? "Not chosen");
+  !recorderId
+    ? "Not chosen"
+    : recorderId.startsWith("ground:")
+      ? recorderId.slice(7)
+      : (members.find((m) => m.id === recorderId)?.name ?? "Not chosen");
 
 /* ---------------- done ---------------- */
 
@@ -513,7 +526,9 @@ function DoneStep({ onBack }: { onBack: () => void }) {
     <div className="stack">
       <div>
         <h1>Ready for launch</h1>
-        <p className="lede">Check the summary. Each crew member creates their own 4-digit PIN the first time they sign in.</p>
+        <p className="lede">
+          Check the summary. Each crew member creates their own 4-digit PIN the first time they sign in.
+        </p>
       </div>
       <dl className="ob-summary">
         <div>
@@ -523,14 +538,13 @@ function DoneStep({ onBack }: { onBack: () => void }) {
         <div>
           <dt>Launch</dt>
           <dd>
-            {s.launchDate} · {day < 1 ? `in ${1 - day} day${1 - day === 1 ? "" : "s"}` : `today is day ${day}`}
+            {s.launchDate} ·{" "}
+            {day < 1 ? `in ${1 - day} day${1 - day === 1 ? "" : "s"}` : `today is day ${day}`}
           </dd>
         </div>
         <div>
           <dt>Reports to Earth</dt>
-          <dd>
-            {formatInterval(reportIntervalHours(reply.totalMin))}, emergencies at once
-          </dd>
+          <dd>{formatInterval(reportIntervalHours(reply.totalMin))}, emergencies at once</dd>
         </div>
         <div>
           <dt>Earth records by</dt>
@@ -569,8 +583,9 @@ function DoneStep({ onBack }: { onBack: () => void }) {
       </table>
       {short.length > 0 && (
         <p className="ob-note">
-          {short.map((r) => r.m.name).join(", ")} {short.length === 1 ? "has" : "have"} fewer than {EARTH_TARGET_DAYS} Earth
-          days. The app still works, but warnings are less precise until more days are added.
+          {short.map((r) => r.m.name).join(", ")} {short.length === 1 ? "has" : "have"} fewer than{" "}
+          {EARTH_TARGET_DAYS} Earth days. The app still works, but warnings are less precise until more days
+          are added.
         </p>
       )}
       <StepNav
@@ -587,6 +602,8 @@ function DoneStep({ onBack }: { onBack: () => void }) {
 
 /** Default Earth dates: the 10 days before launch, oldest first. */
 export const defaultEarthDates = (launchDate: string) =>
-  Array.from({ length: EARTH_TARGET_DAYS }, (_, i) => dateOfMissionDay(launchDate, i - EARTH_TARGET_DAYS + 1));
+  Array.from({ length: EARTH_TARGET_DAYS }, (_, i) =>
+    dateOfMissionDay(launchDate, i - EARTH_TARGET_DAYS + 1),
+  );
 
 export const olderDate = (dates: string[]) => isoOf(Math.min(...dates.map(dayIndex)) - 1);

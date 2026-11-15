@@ -13,26 +13,63 @@ import { dexieStorage } from "./db";
 /** "new" = first launch (onboarding), "demo" = the simulated crew, "mission" = a real crew. */
 export type AppMode = "new" | "demo" | "mission";
 
+export type AllergyKind = "Medicine" | "Food" | "Environment" | "Other";
+export type Severity = "Mild" | "Moderate" | "Severe";
+export interface Allergy {
+  id: string;
+  substance: string; // what they are allergic to, e.g. penicillin, peanuts, latex
+  kind: AllergyKind;
+  reaction: string; // what happens, e.g. rash, swelling, breathing trouble
+  severity: Severity;
+}
+export const MED_TIMES = ["Morning", "Midday", "Evening", "Night", "Only when needed"] as const;
+export interface Medicine {
+  id: string;
+  name: string;
+  amount: string; // as prescribed by their doctor, copied from the label; the app never suggests amounts
+  times: string[];
+  reason: string; // what it is for
+}
+
 export interface EarthInfo {
   age: string;
   sex: string;
   heightCm: string;
   bloodType: string;
-  allergies: string;
-  medicines: string;
+  /** null = not answered yet; true = none known */
+  noAllergies: boolean | null;
+  allergyList: Allergy[];
+  /** null = not answered yet; true = takes no daily medicine */
+  noMedicines: boolean | null;
+  medicineList: Medicine[];
   conditions: string;
   vaccinations: string;
+  diet: string;
+  eyesight: string;
+  emergencyContact: string;
 }
 export const emptyInfo = (): EarthInfo => ({
   age: "",
   sex: "",
   heightCm: "",
   bloodType: "",
-  allergies: "",
-  medicines: "",
+  noAllergies: null,
+  allergyList: [],
+  noMedicines: null,
+  medicineList: [],
   conditions: "",
   vaccinations: "",
+  diet: "",
+  eyesight: "",
+  emergencyContact: "",
 });
+/** A member's health information with every field present (older saved setups lack the newer fields). */
+export const infoOf = (m: { info?: Partial<EarthInfo> }): EarthInfo => ({ ...emptyInfo(), ...m.info });
+/** Allergies and daily medicines must be answered (a list, or "none"): the Crew Medical Officer relies on them. */
+export const infoAnswered = (i: EarthInfo) =>
+  (i.noAllergies === true || i.allergyList.some((a) => a.substance.trim())) &&
+  (i.noMedicines === true || i.medicineList.some((m) => m.name.trim()));
+export const rowId = () => Math.random().toString(36).slice(2, 9);
 
 export interface CrewMember {
   id: string;
@@ -156,7 +193,7 @@ export const useCrew = create<CrewState>()(
           }),
         })),
       setInfo: (id, patch) =>
-        set((s) => ({ members: mapMember(s.members, id, (m) => ({ ...m, info: { ...m.info, ...patch } })) })),
+        set((s) => ({ members: mapMember(s.members, id, (m) => ({ ...m, info: { ...infoOf(m), ...patch } })) })),
       finishSetup: () => set({ setupDone: true, step: "done" }),
       addReadings: (id, rs) =>
         set((s) => ({

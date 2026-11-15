@@ -8,6 +8,7 @@ import { Shell } from "./layout/Shell";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { WhoAreYou } from "./screens/WhoAreYou";
 import { DemoOverlay } from "./demo/DemoOverlay";
+import { UpdateNotice } from "./components/UpdateNotice";
 import { useMission } from "./store/mission";
 import { useCrew } from "./store/crew";
 import { Onboarding } from "./screens/onboarding/Onboarding";
@@ -60,6 +61,7 @@ export function App() {
       <>
         <Onboarding />
         <DemoOverlay />
+        <UpdateNotice />
       </>
     );
   if (!identified)
@@ -67,11 +69,13 @@ export function App() {
       <>
         {mode === "mission" ? <SignIn /> : <WhoAreYou />}
         <DemoOverlay />
+        <UpdateNotice />
       </>
     );
   return (
     <HashRouter>
       <DemoOverlay />
+      <UpdateNotice />
       <ScrollTop />
       <Shell>
         <ScreenBoundary>

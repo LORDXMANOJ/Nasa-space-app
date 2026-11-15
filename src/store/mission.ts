@@ -34,6 +34,8 @@ export interface Settings {
   largeText: boolean;
   highContrast: boolean;
   reducedMotion: boolean;
+  /** desktop app: look for a new version at start when online (undefined in older saves = on) */
+  checkUpdates?: boolean;
 }
 
 interface MissionState {
@@ -88,6 +90,7 @@ const defaultSettings: Settings = {
   largeText: false,
   highContrast: false,
   reducedMotion: false,
+  checkUpdates: true,
 };
 
 const DEFAULT_PROFILE = "okafor";

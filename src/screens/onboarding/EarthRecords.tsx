@@ -15,10 +15,16 @@ import {
   rowStarted,
   type EarthRow,
 } from "../../engine/crew";
-import { useCrew, type CrewMember, type EarthInfo } from "../../store/crew";
-import { completeDays, defaultEarthDates, MIN_EARTH_DAYS, olderDate, recorderName, StepNav } from "./Onboarding";
-
-const BLOOD_TYPES = ["A+", "A−", "B+", "B−", "AB+", "AB−", "O+", "O−", "Unknown"];
+import { infoAnswered, infoOf, useCrew, type CrewMember } from "../../store/crew";
+import { HealthInfo } from "./HealthInfo";
+import {
+  completeDays,
+  defaultEarthDates,
+  MIN_EARTH_DAYS,
+  olderDate,
+  recorderName,
+  StepNav,
+} from "./Onboarding";
 
 export function EarthRecords({ onBack, onNext }: { onBack: () => void; onNext: () => void }) {
   const members = useCrew((s) => s.members);
@@ -27,15 +33,17 @@ export function EarthRecords({ onBack, onNext }: { onBack: () => void; onNext: (
   const [sel, setSel] = useState(members[0]?.id ?? "");
   const [tried, setTried] = useState(false);
   const member = members.find((m) => m.id === sel) ?? members[0];
-  const blocking = members.filter((m) => completeDays(m, launchDate) < MIN_EARTH_DAYS);
+  const shortDays = members.filter((m) => completeDays(m, launchDate) < MIN_EARTH_DAYS);
+  const noInfo = members.filter((m) => !infoAnswered(infoOf(m)));
+  const blocking = [...shortDays, ...noInfo];
 
   return (
     <div className="stack">
       <div>
         <h1>Earth records</h1>
         <p className="lede">
-          Entered by <strong>{recorderName(recorderId, members)}</strong> for the whole crew. These become each
-          person's normal: every reading in space is compared with them.
+          Entered by <strong>{recorderName(recorderId, members)}</strong> for the whole crew. These become
+          each person's normal: every reading in space is compared with them.
         </p>
       </div>
       <div className="ob-tabs" role="tablist" aria-label="Crew members">
@@ -51,94 +59,57 @@ export function EarthRecords({ onBack, onNext }: { onBack: () => void; onNext: (
             >
               <strong>{m.name}</strong>
               <span className={days >= EARTH_TARGET_DAYS ? "ob-tab-ok" : "ob-tab-short"}>
-                {days}/{EARTH_TARGET_DAYS} days
+                {days}/{EARTH_TARGET_DAYS} days{infoAnswered(infoOf(m)) ? "" : " · info needed"}
               </span>
             </button>
           );
         })}
       </div>
-      {member && <MemberRecords key={member.id} member={member} launchDate={launchDate} />}
-      {tried && blocking.length > 0 && (
+      {member && <MemberRecords key={member.id} member={member} launchDate={launchDate} showErrors={tried} />}
+      {tried && shortDays.length > 0 && (
         <p className="ob-error" role="alert">
-          {blocking.map((m) => m.name).join(", ")} need{blocking.length === 1 ? "s" : ""} at least {MIN_EARTH_DAYS}{" "}
-          complete days before setup can finish. A day is complete when blood pressure, heart rate, SpO₂, temperature,
-          sleep and mood are filled in.
+          {shortDays.map((m) => m.name).join(", ")} need{shortDays.length === 1 ? "s" : ""} at least{" "}
+          {MIN_EARTH_DAYS} complete days before setup can finish. A day is complete when blood pressure, heart
+          rate, SpO₂, temperature, sleep and mood are filled in.
+        </p>
+      )}
+      {tried && noInfo.length > 0 && (
+        <p className="ob-error" role="alert">
+          Answer allergies and daily medicines for {noInfo.map((m) => m.name).join(", ")} (a list, or none).
         </p>
       )}
       <StepNav
         onBack={onBack}
-        onNext={() => (blocking.length ? setTried(true) : onNext())}
+        onNext={() => {
+          if (!blocking.length) return onNext();
+          setTried(true);
+          setSel(blocking[0].id);
+        }}
         nextLabel="Next: wearables"
       />
     </div>
   );
 }
 
-function MemberRecords({ member, launchDate }: { member: CrewMember; launchDate: string }) {
-  const setInfo = useCrew((s) => s.setInfo);
+function MemberRecords({
+  member,
+  launchDate,
+  showErrors,
+}: {
+  member: CrewMember;
+  launchDate: string;
+  showErrors: boolean;
+}) {
   const setEarthValue = useCrew((s) => s.setEarthValue);
   const removeEarthDay = useCrew((s) => s.removeEarthDay);
   const updateMember = useCrew((s) => s.updateMember);
   const own = Object.keys(member.earth).filter((d) => missionDayOf(launchDate, d) <= 0);
   const dates = [...new Set([...defaultEarthDates(launchDate), ...own])].sort();
   const days = completeDays(member, launchDate);
-  const info = member.info;
-  const field = (k: keyof EarthInfo) => ({
-    value: info[k],
-    onChange: (e: { target: { value: string } }) => setInfo(member.id, { [k]: e.target.value }),
-  });
 
   return (
     <div className="stack">
-      <section className="ob-section">
-        <h2>Health information</h2>
-        <div className="ob-info">
-          <label className="ob-field">
-            <span className="ob-label">Age</span>
-            <input className="ob-input" inputMode="numeric" {...field("age")} />
-          </label>
-          <label className="ob-field">
-            <span className="ob-label">Sex</span>
-            <select className="ob-input" {...field("sex")}>
-              <option value="">Choose</option>
-              <option>Female</option>
-              <option>Male</option>
-              <option>Prefer not to say</option>
-            </select>
-          </label>
-          <label className="ob-field">
-            <span className="ob-label">Height (cm)</span>
-            <input className="ob-input" inputMode="numeric" {...field("heightCm")} />
-          </label>
-          <label className="ob-field">
-            <span className="ob-label">Blood type</span>
-            <select className="ob-input" {...field("bloodType")}>
-              <option value="">Choose</option>
-              {BLOOD_TYPES.map((b) => (
-                <option key={b}>{b}</option>
-              ))}
-            </select>
-          </label>
-        </div>
-        <div className="ob-info ob-info--text">
-          <label className="ob-field">
-            <span className="ob-label">Allergies</span>
-            <textarea className="ob-input" rows={2} placeholder="None known" {...field("allergies")} />
-          </label>
-          <label className="ob-field">
-            <span className="ob-label">Current medicines</span>
-            <textarea className="ob-input" rows={2} placeholder="None" {...field("medicines")} />
-          </label>
-          <label className="ob-field">
-            <span className="ob-label">Past conditions</span>
-            <textarea className="ob-input" rows={2} placeholder="None" {...field("conditions")} />
-          </label>
-          <label className="ob-field">
-            <span className="ob-label">Vaccinations</span>
-            <textarea className="ob-input" rows={2} placeholder="List with dates if known" {...field("vaccinations")} />
-          </label>
-        </div>
-      </section>
+      <HealthInfo member={member} showErrors={showErrors} />
 
       <section className="ob-section">
         <div className="row" style={{ alignItems: "baseline" }}>
@@ -153,9 +124,9 @@ function MemberRecords({ member, launchDate }: { member: CrewMember; launchDate:
         </div>
         {days < EARTH_TARGET_DAYS && (
           <p className="ob-note">
-            Fewer than {EARTH_TARGET_DAYS} days. If {member.name.split(" ")[0] || "this person"} has older records
-            from before launch, add them with <strong>Add an older day</strong>. Every extra day makes their
-            normal more accurate.
+            Fewer than {EARTH_TARGET_DAYS} days. If {member.name.split(" ")[0] || "this person"} has older
+            records from before launch, add them with <strong>Add an older day</strong>. Every extra day makes
+            their normal more accurate.
           </p>
         )}
         <div className="ob-grid-wrap">
@@ -237,7 +208,12 @@ function EarthRowView({
       ))}
       <td>
         {onRemove && (
-          <button type="button" className="btn btn--ghost ob-icon-btn" aria-label={`Clear ${date}`} onClick={onRemove}>
+          <button
+            type="button"
+            className="btn btn--ghost ob-icon-btn"
+            aria-label={`Clear ${date}`}
+            onClick={onRemove}
+          >
             <Trash2 aria-hidden />
           </button>
         )}

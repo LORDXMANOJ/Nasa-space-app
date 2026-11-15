@@ -64,8 +64,20 @@ function WearableRow({ member }: { member: CrewMember }) {
   const sample = tested
     ? (() => {
         const earth = earthReadings(member.earth, launchDate);
-        const hr = wearableReading(member.id, INDICATORS.find((i) => i.id === "hr")!, 0, earth, env)[0];
-        const t = wearableReading(member.id, INDICATORS.find((i) => i.id === "temp")!, 0, earth, env)[0];
+        const hr = wearableReading(
+          member.id,
+          INDICATORS.find((i) => i.id === "hr")!,
+          0,
+          earth,
+          env,
+        )[0];
+        const t = wearableReading(
+          member.id,
+          INDICATORS.find((i) => i.id === "temp")!,
+          0,
+          earth,
+          env,
+        )[0];
         return `${hr} bpm, ${t.toFixed(1)} °C`;
       })()
     : "";
@@ -98,7 +110,12 @@ function WearableRow({ member }: { member: CrewMember }) {
             <Check aria-hidden /> Connected. Test reading: {sample} (simulated)
           </p>
         ) : (
-          <button type="button" className="btn" onClick={test} disabled={state === "testing" || !member.deviceId}>
+          <button
+            type="button"
+            className="btn"
+            onClick={test}
+            disabled={state === "testing" || !member.deviceId}
+          >
             {state === "testing" ? (
               <>
                 <Loader2 className="spin" aria-hidden /> Testing…

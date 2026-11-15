@@ -7,7 +7,7 @@ import { INDICATORS } from "../data";
 import { CheckCircle2, Satellite, TriangleAlert, Users } from "../components/icons";
 import { learnMetricBaselines } from "../engine/detectors";
 import { formatDuration } from "../engine/missions";
-import { useCrew } from "../store/crew";
+import { infoOf, useCrew } from "../store/crew";
 import { useCrewToday, type MemberToday } from "../store/crewHealth";
 import { formatInterval, reportIntervalHours } from "../engine/crew";
 import { useLink } from "../store/health";
@@ -34,7 +34,9 @@ export function Crew() {
     return (
       <div className="page">
         <h1>Crew</h1>
-        <p className="lede">The crew view is for a real crew. The demo crew each have their own story instead.</p>
+        <p className="lede">
+          The crew view is for a real crew. The demo crew each have their own story instead.
+        </p>
       </div>
     );
 
@@ -45,8 +47,8 @@ export function Crew() {
           <Users aria-hidden /> Crew
         </h1>
         <p className="lede">
-          Everyone's health today, day {day}. You can see everyone's results; only each person can enter their own.{" "}
-          {done} of {crew.length} checked in.
+          Everyone's health today, day {day}. You can see everyone's results; only each person can enter their
+          own. {done} of {crew.length} checked in.
         </p>
       </header>
 
@@ -97,8 +99,9 @@ export function Crew() {
           <Satellite aria-hidden /> Reports to Earth
         </h2>
         <p>
-          Routine report {schedule.label} (Earth's reply: {formatDuration(link.reply.totalMin)}). Emergency reports go at
-          once. {schedule.noContact && "No contact now: reports wait in the queue and go when contact returns."}
+          Routine report {schedule.label} (Earth's reply: {formatDuration(link.reply.totalMin)}). Emergency
+          reports go at once.{" "}
+          {schedule.noContact && "No contact now: reports wait in the queue and go when contact returns."}
         </p>
         {reports.length === 0 ? (
           <p className="dim">No reports yet. The first one goes after the first check-in day starts.</p>
@@ -106,7 +109,9 @@ export function Crew() {
           <ul className="crew-reports">
             {reports.slice(0, 8).map((r) => (
               <li key={r.id}>
-                <span className={r.kind === "emergency" ? "crew-tag crew-tag--act" : "crew-tag"}>{r.kind}</span>
+                <span className={r.kind === "emergency" ? "crew-tag crew-tag--act" : "crew-tag"}>
+                  {r.kind}
+                </span>
                 <span className="num">{new Date(r.at).toLocaleString()}</span>
                 <span>{r.summary}</span>
                 <span className="dim">{r.queued ? "Queued" : "Sent"}</span>
@@ -122,8 +127,55 @@ export function Crew() {
 /** Read-only: today's readings next to the person's Earth normal. */
 function MemberDetail({ c, day }: { c: MemberToday; day: number }) {
   const base = learnMetricBaselines(c.history);
+  const info = infoOf(c.member);
   return (
     <div className="crew-detail">
+      <dl className="crew-health">
+        <div>
+          <dt>Allergies</dt>
+          <dd>
+            {info.noAllergies
+              ? "None known"
+              : info.allergyList.length
+                ? info.allergyList.map((a) => (
+                    <span key={a.id} className={`crew-sev--${a.severity}`}>
+                      {a.substance}: {a.reaction || "reaction not recorded"} ({a.severity.toLowerCase()}
+                      ).{" "}
+                    </span>
+                  ))
+                : "Not recorded"}
+          </dd>
+        </div>
+        <div>
+          <dt>Daily medicines</dt>
+          <dd>
+            {info.noMedicines
+              ? "None"
+              : info.medicineList.length
+                ? info.medicineList
+                    .map(
+                      (m) =>
+                        `${m.name}${m.amount ? `, ${m.amount}` : ""}${m.times.length ? `, ${m.times.join(", ").toLowerCase()}` : ""}`,
+                    )
+                    .join(" · ")
+                : "Not recorded"}
+          </dd>
+        </div>
+        {(info.bloodType || info.diet || info.emergencyContact) && (
+          <div>
+            <dt>Other</dt>
+            <dd>
+              {[
+                info.bloodType && `Blood type ${info.bloodType}`,
+                info.diet && `Diet: ${info.diet}`,
+                info.emergencyContact && `Contact on Earth: ${info.emergencyContact}`,
+              ]
+                .filter(Boolean)
+                .join(" · ")}
+            </dd>
+          </div>
+        )}
+      </dl>
       <table className="table">
         <thead>
           <tr>
@@ -137,12 +189,17 @@ function MemberDetail({ c, day }: { c: MemberToday; day: number }) {
             const r = c.history[ind.id]?.find((x) => x.day === day);
             const keys = ind.id === "bp" ? [0, 1] : [0];
             const m = ind.metrics[0];
-            const fmt = (v: number | undefined) => (v === undefined || !Number.isFinite(v) ? "–" : v.toFixed(m.decimals));
+            const fmt = (v: number | undefined) =>
+              v === undefined || !Number.isFinite(v) ? "–" : v.toFixed(m.decimals);
             return (
               <tr key={ind.id}>
                 <td>{ind.shortName}</td>
                 <td className="num">
-                  {r ? keys.map((k) => fmt(r.values[k])).join("/") : c.member.skips[day]?.includes(ind.id) ? "Not measured" : "–"}{" "}
+                  {r
+                    ? keys.map((k) => fmt(r.values[k])).join("/")
+                    : c.member.skips[day]?.includes(ind.id)
+                      ? "Not measured"
+                      : "–"}{" "}
                   <span className="dim">{r ? m.unit : ""}</span>
                 </td>
                 <td className="num dim">
