@@ -1,0 +1,5 @@
+We are Team Spades. On Mars, Earth's answer takes up to twenty-two minutes each way.
+Astronaut Health Monitor: a one-minute daily check that knows when a problem can wait.
+It compares every reading with your own normal, using NASA's five hazards of spaceflight.
+Touch check-in, a three-D body, and one answer: act on board now, or ask Earth.
+Next: whole crews and wearables. Try the demo in your browser.
