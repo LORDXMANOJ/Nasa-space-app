@@ -235,6 +235,11 @@ export function runDetectors(history: Record<string, Reading[]>, day: number): D
     const metric = indicatorById(indId).metrics.find((m) => m.key === mKey)!;
     const res = cusum(zs, TUNING.k, TUNING.h, badDirection(metric));
     if (!res.alarm) return;
+    // CUSUM remembers: after a short spike (a fever that has already passed) it stays above its limit for weeks.
+    // Only report drift while the latest readings still lean that way, so a finished episode is not called a drift.
+    const recent = zs.filter((p) => Number.isFinite(p.z)).slice(-3).map((p) => p.z);
+    const lean = recent.length ? recent.reduce((a, b) => a + b, 0) / recent.length : 0;
+    if (res.alarm === "up" ? lean <= TUNING.k : lean >= -TUNING.k) return;
     const limit = res.alarm === "up" ? (metric.red.high ?? metric.amber.high) : (metric.red.low ?? metric.amber.low);
     const forecast = limit !== undefined && pts.length >= 4 ? forecastToLimit(pts, day, limit, res.alarm) : undefined;
     drift.push({ key, cusum: res, forecast });

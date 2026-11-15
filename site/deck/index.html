@@ -92,7 +92,7 @@
       .row { grid-template-columns: 260px 1fr 140px; }
       .act { margin-top: 38px; display: inline-flex; padding: 20px 34px; border-radius: 14px; background: var(--red); color: #fff; font: 800 40px var(--display); font-stretch: 115%; letter-spacing: .04em; }
       .iss { margin-top: 26px; font-size: 27px; color: var(--dim); }
-      .checks { display: grid; gap: 20px; }
+      .checks { display: grid; gap: 16px; }
       .check { display: grid; grid-template-columns: 64px 1fr; gap: 24px; align-items: start; }
       .check i { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 16px; background: var(--primary); color: #fff; font: 600 30px var(--mono); font-style: normal; }
       .check b { display: block; font: 700 38px var(--display); font-stretch: 106%; }
@@ -101,8 +101,8 @@
       .proof b { color: var(--ink); font-weight: 600; }
 
       /* 6: what NASA research changed */
-      .t6 { margin-top: 56px; display: grid; gap: 24px; }
-      .src { display: grid; grid-template-columns: 720px 80px 1fr; align-items: center; gap: 24px; padding: 30px 40px; border-radius: 24px; background: var(--ground); }
+      .t6 { margin-top: 44px; display: grid; gap: 20px; }
+      .src { display: grid; grid-template-columns: 720px 80px 1fr; align-items: center; gap: 24px; padding: 24px 40px; border-radius: 24px; background: var(--ground); }
       .src .who { font-size: 30px; line-height: 1.3; }
       .src .who b { display: block; font: 500 22px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--primary); margin-bottom: 6px; }
       .src .to { font: 300 64px var(--display); color: var(--primary); text-align: center; }
@@ -111,7 +111,7 @@
 
       /* 7: nobody left guessing */
       .t7 { display: grid; grid-template-columns: 900px 1fr; gap: 70px; margin-top: 48px; }
-      .t7 .crop { width: 900px; height: 420px; border-color: rgba(159,207,196,.4); }
+      .t7 .crop { width: 900px; height: 372px; border-color: rgba(159,207,196,.4); }
       .links { display: grid; gap: 14px; }
       .link { display: block; text-decoration: none; background: rgba(255,255,255,.08); border: 1px solid rgba(159,207,196,.4); border-radius: 18px; padding: 16px 28px; color: #fff; }
       .link small { display: block; font: 500 20px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--light); margin-bottom: 4px; }
@@ -244,7 +244,7 @@
             </div>
             <div>
               <div class="checks">
-                <div class="check"><i>1</i><div><b>Safety rules</b><span>Limits from cited NASA and clinical sources.</span></div></div>
+                <div class="check"><i>1</i><div><b>Safety rules</b><span>Cited limits: fever ≥ 38 °C, heart rate &gt; 100 (MedlinePlus, AHA).</span></div></div>
                 <div class="check"><i>2</i><div><b>Unusual day</b><span>Several readings a little off, together.</span></div></div>
                 <div class="check"><i>3</i><div><b>Slow drift</b><span>Forecasts when a reading reaches its limit.</span></div></div>
               </div>
@@ -276,6 +276,7 @@
               <div class="what">The wearable sends heart rate, temperature and sleep by itself. <span style="font: 400 26px var(--sans); color: var(--dim)">(Simulated in the prototype.)</span></div>
             </div>
           </div>
+          <div class="decided"><b>Next, with NASA</b><span>Test in analog missions (HERA, CHAPEA), with flight surgeons setting every limit</span><span>Check baselines against NASA's Open Science Data Repository</span><span>Align limits with NASA-STD-3001</span></div>
           <p class="note">All crew and readings in the prototype are simulated. It flags and explains; it does not diagnose. Sources are listed in the project's references.</p>
           <div class="foot"><span>Team Spades · Astronaut Health Monitor</span><span>6 / 7</span></div>
         </section>
@@ -290,7 +291,7 @@
                 <img src="img/n10-crew.png" alt="Crew tab: Manoj has an Act alert, act on board now; Aasha's card shows her penicillin allergy and her readings next to her Earth normal" style="width: 1300px; left: -192px; top: -62px" />
               </div>
               <p class="cap">Emergencies go to Earth at once. Routine reports follow a schedule set by Earth's reply time.</p>
-              <div class="decided"><b>We decided</b><span>Everyone sees everyone; nobody edits another's record</span><span>No contact? Reports wait in a queue</span></div>
+              <div class="decided"><b>We decided</b><span>Wearables stream live; danger alerts everyone</span><span>Everyone sees everyone; nobody edits another's record</span><span>No contact? Reports wait in a queue</span></div>
             </div>
             <div>
               <div class="links">

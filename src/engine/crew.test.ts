@@ -14,7 +14,7 @@ import {
   wearableReading,
   type EarthRow,
 } from "./crew";
-import { learnCoreBaseline } from "./detectors";
+import { learnCoreBaseline, runDetectors } from "./detectors";
 
 const LAUNCH = "2026-12-01";
 const row = (o: Partial<EarthRow> = {}): EarthRow => ({
@@ -137,5 +137,23 @@ describe("PIN", () => {
     expect(validPin("12a4")).toBe(false);
     expect(pinHash("a", "1234")).not.toContain("1234");
     expect(pinHash("a", "1234")).not.toBe(pinHash("b", "1234"));
+  });
+});
+
+describe("slow drift after a fever has passed", () => {
+  it("does not call a finished fever a drift", () => {
+    const earth = earthReadings(earthDays(10), LAUNCH);
+    const temps = [38.6, 38.3, 37.8, 37.3, 36.9];
+    const readings = Array.from({ length: 14 }, (_, i) => ({
+      indicatorId: "temp",
+      day: i + 1,
+      values: [temps[i] ?? 36.7],
+      source: "user" as const,
+    }));
+    const h = memberHistory({ memberId: "a", earth, readings, day: 14, env: "spacecraft", wearablePaired: false });
+    expect(runDetectors(h, 14)?.drift.some((d) => d.key === "temp.temp")).toBe(false);
+    // while the fever is still on, it is reported
+    const h2 = memberHistory({ memberId: "a", earth, readings: readings.slice(0, 3), day: 3, env: "spacecraft", wearablePaired: false });
+    expect(runDetectors(h2, 3)?.drift.some((d) => d.key === "temp.temp")).toBe(true);
   });
 });
