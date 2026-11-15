@@ -183,13 +183,13 @@ Three short steps with their own strip: Your wearable, Measure, How you feel. Ea
 - **Plan complete**: primary-teal strip with a light-teal tick.
 - **Save notice**: Watch banner pinned to the top of the screen with a Try again button.
 - **Crash screen**: a CAUTION block ("This screen stopped") with what happened, that data is safe, Reload this screen and Go to the dashboard.
-- **Progress**: 5px Dry Sage bar along the bottom of a working button; 10px rounded bar for longer checks.
+- **Progress**: 5px light-teal bar along the bottom of a working button; 10px rounded bar for longer checks.
 
 ### Feedback
 Buttons scale to 0.97 when pressed (140ms). Working: spinner + words, colour kept (never greyed). Done: tick + word on a Nominal-green button for 1.6 s. Toasts (deep teal, bottom centre, 56px, dismissable) confirm saves and sends. Touch targets: 56px minimum, 64px for the main action, 48px for small buttons.
 
 ### Body views
-3D: a translucent Dry Sage body with real organ models inside (heart, lungs, skull, stomach, intestines, spine), each in its status colour; eyes, skin and whole body use status-coloured hotspots. 2D: a Hairline line drawing in the green palette; damage is marked with arrows, and the coloured status words sit in the box beneath it.
+3D: a translucent light-teal body with real organ models inside (heart, lungs, skull, stomach, intestines, spine), each in its status colour; eyes, skin and whole body use status-coloured hotspots. 2D: a Hairline line drawing in the green palette; damage is marked with arrows, and the coloured status words sit in the box beneath it.
 
 ### Procedure steps
 Ordered list: bold step number, step text, dotted leader, checkbox at the right. Checked steps are struck through.
@@ -198,10 +198,10 @@ Ordered list: bold step number, step text, dotted leader, checkbox at the right.
 Where a grid is needed (measurement index, crew picker), cells share 1px rules like a form, never floating cards.
 
 ### Inputs / Fields
-6px corners, 1px dim border, Pine Teal on hover, 2px red when invalid. Segmented controls are an ink-bordered strip; the pressed segment is filled Pine Teal.
+6px corners, 1px dim border, ink on hover, 2px red when invalid. Segmented controls are an ink-bordered strip; the pressed segment is filled deep teal.
 
 ### Navigation
-Left tab rail; the current screen is a rounded Hunter Green tile with a semibold label.
+Left tab rail; the current screen is a rounded primary-teal tile with a semibold label.
 
 ### Timing table (signature)
 Two bars on one log tick scale (1 min, 1 h, 1 day, 30 days): the safe wait in its status colour, Earth's reply in ink. The verdict is boxed in caps: white on red for ACT ON BOARD NOW, ink outline for ASK EARTH.
