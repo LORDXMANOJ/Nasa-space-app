@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Astronaut Health Monitor: 30-second video by Team Spades</title>
+    <meta name="description" content="30-second demo video for Astronaut Health Monitor, Team Spades, 2026 NASA Space Apps Challenge. Narration is AI-generated (Kokoro text-to-speech)." />
+    <link rel="icon" type="image/svg+xml" href="../icon.svg" />
+    <style>
+      :root { --ink:#111d1b; --dim:#4f625d; --paper:#f8fbfa; --ground:#e3edea; --rule:#cfdcd8; --primary:#1a7568; --deep:#123631; }
+      * { box-sizing: border-box; }
+      body { margin: 0; min-height: 100dvh; background: var(--ground); color: var(--ink); font: 16px/1.5 "IBM Plex Sans", system-ui, "Segoe UI", sans-serif; }
+      main { max-width: 1000px; margin: 0 auto; padding: 40px 20px 64px; }
+      h1 { margin: 0 0 8px; font-size: clamp(1.5rem, 3.5vw, 2.2rem); letter-spacing: -0.02em; line-height: 1.15; }
+      .sub { color: var(--dim); margin: 0 0 24px; }
+      video { width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 16px; display: block; }
+      .card { background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; padding: 22px 26px; margin-top: 24px; }
+      h2 { font-size: 1.05rem; margin: 0 0 8px; }
+      p { margin: 0 0 10px; }
+      a { color: var(--primary); font-weight: 500; }
+      .row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+      .row a { display: inline-flex; align-items: center; min-height: 48px; padding: 0 18px; border: 1px solid var(--rule); border-radius: 8px; background: #fff; text-decoration: none; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Astronaut Health Monitor in 30 seconds</h1>
+      <p class="sub">Team Spades · 2026 NASA Space Apps Challenge · Create Health Monitoring Software for Astronauts on Space Missions</p>
+      <video controls preload="metadata" poster="" src="Spades-AstronautHealthMonitor-30s.mp4" aria-label="30-second demo video of Astronaut Health Monitor with captions"></video>
+
+      <div class="card">
+        <h2>About this video</h2>
+        <p>A one-minute daily health check for astronauts far from Earth that decides whether a problem can wait for Earth's reply. Captions are burned in (English). Length: 29 seconds. Pictures are real screenshots of the app.</p>
+        <p><strong>AI disclosure:</strong> the narration voice is AI-generated with Kokoro-82M text-to-speech (voice am_michael), run locally. It is labelled on screen throughout and recorded in the file's metadata. The app code was written with Claude (Anthropic), directed by the team. All crew and readings are simulated; the app does not diagnose. No NASA logos, flags or mission identifiers are used.</p>
+        <p><strong>Team Spades:</strong> Sanjith S, Manoj S, Alan Jacob Sam S, Aiswarya S.</p>
+        <div class="row">
+          <a href="../app/?demo=1">▶ Live demo (clicks and types by itself)</a>
+          <a href="../deck/">7-slide deck</a>
+          <a href="../">Download the desktop app</a>
+          <a href="https://github.com/LORDXMANOJ/Nasa-space-app">Source code</a>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

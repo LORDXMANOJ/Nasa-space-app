@@ -108,6 +108,6 @@ docs/ux/         UX decisions (touch first, feedback, empty and error states)
 
 ## Docs
 
-**[UX decisions: why it is touch-first and how it guides the crew](docs/ux/README.md)** · [DESKTOP.md](docs/DESKTOP.md) · [PITCH.md](PITCH.md) · [HOW_IT_DECIDES.md](HOW_IT_DECIDES.md) · [DECISIONS.md](DECISIONS.md) · [REFERENCES.md](REFERENCES.md) · [APP_PREVIEW.md](APP_PREVIEW.md) · [PROMPT.md](PROMPT.md)
+**[Watch the demo in your browser](https://lordxmanoj.github.io/Nasa-space-app/app/?demo=1)** · [7-slide deck](https://lordxmanoj.github.io/Nasa-space-app/deck/) · [30-second video](https://lordxmanoj.github.io/Nasa-space-app/video/) · [Submission text](docs/SUBMISSION.md) · **[UX decisions: why it is touch-first and how it guides the crew](docs/ux/README.md)** · [DESKTOP.md](docs/DESKTOP.md) · [PITCH.md](PITCH.md) · [HOW_IT_DECIDES.md](HOW_IT_DECIDES.md) · [DECISIONS.md](DECISIONS.md) · [REFERENCES.md](REFERENCES.md) · [APP_PREVIEW.md](APP_PREVIEW.md) · [PROMPT.md](PROMPT.md)
 
 An AI coding assistant (Claude) helped write this code and documentation.

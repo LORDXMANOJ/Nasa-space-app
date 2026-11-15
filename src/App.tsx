@@ -7,6 +7,7 @@ import { HashRouter, Route, Routes, useLocation } from "react-router-dom";
 import { Shell } from "./layout/Shell";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { WhoAreYou } from "./screens/WhoAreYou";
+import { DemoOverlay } from "./demo/DemoOverlay";
 import { useMission } from "./store/mission";
 import { Dashboard } from "./screens/Dashboard";
 import { MeasureList, MeasureFlow } from "./screens/Measure";
@@ -46,9 +47,16 @@ export function App() {
   const hydrated = useMission((s) => s.hydrated);
   const identified = useMission((s) => s.identified);
   if (!hydrated) return null;
-  if (!identified) return <WhoAreYou />;
+  if (!identified)
+    return (
+      <>
+        <WhoAreYou />
+        <DemoOverlay />
+      </>
+    );
   return (
     <HashRouter>
+      <DemoOverlay />
       <ScrollTop />
       <Shell>
         <ScreenBoundary>

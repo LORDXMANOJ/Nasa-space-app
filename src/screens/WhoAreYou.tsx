@@ -10,6 +10,7 @@ import { PROFILES, profileById } from "../engine/profiles";
 import { buildHistory } from "../engine/simulation";
 import { useMission } from "../store/mission";
 import { IndicatorIcon } from "../components/ui";
+import { DemoButton } from "../demo/DemoOverlay";
 
 export function WhoAreYou() {
   const identify = useMission((s) => s.identify);
@@ -47,6 +48,7 @@ export function WhoAreYou() {
             <button className="btn btn--primary btn--lg who-cta" onClick={() => setStep("pick")}>
               <UserRound aria-hidden /> Who are you?
             </button>
+            <DemoButton className="btn btn--lg who-demo" label="Watch the demo" />
             <p className="dim who-note">Prototype with simulated crew and data.</p>
           </div>
         )}

@@ -52,6 +52,8 @@ Body-mass ±5 % / ±10 % limits: **demo assumption**. A MedlinePlus "5 % uninten
 - Sen P.K. (1968) Estimates of the regression coefficient based on Kendall's tau. *JASA* 63:1379–1389 (Theil–Sen). https://doi.org/10.1080/01621459.1968.10480934
 - Mahalanobis distance and the χ² quantile χ²(0.99, 7) = 18.475: standard results.
 
+> NASA does not endorse any non-U.S. Government entity and is not responsible for information contained on non-U.S. Government websites. For non-U.S. Government websites we comply with the data-use parameters of that website.
+
 ## Fonts and icons (bundled locally)
 
 | Asset | Licence |

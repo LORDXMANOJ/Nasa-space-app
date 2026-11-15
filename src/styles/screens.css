@@ -2156,3 +2156,79 @@ code,
 .block {
   box-shadow: var(--shadow-md);
 }
+
+
+/* ---------- Demo mode (web only) ---------- */
+.who-demo {
+  margin-left: var(--sp-3);
+}
+.demo-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+}
+.demo-top {
+  position: absolute;
+  top: calc(var(--bar-h) + 10px);
+  right: 14px;
+  display: flex;
+  gap: var(--sp-2);
+  align-items: center;
+  pointer-events: auto;
+}
+.demo-chip {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--p-pine);
+  color: var(--p-dust);
+  font: 500 0.75rem var(--font-mono);
+  letter-spacing: 0.04em;
+}
+.demo-stop {
+  background: var(--surface-0);
+}
+.demo-caption {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--footer-h) + 18px);
+  transform: translateX(-50%);
+  width: min(760px, calc(100vw - 32px));
+  padding: var(--sp-4) var(--sp-5) var(--sp-3);
+  border-radius: var(--r-lg);
+  background: var(--p-pine);
+  color: var(--p-dust);
+  box-shadow: var(--shadow-lg);
+  pointer-events: auto;
+}
+.demo-caption p {
+  font-size: var(--fs-md);
+  font-weight: 500;
+  line-height: 1.4;
+}
+.demo-progress {
+  height: 4px;
+  margin-top: var(--sp-3);
+  border-radius: 999px;
+  background: rgba(227, 237, 234, 0.2);
+  overflow: hidden;
+}
+.demo-progress span {
+  display: block;
+  height: 100%;
+  background: var(--p-sage);
+  transform-origin: left center;
+  transition: transform 400ms var(--ease-out);
+}
+.demo-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 91;
+  margin: -3px 0 0 -3px;
+  filter: drop-shadow(0 2px 3px rgba(17, 29, 27, 0.4));
+  transition: transform 700ms var(--ease-in-out);
+}
+.demo-cursor.is-down {
+  scale: 0.85;
+}
