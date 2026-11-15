@@ -6,6 +6,7 @@
  */
 import { create } from "zustand";
 import { useMission } from "../store/mission";
+import { useCrew } from "../store/crew";
 
 /** The desktop app (Electron) never offers the tour. */
 export const isDesktopApp = typeof navigator !== "undefined" && /Electron/i.test(navigator.userAgent);
@@ -216,6 +217,8 @@ export async function startDemo(withVoice = true) {
   });
   try {
     // a clean, repeatable start: the demo crew, nothing entered yet
+    // the tour always uses the simulated crew; a real crew's data is left untouched
+    useCrew.getState().setMode("demo");
     const m = useMission.getState();
     m.resetDemo();
     m.signOut();

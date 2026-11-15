@@ -9,6 +9,9 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import { WhoAreYou } from "./screens/WhoAreYou";
 import { DemoOverlay } from "./demo/DemoOverlay";
 import { useMission } from "./store/mission";
+import { useCrew } from "./store/crew";
+import { Onboarding } from "./screens/onboarding/Onboarding";
+import { SignIn } from "./screens/onboarding/SignIn";
 import { Dashboard } from "./screens/Dashboard";
 import { MeasureList, MeasureFlow } from "./screens/Measure";
 import { Recovery } from "./screens/Recovery";
@@ -45,12 +48,23 @@ function useHtmlAttributes() {
 export function App() {
   useHtmlAttributes();
   const hydrated = useMission((s) => s.hydrated);
+  const crewHydrated = useCrew((s) => s.hydrated);
+  const mode = useCrew((s) => s.mode);
+  const setupDone = useCrew((s) => s.setupDone);
   const identified = useMission((s) => s.identified);
-  if (!hydrated) return null;
+  if (!hydrated || !crewHydrated) return null;
+  // first launch, or the mission setup is being changed
+  if (mode === "new" || (mode === "mission" && !setupDone))
+    return (
+      <>
+        <Onboarding />
+        <DemoOverlay />
+      </>
+    );
   if (!identified)
     return (
       <>
-        <WhoAreYou />
+        {mode === "mission" ? <SignIn /> : <WhoAreYou />}
         <DemoOverlay />
       </>
     );

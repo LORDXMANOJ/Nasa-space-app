@@ -145,7 +145,7 @@ export function Shell({ children }: { children: ReactNode }) {
         )}
         <span className="sim-pill" role="note">
           <TriangleAlert width={14} height={14} aria-hidden />
-          SIMULATED DEMO DATA
+          {health.member ? "SIMULATED WEARABLE · NOT A MEDICAL DEVICE" : "SIMULATED DEMO DATA"}
         </span>
       </header>
 

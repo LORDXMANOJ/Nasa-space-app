@@ -11,7 +11,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, Cpu, Loader2, Radio } from "./icons";
 import { indicatorById, type Indicator } from "../data";
 import { learnMetricBaselines } from "../engine/detectors";
-import { isScheduled, simulateReading, type Reading } from "../engine/simulation";
+import { isScheduled, type Reading } from "../engine/simulation";
 import { useHealth } from "../store/health";
 import { useMission } from "../store/mission";
 import { toastWhenSaved } from "../store/toast";
@@ -96,7 +96,6 @@ const wait = (ms: number) => new Promise((r) => window.setTimeout(r, ms));
 
 export function CheckInForm({ onDone }: { onDone?: () => void }) {
   const h = useHealth();
-  const env = useMission((s) => s.environment);
   const reduced = useMission((s) => s.settings.reducedMotion || s.settings.lowPower);
   const addReadings = useMission((s) => s.addReadings);
   const setSymptoms = useMission((s) => s.setSymptoms);
@@ -131,7 +130,7 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
   };
   const steps: StepId[] = byStep.devices.length ? ["wearable", "devices", "feel"] : ["wearable", "feel"];
 
-  const sim = (ind: Indicator) => simulateReading(ind, h.day, h.profile, env);
+  const sim = (ind: Indicator) => h.simulate(ind);
   const [vals, setVals] = useState<Record<string, string>>(() => {
     const v: Record<string, string> = {};
     for (const r of rows) {
@@ -212,7 +211,7 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
       }
       return { indicatorId: r.ind.id, day: h.day, values, source: "user" };
     });
-    const ms = simulateReading(indicatorById("mood"), h.day, h.profile, env);
+    const ms = h.simulate(indicatorById("mood"));
     rs.push({ indicatorId: "mood", day: h.day, values: [mood!, ms[1]], source: "user" });
     addReadings(rs);
     setSymptoms(h.day, symptoms.filter((s) => s !== "None").concat(pain > 0 ? [`Pain ${pain}/10`] : []));

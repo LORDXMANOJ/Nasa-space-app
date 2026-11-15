@@ -11,9 +11,12 @@ import { buildHistory } from "../engine/simulation";
 import { useMission } from "../store/mission";
 import { IndicatorIcon } from "../components/ui";
 import { DemoButton } from "../demo/DemoOverlay";
+import { useCrew } from "../store/crew";
 
 export function WhoAreYou() {
   const identify = useMission((s) => s.identify);
+  const setupDone = useCrew((s) => s.setupDone);
+  const setMode = useCrew((s) => s.setMode);
   const env = useMission((s) => s.environment);
   const [step, setStep] = useState<"welcome" | "pick" | "earth">("welcome");
   const [pick, setPick] = useState<string | null>(null);
@@ -49,7 +52,12 @@ export function WhoAreYou() {
               <UserRound aria-hidden /> Who are you?
             </button>
             <DemoButton className="btn btn--lg who-demo" label="Watch the demo" />
-            <p className="dim who-note">Prototype with simulated crew and data.</p>
+            <p className="dim who-note">
+              Demo: simulated crew and data.{" "}
+              <button className="link-btn" onClick={() => setMode(setupDone ? "mission" : "new")}>
+                {setupDone ? "Back to my crew" : "Set up a real crew instead"}
+              </button>
+            </p>
           </div>
         )}
 
