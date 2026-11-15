@@ -32,6 +32,8 @@ import { Toaster } from "../components/Feedback";
 import { useCrew } from "../store/crew";
 import { useCrewToday, useReportSchedule } from "../store/crewHealth";
 import { CrewAlertBanner } from "../screens/Crew";
+import { useLiveMonitor } from "../store/live";
+import { LiveAlarmBanner } from "../components/Live";
 
 export const NAV = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, key: "1" },
@@ -54,6 +56,7 @@ export function Shell({ children }: { children: ReactNode }) {
   const mission = useCrew((s) => s.mode) === "mission";
   const crewToday = useCrewToday();
   useReportSchedule(crewToday);
+  useLiveMonitor();
   const nav = useMemo(() => (mission ? [NAV[0], NAV[1], CREW_NAV, ...NAV.slice(2)] : NAV), [mission]);
   const day = useMission((s) => s.day);
   const env = environmentById(useMission((s) => s.environment));
@@ -160,6 +163,7 @@ export function Shell({ children }: { children: ReactNode }) {
       </header>
 
       <main id="main" className="shell-main" tabIndex={-1}>
+        <LiveAlarmBanner />
         <CrewAlertBanner crew={crewToday} />
         {saveFailed && (
           <div className="banner banner--watch save-banner" role="alert">

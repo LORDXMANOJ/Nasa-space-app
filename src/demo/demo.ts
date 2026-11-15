@@ -10,6 +10,7 @@ import { infoOf, useCrew } from "../store/crew";
 import { todayIso } from "../engine/crew";
 import { gaussian } from "../engine/rng";
 import type { Reading } from "../engine/simulation";
+import { useLive } from "../store/live";
 import { defaultEarthDates } from "../screens/onboarding/Onboarding";
 
 /** The desktop app (Electron) never offers the tour. */
@@ -342,6 +343,23 @@ const SCRIPT: Step[] = [
   say("The whole crew sees it, and an emergency report went to Earth at once.", 3600),
   async (t) => click(t, ".crew-card-head", "Aasha"),
   say("Everyone sees everyone's results, allergies and medicines. Nobody can edit another person's record.", 4600),
+  async (t) => {
+    const arya = useCrew.getState().members.find((m) => m.name === "Arya");
+    if (arya) useLive.getState().startEvent(arya.id, "low-oxygen");
+    await sleep(300, t);
+  },
+  say("And the wearables stream all day, even offline. If anything turns dangerous, everyone is alerted at once.", 4800),
+  async (t) => {
+    await waitFor(t, ".live-alarm-row", undefined, 25000);
+    await sleep(1200, t);
+  },
+  say("Arya's blood oxygen is low. The alarm is on every screen, and Earth gets an emergency report.", 4400),
+  async (t) => {
+    await click(t, ".live-alarm-row button", "I'm on it");
+    const arya = useCrew.getState().members.find((m) => m.name === "Arya");
+    if (arya) useLive.getState().clearEvent(arya.id);
+    await sleep(600, t);
+  },
   go("#/recovery"),
   say("A short, drug-free checklist. The Crew Medical Officer decides on any treatment.", 3600),
   async (t) => {
@@ -433,6 +451,7 @@ export async function startDemo(withVoice = true) {
     useMission.getState().signOut();
     useCrew.getState().resetAll();
     useCrew.setState({ hydrated: true, mode: "new", step: "welcome" });
+    useLive.setState({ alarms: [], values: {}, events: {}, tick: 0, lastAt: null });
     window.location.hash = "#/";
     await sleep(1200, t);
     for (let i = 0; i < SCRIPT.length; i++) {

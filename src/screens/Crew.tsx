@@ -9,6 +9,7 @@ import { learnMetricBaselines } from "../engine/detectors";
 import { formatDuration } from "../engine/missions";
 import { infoOf, useCrew } from "../store/crew";
 import { useCrewToday, type MemberToday } from "../store/crewHealth";
+import { LiveReadings, LiveTestButton } from "../components/Live";
 import { formatInterval, reportIntervalHours } from "../engine/crew";
 import { useLink } from "../store/health";
 import { useMission } from "../store/mission";
@@ -89,6 +90,10 @@ export function Crew() {
                 ))}
               </ul>
             )}
+            <div className="crew-live">
+              <LiveReadings memberId={c.member.id} paired={!!c.member.deviceTestedAt} />
+              {c.member.deviceTestedAt && <LiveTestButton memberId={c.member.id} name={c.member.name} />}
+            </div>
             {open === c.member.id && <MemberDetail c={c} day={day} />}
           </li>
         ))}

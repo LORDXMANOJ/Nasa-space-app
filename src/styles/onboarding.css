@@ -1041,3 +1041,116 @@ textarea.ob-input {
 .update-close:hover {
   background: var(--surface-2);
 }
+
+/* ---------- live monitoring ---------- */
+.live-alarm {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  display: grid;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+.live-alarm-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--sp-4);
+  align-items: center;
+  padding: var(--sp-4) var(--sp-5);
+  background: var(--act);
+  color: #fff;
+  border-radius: 0 0 var(--r-md) var(--r-md);
+  font-size: var(--fs-md);
+  animation: live-pulse 1.2s ease-in-out 3;
+}
+.live-alarm-row > svg {
+  font-size: 32px;
+}
+.live-alarm-row small {
+  display: block;
+  opacity: 0.9;
+  font-size: var(--fs-sm);
+}
+.live-alarm-row .btn {
+  background: #fff;
+  color: var(--act);
+  border-color: #fff;
+}
+@keyframes live-pulse {
+  50% {
+    filter: brightness(1.15);
+  }
+}
+.crew-live {
+  padding: 0 var(--sp-4) var(--sp-3);
+}
+.live ul {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.live-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--nominal);
+  animation: live-blink 1.6s ease-in-out infinite;
+}
+@keyframes live-blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+[data-motion="reduced"] .live-dot,
+[data-motion="reduced"] .live-alarm-row {
+  animation: none;
+}
+.live-lab {
+  font: 500 12px var(--font-mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.live-v {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 8px;
+  border-radius: var(--r-sm);
+  background: var(--surface-1);
+  border: var(--bw) solid var(--border);
+  font-size: 12px;
+}
+.live-v b {
+  font: 600 18px var(--font-mono);
+}
+.live-v b small {
+  font-size: 11px;
+  font-weight: 500;
+}
+.live-v--watch {
+  border-color: var(--watch);
+  background: var(--watch-wash);
+}
+.live-v--act {
+  border-color: var(--act);
+  background: var(--act-wash);
+  color: var(--act);
+}
+.live-none {
+  margin: 4px 0 0;
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+}
+.live-test {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
