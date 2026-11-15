@@ -55,6 +55,7 @@ export function useHealth() {
           day,
           env: environment,
           wearablePaired: !!member.deviceTestedAt,
+          skippedToday: member.skips[day],
         })
       : buildHistory(profileById(profileId), environment, day, userReadings);
     /** What a device "measures" today: simulated in both modes, around the member's own Earth normal for a real crew. */

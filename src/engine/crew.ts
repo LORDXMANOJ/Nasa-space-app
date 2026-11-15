@@ -139,12 +139,14 @@ export function memberHistory(opts: {
   day: number;
   env: EnvironmentId;
   wearablePaired: boolean;
+  /** readings marked "didn't measure" today: the wearable does not fill these */
+  skippedToday?: string[];
 }): Record<string, Reading[]> {
-  const { memberId, earth, readings, day, env, wearablePaired } = opts;
+  const { memberId, earth, readings, day, env, wearablePaired, skippedToday = [] } = opts;
   const own = readings.filter((r) => r.day >= 1 && r.day <= day);
   const today: Reading[] = [];
   if (wearablePaired && day >= 1)
-    for (const ind of INDICATORS.filter((i) => i.autoLogged))
+    for (const ind of INDICATORS.filter((i) => i.autoLogged && !skippedToday.includes(i.id)))
       if (!own.some((r) => r.indicatorId === ind.id && r.day === day))
         today.push({ indicatorId: ind.id, day, values: wearableReading(memberId, ind, day, earth, env), source: "auto" });
   return groupByIndicator([...earth, ...own, ...today]);

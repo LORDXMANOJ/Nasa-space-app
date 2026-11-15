@@ -21,6 +21,7 @@ import { HowItDecides } from "./screens/HowItDecides";
 import { Assistant } from "./screens/Assistant";
 import { CheckIn } from "./screens/CheckIn";
 import { Settings } from "./screens/Settings";
+import { Crew } from "./screens/Crew";
 import { DevComponents } from "./screens/DevComponents";
 
 const BodyReport = lazy(() => import("./screens/BodyReport"));
@@ -98,6 +99,7 @@ export function App() {
               <Route path="/sources" element={<HowItDecides />} />
               <Route path="/assistant" element={<Assistant />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/crew" element={<Crew />} />
               <Route path="/dev/components" element={<DevComponents />} />
               <Route path="*" element={<Dashboard />} />
             </Routes>
