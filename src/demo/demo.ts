@@ -16,6 +16,10 @@ interface DemoState {
   step: number;
   total: number;
   cursor: { x: number; y: number; visible: boolean; pressed: boolean };
+  /** narrate each caption with the browser's built-in speech voice */
+  voice: boolean;
+  /** shown when the page was opened with ?demo=1: browsers only allow sound after a tap */
+  ready: boolean;
 }
 export const useDemo = create<DemoState>(() => ({
   running: false,
@@ -23,6 +27,8 @@ export const useDemo = create<DemoState>(() => ({
   step: 0,
   total: 0,
   cursor: { x: -40, y: -40, visible: false, pressed: false },
+  voice: true,
+  ready: false,
 }));
 const set = (p: Partial<DemoState>) => useDemo.setState(p);
 
@@ -89,11 +95,40 @@ async function typeNumber(t: number, fieldId: string, value: string) {
 }
 
 type Step = (t: number) => Promise<void>;
+const canSpeak = typeof window !== "undefined" && "speechSynthesis" in window;
+let chosenVoice: SpeechSynthesisVoice | undefined;
+function pickVoice() {
+  if (chosenVoice || !canSpeak) return chosenVoice;
+  const all = window.speechSynthesis.getVoices().filter((v) => /^en/i.test(v.lang));
+  chosenVoice =
+    all.find((v) => /natural|online|google/i.test(v.name) && /en-(US|GB)/i.test(v.lang)) ??
+    all.find((v) => /en-US/i.test(v.lang)) ??
+    all[0];
+  return chosenVoice;
+}
+/** Speaks one caption; resolves when finished (or after a safety timeout). Silent if voice is off or unsupported. */
+function speak(text: string): Promise<void> {
+  if (!canSpeak || !useDemo.getState().voice) return Promise.resolve();
+  return new Promise((resolve) => {
+    const u = new SpeechSynthesisUtterance(text);
+    const v = pickVoice();
+    if (v) u.voice = v;
+    u.lang = v?.lang ?? "en-US";
+    u.rate = 1;
+    const done = () => resolve();
+    u.onend = done;
+    u.onerror = done;
+    window.setTimeout(done, 15000);
+    window.speechSynthesis.speak(u);
+  });
+}
 const say =
   (text: string, ms = 3200): Step =>
   async (t) => {
     set({ caption: text });
-    await sleep(ms, t);
+    // the step lasts as long as the caption needs to be read, or the voice needs to finish, whichever is longer
+    await Promise.all([sleep(ms, t), speak(text)]);
+    alive(t);
   };
 const go =
   (hash: string): Step =>
@@ -167,10 +202,12 @@ const SCRIPT: Step[] = [
   say("That is the whole loop. Everything runs on board. Nothing waits for Earth.", 4200),
 ];
 
-export async function startDemo() {
+export async function startDemo(withVoice = true) {
   if (isDesktopApp || useDemo.getState().running) return;
   const t = ++token;
   set({
+    voice: withVoice && canSpeak,
+    ready: false,
     running: true,
     step: 0,
     total: SCRIPT.length,
@@ -195,7 +232,13 @@ export async function startDemo() {
   }
 }
 
+export function setVoice(on: boolean) {
+  set({ voice: on });
+  if (!on && canSpeak) window.speechSynthesis.cancel();
+}
+
 export function stopDemo() {
   token++;
-  set({ running: false, caption: "", cursor: { x: -40, y: -40, visible: false, pressed: false } });
+  if (canSpeak) window.speechSynthesis.cancel();
+  set({ running: false, ready: false, caption: "", cursor: { x: -40, y: -40, visible: false, pressed: false } });
 }

@@ -2232,3 +2232,30 @@ code,
 .demo-cursor.is-down {
   scale: 0.85;
 }
+
+.demo-layer--ask {
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
+  background: rgb(17 29 27 / 0.55);
+}
+.demo-ask {
+  width: min(480px, calc(100vw - 32px));
+  padding: var(--sp-6);
+  border-radius: var(--r-lg);
+  background: var(--surface-0);
+  color: var(--ink);
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.3);
+}
+.demo-ask h2 {
+  margin: 0 0 var(--sp-2);
+}
+.demo-ask p {
+  margin: 0 0 var(--sp-4);
+  color: var(--ink-dim);
+}
+.demo-ask-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}

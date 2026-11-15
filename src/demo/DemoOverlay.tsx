@@ -1,7 +1,7 @@
 /** The visible parts of Demo mode: a cursor, a caption bar with progress, and a Stop button. Web version only. */
 import { useEffect } from "react";
 import { Play, X } from "../components/icons";
-import { isDesktopApp, startDemo, stopDemo, useDemo } from "./demo";
+import { isDesktopApp, setVoice, startDemo, stopDemo, useDemo } from "./demo";
 
 /** Button that starts the tour. Renders nothing in the desktop app. */
 export function DemoButton({
@@ -21,14 +21,14 @@ export function DemoButton({
 }
 
 export function DemoOverlay() {
-  const { running, caption, step, total, cursor } = useDemo();
+  const { running, caption, step, total, cursor, voice, ready } = useDemo();
 
   // ?demo=1 in the address starts the tour on load (used by the links on the slides)
   useEffect(() => {
     if (isDesktopApp) return;
     if (new URLSearchParams(window.location.search).get("demo") === "1") {
-      const id = window.setTimeout(() => void startDemo(), 1200);
-      return () => window.clearTimeout(id);
+      // sound needs a tap in browsers, so ask first instead of starting silently
+      useDemo.setState({ ready: true });
     }
   }, []);
   useEffect(() => {
@@ -38,11 +38,35 @@ export function DemoOverlay() {
     return () => window.removeEventListener("keydown", onKey);
   }, [running]);
 
-  if (!running || isDesktopApp) return null;
+  if (isDesktopApp) return null;
+  if (ready && !running)
+    return (
+      <div className="demo-layer demo-layer--ask" role="dialog" aria-label="Start demo mode">
+        <div className="demo-ask">
+          <h2>Demo mode</h2>
+          <p>
+            A cursor will click and type through a full check-in by itself, with a voice explaining each step. All crew
+            and readings are simulated.
+          </p>
+          <div className="demo-ask-actions">
+            <button type="button" className="btn btn--lg btn--primary" onClick={() => void startDemo(true)}>
+              <Play aria-hidden /> Start with voice
+            </button>
+            <button type="button" className="btn btn--lg" onClick={() => void startDemo(false)}>
+              Start without voice
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  if (!running) return null;
   return (
     <div className="demo-layer" role="region" aria-label="Demo mode">
       <div className="demo-top">
         <span className="demo-chip">Demo mode · simulated crew and data</span>
+        <button type="button" className="btn btn--sm" aria-pressed={voice} onClick={() => setVoice(!voice)}>
+          {voice ? "Voice on" : "Voice off"}
+        </button>
         <button type="button" className="btn btn--sm demo-stop" onClick={stopDemo}>
           <X aria-hidden /> Stop demo
         </button>
