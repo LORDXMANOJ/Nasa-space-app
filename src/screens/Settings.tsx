@@ -305,6 +305,17 @@ function MissionCard() {
         >
           Open the demo crew
         </button>
+        <button
+          className="btn btn--ghost"
+          onClick={() => {
+            if (!window.confirm("Remove this crew and all its records from this device, and start setup again?")) return;
+            useMission.getState().signOut();
+            c.resetAll();
+            useCrew.setState({ hydrated: true });
+          }}
+        >
+          Start over with a new crew
+        </button>
       </div>
     </section>
   );
