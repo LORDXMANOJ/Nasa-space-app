@@ -60,7 +60,13 @@ export function NumberField({
         disabled={readOnly}
         onClick={() => setOpen(true)}
       >
-        {value ? <span className="num">{value}</span> : <span className="nf-ph">{placeholder}</span>}
+        {value ? (
+          <span key={value} className="num">
+            {value}
+          </span>
+        ) : (
+          <span className="nf-ph">{placeholder}</span>
+        )}
         <small>{unit}</small>
       </button>
       {!readOnly && (

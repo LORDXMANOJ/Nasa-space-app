@@ -337,7 +337,7 @@ export function HowItDecides() {
           <h3>Software and assets</h3>
           <p className="dim">
             React, React Router, Zustand, Recharts, three.js, @react-three/fiber, @react-three/drei, Zod
-            (MIT); Dexie (Apache-2.0); Phosphor icons (MIT); Geist and Geist Mono
+            (MIT); Dexie (Apache-2.0); Phosphor icons (MIT); Archivo, IBM Plex Sans and IBM Plex Mono
             fonts (SIL Open Font License 1.1, bundled). 3D body and organs from Sketchfab, CC-BY 4.0:
             "Low-Poly Male Body" by Tidominer, "Anatomically Correct Human Heart" by Pigcraft, "Lungs" by
             prasanth.k, "ROJO-HS-1 Human Skull" by Kent MORI, "Human Organs" by Suyanto, "Cauda Equina - 4-22"

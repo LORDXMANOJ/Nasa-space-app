@@ -600,7 +600,7 @@ select {
 .symptoms label:active,
 .nf-step:active,
 .kp-key:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 .btn.is-done {
   --btn-bg: var(--nominal);
@@ -608,14 +608,14 @@ select {
   --btn-fg: #ffffff;
 }
 .pop {
-  animation: pop 320ms var(--ease-out);
+  animation: pop 240ms var(--ease-out);
 }
 @keyframes pop {
   0% { transform: scale(0.4); }
   70% { transform: scale(1.15); }
 }
 .jiggle {
-  animation: jiggle 420ms var(--ease-out);
+  animation: jiggle 320ms var(--ease-out);
 }
 @keyframes jiggle {
   0%, 100% { transform: translateX(0); }
@@ -659,8 +659,16 @@ select {
   background: var(--p-pine);
   color: var(--p-dust);
   font-weight: 700;
-  box-shadow: 0 12px 32px rgba(38, 58, 48, 0.28);
-  animation: toast-in 220ms var(--ease-out);
+  box-shadow: var(--shadow-lg);
+  transition:
+    opacity var(--dur) var(--ease-out),
+    transform var(--dur) var(--ease-out);
+}
+@starting-style {
+  .toast {
+    opacity: 0;
+    transform: translateY(100%);
+  }
 }
 .toast svg {
   width: 22px;
@@ -690,8 +698,10 @@ select {
     transform: translateY(12px);
   }
 }
-[data-motion="reduced"] .toast {
-  animation: none;
+@starting-style {
+  [data-motion="reduced"] .toast {
+    transform: none;
+  }
 }
 
 /* Number field: minus, value, plus */
@@ -710,7 +720,7 @@ select {
 }
 .nf-field.is-invalid {
   border-color: var(--act);
-  box-shadow: 0 0 0 3px rgba(179, 38, 30, 0.15);
+  box-shadow: var(--ring-act);
 }
 .nf-step {
   display: grid;
@@ -763,7 +773,7 @@ select {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  background: rgba(38, 58, 48, 0.35);
+  background: rgba(17, 29, 27, 0.35);
 }
 .kp-sheet {
   width: min(440px, 100vw);
@@ -771,7 +781,7 @@ select {
   padding: var(--sp-5);
   border-radius: var(--r-xl);
   background: var(--surface-0);
-  box-shadow: 0 -12px 40px rgba(38, 58, 48, 0.3);
+  box-shadow: var(--shadow-lg);
   animation: toast-in 200ms var(--ease-out);
 }
 .kp-label {

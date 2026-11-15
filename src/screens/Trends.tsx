@@ -23,7 +23,7 @@ import { StatusBadge } from "../components/status";
 import { useHealth } from "../store/health";
 import { useMission } from "../store/mission";
 
-const COLORS = ["#344e41", "#588157"];
+const COLORS = ["#123631", "#2a8f7f"];
 
 export default function Trends() {
   const h = useHealth();
@@ -132,33 +132,33 @@ export default function Trends() {
           >
             <ResponsiveContainer>
               <LineChart data={rows} margin={{ top: 16, right: 56, bottom: 8, left: 8 }}>
-                <CartesianGrid stroke="#cfcbbf" strokeDasharray="0" vertical={false} />
+                <CartesianGrid stroke="#cfdcd8" strokeDasharray="0" vertical={false} />
                 <XAxis
                   dataKey="day"
                   type="number"
                   domain={["dataMin", "dataMax"]}
-                  stroke="#4e5f55"
-                  tick={{ fontFamily: "Geist Variable", fontSize: 12, fill: "#4e5f55" }}
+                  stroke="#4f625d"
+                  tick={{ fontFamily: "IBM Plex Mono", fontSize: 12, fill: "#4f625d" }}
                   label={{
                     value: "Mission day",
                     position: "insideBottomRight",
                     offset: -4,
-                    fill: "#4e5f55",
+                    fill: "#4f625d",
                     fontSize: 12,
                   }}
                 />
                 <YAxis
-                  stroke="#4e5f55"
-                  tick={{ fontFamily: "Geist Variable", fontSize: 12, fill: "#4e5f55" }}
+                  stroke="#4f625d"
+                  tick={{ fontFamily: "IBM Plex Mono", fontSize: 12, fill: "#4f625d" }}
                   domain={["auto", "auto"]}
                   width={56}
                 />
                 <Tooltip
                   contentStyle={{
                     background: "#ffffff",
-                    border: "2px solid #344e41",
+                    border: "2px solid #123631",
                     borderRadius: 10,
-                    fontFamily: "Geist Variable",
+                    fontFamily: "IBM Plex Mono",
                   }}
                   labelFormatter={(d) => `Day ${d}`}
                 />
@@ -166,16 +166,16 @@ export default function Trends() {
                   <ReferenceArea
                     x1={first}
                     x2={0}
-                    fill="#dad7cd"
+                    fill="#e3edea"
                     fillOpacity={0.7}
-                    label={{ value: "on Earth", fill: "#4e5f55", fontSize: 12, position: "insideTop" }}
+                    label={{ value: "on Earth", fill: "#4f625d", fontSize: 12, position: "insideTop" }}
                   />
                 )}
                 {b0 && !m0.cumulative && (
                   <ReferenceArea
                     y1={conv(b0.mean - b0.sd)}
                     y2={conv(b0.mean + b0.sd)}
-                    fill="#588157"
+                    fill="#2a8f7f"
                     fillOpacity={0.15}
                     ifOverflow="extendDomain"
                   />
@@ -192,9 +192,9 @@ export default function Trends() {
                 ))}
                 <ReferenceLine
                   x={h.day}
-                  stroke="#344e41"
+                  stroke="#123631"
                   strokeOpacity={0.5}
-                  label={{ value: "today", fill: "#4e5f55", fontSize: 11, position: "top" }}
+                  label={{ value: "today", fill: "#4f625d", fontSize: 11, position: "top" }}
                 />
                 {metrics.map((m, i) => (
                   <Line

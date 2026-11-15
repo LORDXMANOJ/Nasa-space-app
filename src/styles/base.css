@@ -149,7 +149,7 @@ html {
     "rail bar"
     "rail main"
     "rail foot";
-  height: 100vh;
+  height: 100dvh;
   min-width: 760px; /* portrait tablets (touch panels) and up */
   background: var(--bg);
 }

@@ -16,7 +16,7 @@ import type { Status } from "../../engine/alerts";
 
 const BODY_URL = "./models/organs/body.glb";
 const HEX: Record<Status, string> = { nominal: "#2e6b3f", watch: "#d9952b", act: "#b3261e", stale: "#9aa094" };
-const SKIN = new THREE.MeshStandardMaterial({ color: "#a3b18a", transparent: true, opacity: 0.32, roughness: 0.85, metalness: 0, depthWrite: false, side: THREE.DoubleSide });
+const SKIN = new THREE.MeshStandardMaterial({ color: "#9fcfc4", transparent: true, opacity: 0.32, roughness: 0.85, metalness: 0, depthWrite: false, side: THREE.DoubleSide });
 
 /** Each organ model, fitted so its largest side is `size` metres, centred at `at`, after rotating by `rot` (radians). */
 interface Organ {
@@ -83,7 +83,7 @@ function Body() {
       <primitive object={object} />
       <mesh rotation={[-Math.PI / 2, 0, 0]}>
         <ringGeometry args={[0.45, 0.465, 64]} />
-        <meshBasicMaterial color="#588157" />
+        <meshBasicMaterial color="#2a8f7f" />
       </mesh>
     </group>
   );
@@ -158,7 +158,7 @@ function Hotspot({ id, s, selected, onSelect, reduced }: { id: RegionId; s: Stat
       {selected && (
         <mesh>
           <torusGeometry args={[r.radius * 0.6 + 0.03, 0.008, 8, 48]} />
-          <meshBasicMaterial color="#344e41" />
+          <meshBasicMaterial color="#123631" />
         </mesh>
       )}
     </group>

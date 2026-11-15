@@ -1,28 +1,28 @@
 /*
- * Design tokens. Palette chosen by the user: Dust Grey #DAD7CD, Dry Sage #A3B18A, Fern #588157,
- * Hunter Green #3A5A40, Pine Teal #344E41. Fonts chosen by the user: Shantell Sans (text) and DynaPuff (headings).
+ * Design tokens. Palette chosen by the user: Dust Grey #e3edea, Dry Sage #9fcfc4, Fern #2a8f7f,
+ * Hunter Green #1a7568, Pine Teal #123631. Fonts chosen by the user: Shantell Sans (text) and DynaPuff (headings).
  * Status keeps amber (Watch) and red (Act) so a problem never looks green; Nominal is a deeper green than Fern.
  * Themes: default, [data-theme="hc"] (high contrast). [data-text="large"] scales rem by 125 %.
  */
 :root {
-  /* ---- primitives: the user's palette ---- */
-  --p-dust: #dad7cd;
-  --p-sage: #a3b18a;
-  --p-fern: #588157;
-  --p-hunter: #3a5a40;
-  --p-pine: #344e41;
+  /* ---- primitives ---- */
+  --p-dust: #e3edea;
+  --p-sage: #9fcfc4;
+  --p-fern: #2a8f7f;
+  --p-hunter: #1a7568;
+  --p-pine: #123631;
   /* derived tints and shades of the palette */
-  --p-paper: #f6f5f0;
-  --p-paper-2: #eceae2;
-  --p-rule: #cfcbbf;
-  --p-pine-dim: #4e5f55;
-  --p-pine-deep: #263a30;
+  --p-paper: #f8fbfa;
+  --p-paper-2: #ecf3f1;
+  --p-rule: #cfdcd8;
+  --p-pine-dim: #4f625d;
+  --p-pine-deep: #0b221e;
   /* status (kept distinct from the brand greens) */
   --p-nominal: #2e6b3f;
   --p-watch-text: #8a5300;
   --p-watch-fill: #e0a33a;
   --p-act: #b3261e;
-  --p-stale: #767b70;
+  --p-stale: #6c7774;
 
   /* ---- semantic ---- */
   --bg: var(--p-dust);
@@ -33,13 +33,14 @@
   --border: var(--p-rule);
   --border-strong: var(--p-sage);
   --rule: var(--p-pine);
-  --text: var(--p-pine);
-  --text-soft: #2f4438;
+  --p-ink: #111d1b;
+  --text: var(--p-ink);
+  --text-soft: #2c3d39;
   --text-dim: var(--p-pine-dim);
   --accent: var(--p-hunter);
   --accent-hover: var(--p-pine-deep);
   --accent-ink: #ffffff;
-  --accent-wash: #e4e9da;
+  --accent-wash: #dcefe9;
   --focus: var(--p-fern);
   --brand: var(--p-pine);
   --brand-ink: var(--p-dust);
@@ -49,18 +50,24 @@
   --act: var(--p-act);
   --stale: var(--p-stale);
   --watch-fill: var(--p-watch-fill);
-  --nominal-wash: #e3eddf;
+  --nominal-wash: #e1f0e4;
   --watch-wash: #fbf0d9;
   --act-wash: #f8e3df;
-  --stale-wash: #ecebe6;
+  --stale-wash: #e9eeec;
 
-  --shadow-pop: 0 18px 48px rgba(38, 58, 48, 0.2);
-  --backdrop: rgba(38, 58, 48, 0.45);
+  /* Elevation scale (Meng To's layered shadows, tinted toward the ink instead of pure black) */
+  --shadow-sm: 0 2px 3px -1px rgba(17, 29, 27, 0.1), 0 1px 0 0 rgba(17, 29, 27, 0.02), 0 0 0 1px rgba(17, 29, 27, 0.08);
+  --shadow-md: 0 0 0 1px rgba(17, 29, 27, 0.06), 0 1px 1px -0.5px rgba(17, 29, 27, 0.06), 0 3px 3px -1.5px rgba(17, 29, 27, 0.06), 0 6px 6px -3px rgba(17, 29, 27, 0.06), 0 12px 12px -6px rgba(17, 29, 27, 0.06), 0 24px 24px -12px rgba(17, 29, 27, 0.06);
+  --shadow-lg: 0 2.8px 2.2px rgba(17, 29, 27, 0.034), 0 6.7px 5.3px rgba(17, 29, 27, 0.048), 0 12.5px 10px rgba(17, 29, 27, 0.06), 0 22.3px 17.9px rgba(17, 29, 27, 0.072), 0 41.8px 33.4px rgba(17, 29, 27, 0.086), 0 100px 80px rgba(17, 29, 27, 0.12);
+  --shadow-bar: 0 -8px 20px rgba(17, 29, 27, 0.08);
+  --ring-act: 0 0 0 3px rgba(179, 38, 30, 0.15);
+  --shadow-pop: 0 18px 48px rgba(17, 29, 27, 0.2);
+  --backdrop: rgba(17, 29, 27, 0.45);
 
   /* ---- type ---- */
-  --font-sans: "Geist Variable", system-ui, "Segoe UI", sans-serif;
-  --font-display: var(--font-sans); /* one typeface; headings differ by weight and tracking */
-  --font-mono: "Geist Mono Variable", ui-monospace, "Cascadia Mono", monospace;
+  --font-sans: "IBM Plex Sans", system-ui, "Segoe UI", sans-serif;
+  --font-display: "Archivo Variable", "IBM Plex Sans", system-ui, sans-serif; /* one typeface; headings differ by weight and tracking */
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", monospace;
   --fs-label: 0.75rem;
   --fs-sm: 0.875rem;
   --fs-base: 1rem;
@@ -92,11 +99,13 @@
   --bw-strong: 2px;
 
   /* ---- motion ---- */
-  --dur-fast: 200ms;
-  --dur: 300ms;
-  --dur-slow: 500ms;
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-in-out: cubic-bezier(0.6, 0, 0.3, 1);
+  /* Emil Kowalski's curves; UI motion stays under 300ms (press 140, colour/fade 200, panels 280) */
+  --dur-fast: 140ms;
+  --dur: 200ms;
+  --dur-slow: 280ms;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 
   /* ---- component ---- */
   --target-min: 56px; /* touch first (Fitts): crew use a touch panel, maybe with gloves */
@@ -110,13 +119,13 @@
   --bg: #ffffff;
   --surface-0: #ffffff;
   --surface-2: #ffffff;
-  --border: #1d2b23;
-  --border-strong: #1d2b23;
+  --border: #111d1b;
+  --border-strong: #111d1b;
   --rule: #000000;
   --text: #000000;
   --text-soft: #000000;
-  --text-dim: #1d2b23;
-  --accent: #1f3b26;
+  --text-dim: #111d1b;
+  --accent: #0f4a41;
   --accent-hover: #000000;
   --focus: #000000;
   --nominal: #0b4d2c;

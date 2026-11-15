@@ -941,7 +941,7 @@ details.why summary {
 
 /* ---------- Who are you? ---------- */
 .who {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
   place-items: center;
   padding: var(--sp-8);
@@ -1125,11 +1125,11 @@ details.why summary {
   padding: var(--sp-12) var(--sp-3) var(--sp-3);
 }
 .hl-stage {
-  --hairline-plate: #f6f5f0;
-  --hairline-hi: #344e41;
-  --hairline-edge: #588157;
-  --hairline-mid: #a3b18a;
-  --hairline-lo: #dad7cd;
+  --hairline-plate: #f8fbfa;
+  --hairline-hi: #123631;
+  --hairline-edge: #2a8f7f;
+  --hairline-mid: #9fcfc4;
+  --hairline-lo: #e3edea;
   width: min(100cqw - 24px, (100cqh - 180px) * 1.25);
   aspect-ratio: 400 / 320;
   flex: none;
@@ -1327,7 +1327,7 @@ details.why summary {
 }
 .mood-scale[aria-invalid="true"] {
   border-color: var(--act);
-  box-shadow: 0 0 0 3px rgba(179, 38, 30, 0.15);
+  box-shadow: var(--ring-act);
 }
 .ci-symptoms .symptoms label {
   position: relative;
@@ -1376,7 +1376,7 @@ details.why summary {
 .ci-bar {
   position: sticky;
   bottom: -40px; /* sit on the real bottom edge: .shell-main has 40px bottom padding */
-  box-shadow: 0 -10px 24px rgba(38, 58, 48, 0.08);
+  box-shadow: var(--shadow-bar);
   z-index: 5;
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -1407,7 +1407,7 @@ details.why summary {
   width: 100%;
   background: var(--p-sage);
   transform-origin: left center;
-  animation: go-bar 1100ms var(--ease-in-out) forwards;
+  animation: go-bar 1100ms linear forwards; /* progress tracks time: linear */
 }
 @keyframes go-bar {
   from { transform: scaleX(0); }
@@ -1643,11 +1643,11 @@ details.why summary {
   stroke-linejoin: round;
   stroke-dasharray: 30;
   stroke-dashoffset: 30;
-  animation: draw-check 600ms 300ms var(--ease-out) forwards;
+  animation: draw-check 480ms 160ms var(--ease-out) forwards; /* rare goal state: the delight budget */
 }
 .ac-check {
   transform-origin: 164px 62px;
-  animation: pop 420ms var(--ease-out);
+  animation: pop 280ms var(--ease-out);
 }
 @keyframes twinkle {
   50% { opacity: 0.35; }
@@ -1867,4 +1867,292 @@ details.why summary {
 }
 [data-motion="reduced"] .skeleton span {
   animation: none;
+}
+
+/* ==========================================================================
+   Type voices. Each occasion gets its own font, width and weight so the page
+   never reads as one flat setting:
+     Archivo (wide, heavy)      page titles, the welcome, verdicts
+     Archivo (normal, semibold) section and alert titles
+     Archivo (narrow, light)    big figures: readiness, the number pad
+     IBM Plex Sans              reading text, buttons, rows (400 / 500 / 600)
+     IBM Plex Mono              readings, labels, status marks, codes
+   Light weights only at 28px and up; nothing under 16px lighter than 400.
+   ========================================================================== */
+h1 {
+  font-family: var(--font-display);
+  font-stretch: 112%;
+  font-weight: 700;
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+h2 {
+  font-family: var(--font-display);
+  font-stretch: 100%;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+h3 {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.lede {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  color: var(--text-soft);
+}
+/* Labels, table heads, status marks and codes: mono, small caps-style */
+.label,
+.decision-head .label,
+.table th,
+.block-head,
+.meta,
+.ci-sub,
+.kp-label,
+.all-clear-kicker,
+.readiness .label,
+.hazard-key,
+.req,
+.char-count {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+.badge {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.meta b {
+  font-weight: 600;
+}
+/* Readings and other changing numbers: mono, tabular */
+.num,
+.nf-value,
+.table td.num,
+.packet-preview,
+.formula,
+code,
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.nf-value {
+  font-weight: 500;
+}
+/* Big figures: Archivo narrow and light */
+.readiness .figure,
+.figure {
+  font-family: var(--font-display);
+  font-stretch: 88%;
+  font-weight: 300;
+  font-size: 3.25rem;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.readiness .figure small {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.kp-display {
+  font-family: var(--font-display);
+  font-stretch: 88%;
+  font-weight: 300;
+  font-size: 2.75rem;
+}
+/* Verdicts: the loudest voice in the app, used only for ACT ON BOARD NOW / ASK EARTH */
+.verdict {
+  font-family: var(--font-display);
+  font-stretch: 115%;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+/* Alert titles: Archivo semibold, not shouting */
+.alert-head h3 {
+  font-family: var(--font-display);
+  font-stretch: 100%;
+  font-weight: 700;
+  font-size: 1.375rem;
+  letter-spacing: -0.015em;
+}
+/* The welcome: the one place for the widest, heaviest setting */
+.who-welcome h1 {
+  font-stretch: 125%;
+  font-weight: 800;
+  font-size: 3rem;
+  letter-spacing: -0.03em;
+}
+.all-clear h2 {
+  font-stretch: 112%;
+  font-weight: 700;
+}
+.all-clear-kicker {
+  color: var(--p-pine);
+}
+.hazard-name strong {
+  font-family: var(--font-display);
+  font-stretch: 105%;
+  font-weight: 600;
+}
+.ci-pane-title {
+  font-family: var(--font-display);
+  font-stretch: 105%;
+  font-weight: 600;
+}
+/* Buttons: Plex Sans; the big primary action switches to Archivo */
+.btn {
+  font-family: var(--font-sans);
+  font-weight: 600;
+}
+.btn--lg {
+  font-family: var(--font-display);
+  font-stretch: 105%;
+  font-weight: 650;
+  letter-spacing: -0.005em;
+}
+.btn--ghost {
+  font-weight: 500;
+}
+/* Step numbers: mono, two digits, quiet (01 02 03) */
+.flow-steps .k,
+.ci-steps .k {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+/* Title bar cells: mono labels, sans values */
+.bar {
+  font-family: var(--font-mono);
+}
+
+
+/* ---------- Motion pass (animate skill): purposeful, under 300ms, reduced-motion aware ---------- */
+/* Press feedback on every pressable thing, 140ms ease-out */
+.btn,
+.seg button,
+.mood-scale button,
+.symptoms label,
+.nf-step,
+.kp-key,
+.plan-row,
+.hazard-row,
+.region-list button,
+.chip {
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    background-color var(--dur) ease,
+    color var(--dur) ease,
+    border-color var(--dur) ease;
+}
+.plan-row:active,
+.hazard-row:active,
+.region-list button:active,
+.chip:active {
+  transform: scale(0.985);
+}
+/* Disclosure chevrons turn with the panel (state indication) */
+[aria-expanded] > svg {
+  transition: transform var(--dur) var(--ease-out);
+}
+/* Panels that open on tap enter from just above (preventing a jarring jump) */
+.hazard-more,
+.plan-more,
+#dash-more,
+.why-list {
+  transition:
+    opacity var(--dur) var(--ease-out),
+    transform var(--dur) var(--ease-out);
+}
+@starting-style {
+  .hazard-more,
+  .plan-more,
+  #dash-more,
+  .why-list {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+/* Lists that arrive together cascade: 40ms apart, first eight only (occasional, never blocks input) */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.region-list li,
+.ci-cards > li,
+.hazard-list > li,
+.plan-row,
+.hazard-readings li {
+  animation: rise-in var(--dur-slow) var(--ease-out) both;
+}
+.region-list li:nth-child(2),
+.ci-cards > li:nth-child(2),
+.hazard-list > li:nth-child(2),
+.hazard-readings li:nth-child(2) { animation-delay: 40ms; }
+.region-list li:nth-child(3),
+.ci-cards > li:nth-child(3),
+.hazard-list > li:nth-child(3),
+.hazard-readings li:nth-child(3) { animation-delay: 80ms; }
+.region-list li:nth-child(4),
+.ci-cards > li:nth-child(4),
+.hazard-list > li:nth-child(4),
+.hazard-readings li:nth-child(4) { animation-delay: 120ms; }
+.region-list li:nth-child(5),
+.ci-cards > li:nth-child(5),
+.hazard-list > li:nth-child(5),
+.hazard-readings li:nth-child(5) { animation-delay: 160ms; }
+.region-list li:nth-child(n + 6),
+.ci-cards > li:nth-child(n + 6),
+.hazard-readings li:nth-child(n + 6) { animation-delay: 200ms; }
+/* A reading that just arrived from a device settles into place (state indication) */
+.nf-value .num {
+  display: inline-block;
+  animation: value-in var(--dur) var(--ease-out);
+}
+@keyframes value-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+/* Reduced motion: keep the fades that explain state, drop the movement */
+@media (prefers-reduced-motion: reduce) {
+  .region-list li,
+  .ci-cards > li,
+  .hazard-list > li,
+  .plan-row,
+  .hazard-readings li,
+  .nf-value .num {
+    animation-name: fade-only;
+  }
+}
+[data-motion="reduced"] .region-list li,
+[data-motion="reduced"] .ci-cards > li,
+[data-motion="reduced"] .hazard-list > li,
+[data-motion="reduced"] .plan-row,
+[data-motion="reduced"] .nf-value .num {
+  animation-name: fade-only;
+}
+@keyframes fade-only {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Elevation where it means something: things that float above the sheet */
+.plan-row,
+.ci-card,
+.nf-field {
+  box-shadow: var(--shadow-sm);
+}
+.all-clear,
+.block {
+  box-shadow: var(--shadow-md);
 }

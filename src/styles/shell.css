@@ -14,7 +14,7 @@
   place-items: center;
   height: var(--bar-h);
   margin-bottom: var(--sp-2);
-  border-bottom: var(--bw) solid rgba(218, 215, 205, 0.25);
+  border-bottom: var(--bw) solid rgba(227, 237, 234, 0.25);
   color: var(--brand-ink);
 }
 .rail a {
@@ -26,7 +26,7 @@
   padding: var(--sp-2) 4px;
   min-height: 58px;
   justify-content: center;
-  color: rgba(218, 215, 205, 0.82);
+  color: rgba(227, 237, 234, 0.82);
   text-decoration: none;
   font-size: 0.75rem;
   font-weight: 500;
@@ -44,7 +44,7 @@
   stroke-width: 1.75;
 }
 .rail a:hover {
-  background: rgba(218, 215, 205, 0.1);
+  background: rgba(227, 237, 234, 0.1);
   color: #ffffff;
 }
 .rail a.active {

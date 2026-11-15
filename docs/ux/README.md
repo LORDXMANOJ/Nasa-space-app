@@ -128,8 +128,8 @@ Rules we follow:
 
 ## 10. Look and feel
 
-- **Palette:** Dust Grey `#DAD7CD`, Dry Sage `#A3B18A`, Fern `#588157`, Hunter Green `#3A5A40`, Pine Teal `#344E41`: calm greens that keep red and amber free for health status.
-- **Font:** **Geist** for everything, with Geist Mono for data. We first tried rounder, hand-drawn fonts, but they looked cartoonish for a medical tool, so we moved to one clean, professional typeface. It is bundled, so nothing loads from the internet.
+- **Palette:** a cool teal family (primary `#1A7568`, deep teal `#123631` for the menu, ink `#111D1B` for text) on near-white paper. Every text colour was checked against every background (at least 4.5:1). Red and amber are kept for health status only.
+- **Type: three voices, each with a job.** Archivo (a wide, confident face) for titles, verdicts and big numbers; IBM Plex Sans for reading; IBM Plex Mono for readings, labels and codes, so numbers line up and look like instrument data. Weight and width change with the occasion: the verdict ACT ON BOARD NOW is the heaviest, widest text in the app; the readiness figure is light and narrow. We first tried rounder, hand-drawn fonts, but they looked cartoonish for a medical tool.
 - **Icons:** Phosphor, one family and one weight.
 - **Soft corners** on one scale (6 to 16 px), and sheets of paper instead of floating cards, like a crew procedure page.
 
