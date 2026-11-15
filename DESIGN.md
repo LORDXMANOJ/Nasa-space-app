@@ -20,34 +20,34 @@ colors:
   stale: "#767b70"
 typography:
   page-title:
-    fontFamily: "DynaPuff, Shantell Sans, system-ui, sans-serif"
-    fontSize: "32px"
+    fontFamily: "Geist, system-ui, sans-serif"
+    fontSize: "30px"
     fontWeight: 600
   section-heading:
-    fontFamily: "DynaPuff, Shantell Sans, system-ui, sans-serif"
+    fontFamily: "Geist, system-ui, sans-serif"
     fontSize: "20px"
     fontWeight: 600
   block-label:
-    fontFamily: "DynaPuff, Shantell Sans, system-ui, sans-serif"
+    fontFamily: "Geist, system-ui, sans-serif"
     fontSize: "14px"
     fontWeight: 600
     letterSpacing: "0.12em"
   body:
-    fontFamily: "Shantell Sans, system-ui, sans-serif"
+    fontFamily: "Geist, system-ui, sans-serif"
     fontSize: "16px"
     fontWeight: 400
     lineHeight: 1.5
   status-mark:
-    fontFamily: "Shantell Sans, system-ui, sans-serif"
+    fontFamily: "Geist, system-ui, sans-serif"
     fontSize: "13px"
-    fontWeight: 800
+    fontWeight: 700
   mono:
-    fontFamily: "IBM Plex Mono, ui-monospace, monospace"
+    fontFamily: "Geist Mono, ui-monospace, monospace"
     fontSize: "13px"
     fontWeight: 400
 rounded:
   sm: "6px"
-  md: "10px"
+  md: "8px"
   lg: "12px"
   xl: "16px"
   pill: "999px"
@@ -127,23 +127,31 @@ Nominal `#2e6b3f`; Watch text `#8a5300` with caution-amber `#e0a33a` fills; Act 
 
 ## Typography
 
-**Shantell Sans** (OFL, bundled) carries all text, with tabular figures on globally; it reads like a careful hand on a checklist. **DynaPuff** (OFL, bundled) is for big headings only: page titles, section headings, block labels and hero figures. IBM Plex Mono appears only in the Consult Packet JSON preview and in formulas.
+One typeface: **Geist** (OFL, bundled), with **Geist Mono** for the packet preview and formulas. Chosen in the 2026-11-15 audit to replace Shantell Sans and DynaPuff, which read as cartoonish. Hierarchy comes from weight (400, 500, 600, 700; nothing heavier) and tracking, not from a second family. No italics. Tabular figures everywhere. Sizes sit on one scale: 12, 14, 16, 18, 20, 24, 30, 36, 48 px.
 
 ### Hierarchy
-- **Page title:** 32px DynaPuff 600, sentence case.
-- **Section heading:** 20px DynaPuff 600, sentence case.
-- **Block label:** 14px DynaPuff 600, caps, tracked, centred in the WARNING / CAUTION head.
-- **Body:** 16px Shantell Sans 400, line height 1.5, measure under 72ch.
-- **Status mark:** 13px Shantell Sans 800, always beside its shape.
+- **Page title:** 30px, weight 600, tracking -0.025em, balanced wrapping.
+- **Section heading:** 20px, weight 600, tracking -0.015em.
+- **Block label:** 14px, weight 600, caps, tracked (WARNING / CAUTION only).
+- **Body:** 16px, weight 400, line height 1.5, measure under 65ch, pretty wrapping.
+- **Status mark:** 12px, weight 700, caps, always beside its shape.
+
+## Icons
+
+Phosphor, regular weight, one family for the whole app, imported through `src/components/icons.tsx`.
+
+## Motion
+
+Base curve `cubic-bezier(0.22, 1, 0.36, 1)`. 200 ms for presses, 300 ms for colour and opacity, 500 ms for movement. Everything is off under reduced motion.
 
 ## Shape
 
-Soft corners on one scale: inputs and chips 6px, buttons 10px, blocks and tables 12px, the sheet 16px; bars, meters and toggles are pills.
+Soft corners on one scale: inputs and chips 6px, buttons 8px, blocks and tables 12px, the sheet 16px; bars, meters and toggles are pills.
 
 ## Layout
 
 One sheet per screen (max 1320px), 40px inner padding, on the Dust Grey ground.
-- **Left tab rail:** Pine Teal, icon + label; the active tab sits on Hunter Green with a 4px Dry Sage edge.
+- **Left tab rail:** Pine Teal, icon + label; the active tab is a rounded Hunter Green tile (no one-sided borders).
 - **Title-block strip** across the top: Health check, day, environment, Earth reply, crew, SIMULATED.
 - **Document footer** carrying the safety line.
 
@@ -175,7 +183,7 @@ Four numbered cells (You, Earth readings, Today's readings, Your results); done 
 Three short steps with their own strip: Your wearable, Measure, How you feel. Each reading is a card with its Earth value and a number field (− value +, 56px). Tapping the value opens an on-screen number pad (bottom sheet, 64px keys). Mood is a 1 to 10 row of 64px buttons; symptoms are whole-row toggles. A sticky bar at the bottom holds Back, how many are still to fill, and Next / See my results. Missing fields get a red outline, a message under them and a short jiggle.
 
 ### Empty, error and loading states
-- **All clear** (goal empty state): a Pine Teal to Hunter Green panel with an orbit scene (planet, dashed orbit, a dot that circles, a check that draws itself; still with reduced motion), a sage kicker, a DynaPuff title, why it is empty and one next action.
+- **All clear** (goal empty state): a flat light-sage panel (no gradients anywhere) with an orbit scene (planet, dashed orbit, a dot that circles, a check that draws itself; still with reduced motion), a green kicker, a semibold title, why it is empty and one next action.
 - **Empty hint**: dashed rounded box, Fern icon, what the section is for and how to start.
 - **Plan complete**: Hunter Green strip with a sage tick.
 - **Save notice**: Watch banner pinned to the top of the screen with a Try again button.
@@ -198,7 +206,7 @@ Where a grid is needed (measurement index, crew picker), cells share 1px rules l
 6px corners, 1px dim border, Pine Teal on hover, 2px red when invalid. Segmented controls are an ink-bordered strip; the pressed segment is filled Pine Teal.
 
 ### Navigation
-Left tab rail; the current screen sits on Hunter Green with a 4px Dry Sage edge and a bold label.
+Left tab rail; the current screen is a rounded Hunter Green tile with a semibold label.
 
 ### Timing table (signature)
 Two bars on one log tick scale (1 min, 1 h, 1 day, 30 days): the safe wait in its status colour, Earth's reply in ink. The verdict is boxed in caps: white on red for ACT ON BOARD NOW, ink outline for ASK EARTH.

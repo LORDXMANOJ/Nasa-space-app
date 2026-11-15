@@ -5,7 +5,7 @@
  * Exports as JSON and printable PDF (browser print), generated locally.
  */
 import { useEffect, useMemo, useState } from "react";
-import { ChevronDown, Download, Printer, Send, Trash2 } from "lucide-react";
+import { ChevronDown, Download, Printer, Send, Trash2 } from "../components/icons";
 import { INDICATORS } from "../data";
 import { formatDuration } from "../engine/missions";
 import { formatPrimary } from "../lib/format";

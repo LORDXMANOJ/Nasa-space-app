@@ -4,7 +4,7 @@
  * Never part of the astronaut's normal UI.
  */
 import { useEffect, useState } from "react";
-import { Pause, Play, RotateCcw, SkipBack, SkipForward, Trash2, X } from "lucide-react";
+import { Pause, Play, RotateCcw, SkipBack, SkipForward, Trash2, X } from "../components/icons";
 import { ENVIRONMENTS, type EnvironmentId } from "../data";
 import { PROFILES, profileById } from "../engine/profiles";
 import { MISSIONS, ENV_TO_MISSION } from "../engine/missions";

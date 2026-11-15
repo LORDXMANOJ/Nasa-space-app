@@ -4,7 +4,7 @@
  * and what to do next.
  */
 import type { ReactNode } from "react";
-import { Check } from "lucide-react";
+import { Check } from "./icons";
 import { useMission } from "../store/mission";
 
 export function AllClear({

@@ -56,8 +56,8 @@ Body-mass ±5 % / ±10 % limits: **demo assumption**. A MedlinePlus "5 % uninten
 
 | Asset | Licence |
 |---|---|
-| Shantell Sans 5.3.0 (all text), DynaPuff 5.3.0 (headings), IBM Plex Mono 5.3.0 (data preview only) via @fontsource | SIL Open Font License 1.1 |
-| lucide-react 1.73.0 icons | ISC |
+| Geist 5.x (all text) and Geist Mono 5.x (data preview) via @fontsource-variable | SIL Open Font License 1.1 |
+| @phosphor-icons/react 2.1 icons | MIT |
 | App icon (`public/icon.svg`) | Original, made for this project |
 | 3D body: "Low-Poly Male Body" (`public/models/organs/body.glb`) | Tidominer, **CC-BY 4.0**, https://sketchfab.com/3d-models/low-poly-male-body-ddf11918aa8042cf9f43193f33611f47 |
 | 3D heart: "Anatomically Correct Human Heart" (`heart.glb`) | Pigcraft, **CC-BY 4.0**, https://sketchfab.com/3d-models/anatomically-correct-human-heart-54fa880728d14c11afff78be8721620a |

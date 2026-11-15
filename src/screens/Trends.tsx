@@ -138,7 +138,7 @@ export default function Trends() {
                   type="number"
                   domain={["dataMin", "dataMax"]}
                   stroke="#4e5f55"
-                  tick={{ fontFamily: "Shantell Sans", fontSize: 12, fill: "#4e5f55" }}
+                  tick={{ fontFamily: "Geist Variable", fontSize: 12, fill: "#4e5f55" }}
                   label={{
                     value: "Mission day",
                     position: "insideBottomRight",
@@ -149,7 +149,7 @@ export default function Trends() {
                 />
                 <YAxis
                   stroke="#4e5f55"
-                  tick={{ fontFamily: "Shantell Sans", fontSize: 12, fill: "#4e5f55" }}
+                  tick={{ fontFamily: "Geist Variable", fontSize: 12, fill: "#4e5f55" }}
                   domain={["auto", "auto"]}
                   width={56}
                 />
@@ -158,7 +158,7 @@ export default function Trends() {
                     background: "#ffffff",
                     border: "2px solid #344e41",
                     borderRadius: 10,
-                    fontFamily: "Shantell Sans",
+                    fontFamily: "Geist Variable",
                   }}
                   labelFormatter={(d) => `Day ${d}`}
                 />

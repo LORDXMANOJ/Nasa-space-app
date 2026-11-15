@@ -5,7 +5,7 @@
  */
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, BadgeCheck, Check, CircleHelp, Pause, Play, PenLine } from "lucide-react";
+import { ArrowLeft, ArrowRight, BadgeCheck, Check, CircleHelp, Pause, Play, PenLine } from "../components/icons";
 import { INDICATORS, indicatorById, type Indicator } from "../data";
 import { simulateReading } from "../engine/simulation";
 import { learnMetricBaselines } from "../engine/detectors";

@@ -1,14 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "@fontsource/shantell-sans/400.css";
-import "@fontsource/shantell-sans/500.css";
-import "@fontsource/shantell-sans/600.css";
-import "@fontsource/shantell-sans/700.css";
-import "@fontsource/shantell-sans/800.css";
-import "@fontsource/dynapuff/500.css";
-import "@fontsource/dynapuff/600.css";
-import "@fontsource/dynapuff/700.css";
-import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource-variable/geist/wght.css";
+import "@fontsource-variable/geist-mono/wght.css";
 import "./styles/tokens.css";
 import "./styles/base.css";
 import "./styles/components.css";

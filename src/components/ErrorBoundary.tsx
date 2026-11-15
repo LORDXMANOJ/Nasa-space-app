@@ -4,7 +4,7 @@
  * it would mean nothing to the crew and could expose how the app works inside.
  */
 import { Component, type ReactNode } from "react";
-import { RotateCcw, TriangleAlert } from "lucide-react";
+import { RotateCcw, TriangleAlert } from "./icons";
 
 interface Props {
   children: ReactNode;

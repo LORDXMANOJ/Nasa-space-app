@@ -6,7 +6,7 @@
  *      for long work (expectedMs) the words change as it goes and a progress bar fills.
  */
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Check, CheckCircle2, Info, Loader2, TriangleAlert, X } from "lucide-react";
+import { Check, CheckCircle2, Info, Loader2, TriangleAlert, X } from "./icons";
 import { useToasts } from "../store/toast";
 
 export function Toaster() {

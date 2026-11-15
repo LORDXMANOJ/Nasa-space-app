@@ -18,14 +18,14 @@ import {
   Thermometer,
   Wind,
   X,
-  type LucideIcon,
-} from "lucide-react";
+  type AppIcon,
+} from "./icons";
 import { Link } from "react-router-dom";
 import { hazardById, type HazardId } from "../data";
 import type { Status } from "../engine/alerts";
 import { statusColorVar } from "./status";
 
-const ICONS: Record<string, LucideIcon> = {
+const ICONS: Record<string, AppIcon> = {
   gauge: Gauge,
   "heart-pulse": HeartPulse,
   wind: Wind,

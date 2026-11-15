@@ -8,7 +8,7 @@
  * missing field, jiggles it and says what is needed. Submitting shows "Checking your readings…" first.
  */
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, Cpu, Loader2, Radio } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Cpu, Loader2, Radio } from "./icons";
 import { indicatorById, type Indicator } from "../data";
 import { learnMetricBaselines } from "../engine/detectors";
 import { isScheduled, simulateReading, type Reading } from "../engine/simulation";

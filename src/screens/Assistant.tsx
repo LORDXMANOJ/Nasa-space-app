@@ -3,7 +3,7 @@
  * Dose and diagnosis questions are refused in code before anything else runs; every answer is labelled with its basis.
  */
 import { useEffect, useRef, useState } from "react";
-import { Bot, Send, ShieldCheck } from "lucide-react";
+import { Bot, Send, ShieldCheck } from "../components/icons";
 import { answer, type Answer } from "../engine/assistant";
 import { useHealth } from "../store/health";
 

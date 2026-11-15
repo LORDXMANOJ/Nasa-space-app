@@ -5,7 +5,7 @@
  */
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Delete, Minus, Plus } from "lucide-react";
+import { Delete, Minus, Plus } from "./icons";
 
 interface Props {
   id: string;

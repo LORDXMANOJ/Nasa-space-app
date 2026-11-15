@@ -5,7 +5,7 @@
  */
 import { lazy, Suspense, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Box, Square } from "lucide-react";
+import { Box, Square } from "../components/icons";
 import { INDICATORS, REGIONS, hazardById, type RegionId } from "../data";
 import type { Status } from "../engine/alerts";
 import { formatPrimary } from "../lib/format";

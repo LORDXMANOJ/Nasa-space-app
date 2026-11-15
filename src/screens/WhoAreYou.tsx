@@ -3,7 +3,7 @@
  * before launch (their personal normal), then continue to today's check-in on the dashboard.
  */
 import { useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, Globe2, UserRound } from "lucide-react";
+import { ArrowLeft, ArrowRight, Globe2, UserRound } from "../components/icons";
 import { INDICATORS } from "../data";
 import { learnMetricBaselines } from "../engine/detectors";
 import { PROFILES, profileById } from "../engine/profiles";

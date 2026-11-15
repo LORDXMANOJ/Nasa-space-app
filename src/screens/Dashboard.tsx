@@ -6,7 +6,7 @@
  */
 import { lazy, Suspense, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Check, ChevronDown, OctagonAlert, Pencil, TriangleAlert } from "lucide-react";
+import { Check, ChevronDown, OctagonAlert, Pencil, TriangleAlert } from "../components/icons";
 import { INDICATORS, REGIONS, type RegionId } from "../data";
 import { AllClear } from "../components/AllClear";
 import { CheckInForm } from "../components/CheckInForm";

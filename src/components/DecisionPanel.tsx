@@ -4,7 +4,7 @@
  * Verdict: ACT ON BOARD NOW if T_reply > T_harm, otherwise ASK EARTH. The app never acts by itself.
  */
 import { Link } from "react-router-dom";
-import { Earth, OctagonAlert, Timer } from "lucide-react";
+import { Earth, OctagonAlert, Timer } from "./icons";
 import { formatDuration, type ReplyBreakdown, type Verdict } from "../engine/missions";
 
 const MIN = 1; // 1 minute

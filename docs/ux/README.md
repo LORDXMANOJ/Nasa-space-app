@@ -54,6 +54,8 @@ This page explains how the Astronaut Health Monitor is meant to feel to use, and
 | Opening the app | **"Who are you?"** | Then your Earth readings, then today's check-in. |
 | Check-in | **Three short steps:** your wearable, measure, how you feel. The measure step is skipped when nothing is due. | Previous steps (Back). |
 | Results | The **body**, the **flagged regions**, the **verdict** and **What to do now**. | All 7 regions, all readings, other alerts, how the alert was found. |
+| Recovery | Only the **most urgent plan**: warning signs, steps, who to tell, can it wait. | Other plans (one line each), why the alert fired, sources. |
+| Hazards | Five rows: one sentence each and how your readings look today. | Effects, the readings, body areas, source. |
 | Consult Packet | What to include, and **Send**. | The exact packet that will be sent. |
 
 **Why:** a crew member in the middle of a busy day should see the answer first and the detail only if they want it.
@@ -127,7 +129,8 @@ Rules we follow:
 ## 10. Look and feel
 
 - **Palette:** Dust Grey `#DAD7CD`, Dry Sage `#A3B18A`, Fern `#588157`, Hunter Green `#3A5A40`, Pine Teal `#344E41`: calm greens that keep red and amber free for health status.
-- **Fonts:** **Shantell Sans** for all text (friendly and very readable) and **DynaPuff** for big headings. Both are bundled, so nothing loads from the internet.
+- **Font:** **Geist** for everything, with Geist Mono for data. We first tried rounder, hand-drawn fonts, but they looked cartoonish for a medical tool, so we moved to one clean, professional typeface. It is bundled, so nothing loads from the internet.
+- **Icons:** Phosphor, one family and one weight.
 - **Soft corners** on one scale (6 to 16 px), and sheets of paper instead of floating cards, like a crew procedure page.
 
 ---

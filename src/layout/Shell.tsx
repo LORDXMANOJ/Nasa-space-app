@@ -19,7 +19,7 @@ import {
   MessageCircleQuestion,
   TriangleAlert,
   Zap,
-} from "lucide-react";
+} from "../components/icons";
 import { environmentById } from "../data";
 import { useHealth } from "../store/health";
 import { formatDuration } from "../engine/missions";

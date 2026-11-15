@@ -52,7 +52,16 @@ export function App() {
       <ScrollTop />
       <Shell>
         <ScreenBoundary>
-          <Suspense fallback={<div className="page dim">Loading…</div>}>
+          <Suspense
+            fallback={
+              <div className="page skeleton" aria-busy="true" aria-label="Loading">
+                <span />
+                <span style={{ width: "72%" }} />
+                <span style={{ width: "64%" }} />
+                <span style={{ width: "48%" }} />
+              </div>
+            }
+          >
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/measure" element={<MeasureList />} />
