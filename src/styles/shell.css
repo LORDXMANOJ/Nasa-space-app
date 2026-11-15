@@ -197,3 +197,24 @@
     display: none;
   }
 }
+
+/* Short windows (a laptop with the desktop app not maximised): keep every menu item on screen */
+@media (max-height: 760px) {
+  .rail a {
+    min-height: 46px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    font-size: 0.6875rem;
+    gap: 2px;
+  }
+  .rail a svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+/* Large monitors: a little more room, still a readable sheet */
+@media (min-width: 1920px) {
+  .page {
+    max-width: 1480px;
+  }
+}

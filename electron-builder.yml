@@ -1,0 +1,66 @@
+# Desktop installers for Windows, macOS and Linux. Built on GitHub Actions (one runner per OS) and attached to a
+# GitHub Release. File names are fixed so https://github.com/<owner>/<repo>/releases/latest/download/<name> always
+# points at the newest build; the download page picks the right one for the visitor's system.
+appId: org.spaceapps.astronauthealthmonitor
+productName: Astronaut Health Monitor
+copyright: Prototype for NASA Space Apps 2026. Simulated data.
+directories:
+  output: release
+  buildResources: build
+files:
+  - dist/**/*
+  - electron/**/*
+  - build/icon.png
+  - package.json
+asar: true
+
+win:
+  # One installer holding x64 and ARM64; it installs the build that matches the PC.
+  target:
+    - target: nsis
+      arch: [x64, arm64]
+  icon: build/icon.png
+nsis:
+  oneClick: false
+  perMachine: false # installs for the current user, no administrator needed
+  allowElevation: true
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Astronaut Health Monitor
+  artifactName: AstronautHealthMonitor-Windows-Setup.${ext}
+
+mac:
+  # Universal: one app that runs natively on Apple silicon and Intel Macs.
+  target:
+    - target: dmg
+      arch: [universal]
+  category: public.app-category.medical
+  icon: build/icon.png
+  identity: null # not signed: macOS asks for a right-click > Open the first time
+dmg:
+  artifactName: AstronautHealthMonitor-macOS.${ext}
+
+# Linux, matched to what space programmes run (see docs/DESKTOP.md):
+#   .deb  Debian / Ubuntu / Mint      (the ISS laptop network moved to Debian in 2013)
+#   .rpm  RHEL / Fedora / Rocky / Alma / SUSE  (RHEL on ISS edge computers; SUSE at ESA ground stations)
+#   AppImage  any other distribution, no install needed
+linux:
+  target:
+    - target: deb
+      arch: [x64, arm64]
+    - target: rpm
+      arch: [x64, arm64]
+    - target: AppImage
+      arch: [x64, arm64]
+  category: Science
+  icon: build/icon.png
+  maintainer: LORDXMANOJ <LORDXMANOJ@users.noreply.github.com>
+  synopsis: Offline daily astronaut health check
+  artifactName: AstronautHealthMonitor-Linux-${arch}.${ext}
+
+publish:
+  provider: github
+  owner: LORDXMANOJ
+  repo: Nasa-space-app
+  releaseType: release

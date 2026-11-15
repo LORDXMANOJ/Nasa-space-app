@@ -11,7 +11,6 @@ import {
   LayoutDashboard,
   LifeBuoy,
   LineChart,
-  Orbit,
   Satellite,
   Settings as SettingsIcon,
   ShieldAlert,
@@ -95,7 +94,7 @@ export function Shell({ children }: { children: ReactNode }) {
       </a>
       <nav className="rail" aria-label="Main">
         <div className="rail-brand" aria-hidden>
-          <Orbit width={30} height={30} />
+          <img src="./logo-mark-on-dark.svg" width={40} height={40} alt="" />
         </div>
         {NAV.map((n) => (
           <NavLink

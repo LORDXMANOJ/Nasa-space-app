@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>C: Helmet heart</title>
+  <!-- a helmet with a wide visor window (real hole) and a heart inside it: the person, looked after -->
+  <path fill="#000" fill-rule="evenodd" d="M36 120 A92 92 0 1 1 220 120 A92 92 0 1 1 36 120 Z M92 88 H164 A32 32 0 0 1 196 120 A32 32 0 0 1 164 152 H92 A32 32 0 0 1 60 120 A32 32 0 0 1 92 88 Z"/>
+  <path fill="#000" d="M128 143 L108.2 123.2 A14 14 0 0 1 128 103.4 A14 14 0 0 1 147.8 123.2 Z"/>
+  <rect x="84" y="214" width="88" height="18" rx="9" fill="#000"/>
+</svg>

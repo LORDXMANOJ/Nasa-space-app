@@ -3,7 +3,7 @@
  * before launch (their personal normal), then continue to today's check-in on the dashboard.
  */
 import { useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, Globe2, UserRound } from "../components/icons";
+import { ArrowLeft, ArrowRight, UserRound } from "../components/icons";
 import { INDICATORS } from "../data";
 import { learnMetricBaselines } from "../engine/detectors";
 import { PROFILES, profileById } from "../engine/profiles";
@@ -37,7 +37,7 @@ export function WhoAreYou() {
         {step === "welcome" && (
           <div className="who-welcome">
             <p className="who-mark" aria-hidden>
-              <Globe2 />
+              <img src="./logo-mark.svg" width={64} height={64} alt="" />
             </p>
             <h1>Astronaut Health Monitor</h1>
             <p className="lede">

@@ -20,7 +20,7 @@ export function CheckIn() {
           </p>
         </div>
       </div>
-      <CheckInForm onDone={() => navigate("/")} />
+      <CheckInForm key={`${h.profile.id}:${h.day}`} onDone={() => navigate("/")} />
     </div>
   );
 }

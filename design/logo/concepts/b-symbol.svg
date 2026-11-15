@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>B: Orbit heart</title>
+  <!-- classic heart: a square at 45 degrees plus two circles on its upper sides; a craft rides the orbit line -->
+  <path d="M128 210 L57.3 139.3 A50 50 0 0 1 128 68.6 A50 50 0 0 1 198.7 139.3 Z" fill="none" stroke="#000" stroke-width="20" stroke-linejoin="round"/>
+  <circle cx="92.6" cy="53.9" r="24" fill="#fff"/>
+  <circle cx="92.6" cy="53.9" r="15" fill="#000"/>
+</svg>

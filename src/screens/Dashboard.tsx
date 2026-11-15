@@ -127,6 +127,7 @@ export function Dashboard() {
             Step 3: today's readings
           </h2>
           <CheckInForm
+            key={`${h.profile.id}:${h.day}`} /* a new day or crew member starts a fresh form */
             onDone={() => {
               setEditing(false);
               document.getElementById("main")?.scrollTo({ top: 0 });

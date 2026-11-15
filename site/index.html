@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Download Astronaut Health Monitor</title>
+    <meta name="description" content="Download the Astronaut Health Monitor desktop app for Windows, macOS or Linux. A one-minute daily astronaut health check that knows when a problem can wait for Earth." />
+    <meta name="theme-color" content="#123631" />
+    <link rel="icon" type="image/svg+xml" href="./icon.svg" />
+    <style>
+      :root {
+        --ink: #111d1b;
+        --dim: #4f625d;
+        --paper: #f8fbfa;
+        --ground: #e3edea;
+        --primary: #1a7568;
+        --deep: #123631;
+        --rule: #cfdcd8;
+        --sans: "IBM Plex Sans", system-ui, "Segoe UI", sans-serif;
+        --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", monospace;
+        --ease: cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; min-height: 100dvh; background: var(--ground); color: var(--ink); font: 16px/1.5 var(--sans); }
+      main { max-width: 880px; margin: 0 auto; padding: 48px 20px 64px; }
+      header { display: flex; gap: 16px; align-items: center; }
+      header img { width: 56px; height: 56px; }
+      h1 { margin: 0; font-size: clamp(1.75rem, 4vw, 2.5rem); line-height: 1.1; letter-spacing: -0.02em; font-weight: 700; }
+      .lede { margin: 16px 0 32px; color: var(--dim); max-width: 60ch; font-size: 1.125rem; }
+      .card { background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; padding: 28px; box-shadow: 0 1px 0 var(--rule); }
+      .label { font: 600 0.75rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); margin: 0 0 8px; }
+      .detected { font-size: 1.25rem; font-weight: 600; margin: 0 0 20px; }
+      .btn { display: inline-flex; align-items: center; gap: 10px; min-height: 64px; padding: 0 28px; border-radius: 10px; background: var(--primary); color: #fff; font-weight: 600; font-size: 1.125rem; text-decoration: none; transition: transform 140ms var(--ease), background-color 200ms ease; }
+      .btn:hover { background: var(--deep); }
+      .btn:active { transform: scale(0.97); }
+      .btn small { font: 500 0.8125rem var(--mono); opacity: 0.85; }
+      .alt { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+      .alt a { display: inline-flex; align-items: center; min-height: 48px; padding: 0 16px; border: 1px solid var(--rule); border-radius: 8px; color: var(--ink); text-decoration: none; font-weight: 500; background: #fff; }
+      .alt a:hover { border-color: var(--primary); }
+      .hint { margin: 20px 0 0; color: var(--dim); font-size: 0.9375rem; max-width: 65ch; }
+      code { font-family: var(--mono); font-size: 0.875rem; background: var(--ground); padding: 2px 6px; border-radius: 4px; }
+      table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 0.9375rem; }
+      th, td { text-align: left; padding: 10px 8px; border-top: 1px solid var(--rule); vertical-align: top; }
+      th { font: 600 0.75rem var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--dim); }
+      td a { color: var(--primary); font-weight: 500; }
+      section { margin-top: 40px; }
+      h2 { font-size: 1.25rem; margin: 0 0 8px; letter-spacing: -0.01em; }
+      footer { margin-top: 40px; color: var(--dim); font-size: 0.875rem; }
+      @media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <img src="./icon.svg" alt="" />
+        <h1>Astronaut Health Monitor</h1>
+      </header>
+      <p class="lede">A one-minute daily health check for crew far from Earth. It decides whether a problem can wait for Earth's reply, and runs fully offline. Prototype with simulated crew and data; it does not diagnose.</p>
+
+      <div class="card" aria-live="polite">
+        <p class="label">Your system</p>
+        <p class="detected" id="detected">Checking…</p>
+        <a class="btn" id="primary" href="https://github.com/LORDXMANOJ/Nasa-space-app/releases/latest">Download <small id="primary-meta"></small></a>
+        <div class="alt" id="alt"></div>
+        <p class="hint" id="hint"></p>
+      </div>
+
+      <section>
+        <h2>All downloads</h2>
+        <table>
+          <thead><tr><th>System</th><th>File</th><th>How to install</th></tr></thead>
+          <tbody id="all"><tr><td colspan="3">Loading the latest release…</td></tr></tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Running it</h2>
+        <p class="hint">The window can be resized, and <strong>F11</strong> (on a Mac: <strong>Ctrl ⌘ F</strong>) switches to full screen. To always start full screen on a fixed crew panel, start it with <code>--fullscreen</code>. It remembers its size and position.</p>
+        <p class="hint">The installers are not code-signed yet. Windows may show SmartScreen: choose <strong>More info → Run anyway</strong>. On a Mac, right-click the app and choose <strong>Open</strong> the first time.</p>
+      </section>
+
+      <footer>NASA Space Apps 2026 · <a href="https://github.com/LORDXMANOJ/Nasa-space-app">Source on GitHub</a> · <a href="https://github.com/LORDXMANOJ/Nasa-space-app/releases">All releases</a></footer>
+    </main>
+
+    <script>
+      // Picks the right installer for this computer. Uses the newest release's real file list from GitHub,
+      // so links never point at a file that does not exist.
+      const REPO = "LORDXMANOJ/Nasa-space-app";
+      const RELEASES = `https://github.com/${REPO}/releases/latest`;
+
+      async function detect() {
+        const ua = navigator.userAgent;
+        let os = /Windows/i.test(ua) ? "windows" : /Mac OS X|Macintosh/i.test(ua) ? "mac" : /Linux|X11|CrOS/i.test(ua) ? "linux" : /Android|iPhone|iPad/i.test(ua) ? "mobile" : "unknown";
+        let arch = /aarch64|arm64|armv8/i.test(ua) ? "arm64" : "x64";
+        try {
+          if (navigator.userAgentData?.getHighEntropyValues) {
+            const h = await navigator.userAgentData.getHighEntropyValues(["platform", "architecture", "bitness"]);
+            const p = (h.platform || "").toLowerCase();
+            if (p.includes("windows")) os = "windows";
+            else if (p.includes("mac")) os = "mac";
+            else if (p.includes("linux") || p.includes("chrome os")) os = "linux";
+            if (h.architecture === "arm") arch = "arm64";
+            else if (h.architecture === "x86") arch = "x64";
+          }
+        } catch {}
+        // Linux family from browser hints (often absent; AppImage is the safe default)
+        let family = "other";
+        if (/Ubuntu|Debian|Mint|Pop!_OS|elementary/i.test(ua)) family = "deb";
+        else if (/Fedora|Red Hat|RHEL|CentOS|Rocky|Alma|SUSE|openSUSE/i.test(ua)) family = "rpm";
+        return { os, arch, family };
+      }
+
+      const isArm = (n) => /arm64|aarch64/i.test(n);
+      const pick = (assets, re, arch) => assets.find((a) => re.test(a.name) && (arch === "arm64" ? isArm(a.name) : !isArm(a.name)));
+      const mb = (b) => (b / 1048576).toFixed(0) + " MB";
+
+      const INSTALL = {
+        exe: "Run the installer. No administrator rights needed; it installs the build that matches your PC.",
+        dmg: "Open the .dmg and drag the app to Applications. First time: right-click the app, choose Open.",
+        deb: "sudo apt install ./FILE",
+        rpm: "sudo dnf install ./FILE   (SUSE: sudo zypper install ./FILE)",
+        AppImage: "chmod +x FILE, then run it",
+      };
+      const SYSTEM = { exe: "Windows 10 / 11", dmg: "macOS (Apple silicon and Intel)", deb: "Debian, Ubuntu, Mint", rpm: "RHEL, Rocky, Alma, Fedora, SUSE", AppImage: "Any other Linux" };
+      const ext = (n) => n.split(".").pop();
+
+      (async () => {
+        const sys = await detect();
+        const $ = (id) => document.getElementById(id);
+        const names = { windows: "Windows", mac: "macOS", linux: "Linux", mobile: "a phone or tablet", unknown: "an unknown system" };
+        let assets = [];
+        try {
+          const r = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, { headers: { Accept: "application/vnd.github+json" } });
+          if (r.ok) assets = (await r.json()).assets || [];
+        } catch {}
+
+        // full table
+        const rows = assets
+          .filter((a) => /\.(exe|dmg|deb|rpm|AppImage)$/.test(a.name))
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((a) => `<tr><td>${SYSTEM[ext(a.name)] || ""}${/\.(deb|rpm|AppImage)$/.test(a.name) ? (isArm(a.name) ? " · ARM64" : " · x64") : ""}</td><td><a href="${a.browser_download_url}">${a.name}</a> <small>${mb(a.size)}</small></td><td><code>${(INSTALL[ext(a.name)] || "").replaceAll("FILE", a.name)}</code></td></tr>`);
+        $("all").innerHTML = rows.length ? rows.join("") : `<tr><td colspan="3">The first release is being built. See <a href="${RELEASES}">GitHub releases</a>.</td></tr>`;
+
+        // primary choice for this computer
+        let main, alts = [], hint = "";
+        if (sys.os === "windows") { main = assets.find((a) => /\.exe$/.test(a.name)); hint = INSTALL.exe; }
+        else if (sys.os === "mac") { main = assets.find((a) => /\.dmg$/.test(a.name)); hint = INSTALL.dmg; }
+        else if (sys.os === "linux") {
+          const deb = pick(assets, /\.deb$/, sys.arch), rpm = pick(assets, /\.rpm$/, sys.arch), img = pick(assets, /\.AppImage$/, sys.arch);
+          main = sys.family === "deb" ? deb : sys.family === "rpm" ? rpm : img;
+          alts = [deb, rpm, img].filter((a) => a && a !== main);
+          hint = main ? (INSTALL[ext(main.name)] || "").replaceAll("FILE", main.name) : "";
+          hint += sys.family === "other" ? "  ·  The AppImage runs on most distributions. Prefer a package? Pick .deb (Debian/Ubuntu) or .rpm (RHEL/Fedora/SUSE) below." : "";
+        }
+        $("detected").textContent = sys.os === "mobile" ? "This is a phone or tablet. The app is for Windows, macOS and Linux computers." : `${names[sys.os]}${sys.os === "linux" || sys.os === "windows" ? ` · ${sys.arch === "arm64" ? "ARM64" : "x64 (Intel / AMD)"}` : ""}`;
+        if (main) {
+          $("primary").href = main.browser_download_url;
+          $("primary").firstChild.textContent = `Download for ${names[sys.os]} `;
+          $("primary-meta").textContent = `${ext(main.name)} · ${mb(main.size)}`;
+        } else {
+          $("primary").firstChild.textContent = "See all downloads ";
+        }
+        $("alt").innerHTML = alts.map((a) => `<a href="${a.browser_download_url}">${ext(a.name)} · ${SYSTEM[ext(a.name)]}</a>`).join("");
+        $("hint").textContent = hint;
+      })();
+    </script>
+  </body>
+</html>

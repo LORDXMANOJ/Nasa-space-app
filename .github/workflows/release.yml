@@ -1,0 +1,75 @@
+# Builds the desktop installers on each operating system and publishes them as a GitHub Release.
+# Trigger: push a tag like v1.0.0 (or run it by hand from the Actions tab).
+name: Release desktop app
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to create, e.g. v1.0.0"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            target: --win
+          - os: macos-latest
+            target: --mac
+          - os: ubuntu-latest
+            target: --linux
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install rpm tooling (Linux .rpm packages)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y rpm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - name: Package installers
+        run: npx electron-builder ${{ matrix.target }} --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false" # no signing certificate yet
+      - uses: actions/upload-artifact@v4
+        with:
+          name: installers-${{ runner.os }}
+          path: |
+            release/*.exe
+            release/*.dmg
+            release/*.deb
+            release/*.rpm
+            release/*.AppImage
+          if-no-files-found: error
+
+  publish:
+    name: Publish GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist-installers
+          merge-multiple: true
+      - name: Create the release and attach every installer
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.inputs.tag || github.ref_name }}
+        run: |
+          ls -la dist-installers
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Astronaut Health Monitor $TAG" --notes-file .github/release-notes.md
+          gh release upload "$TAG" dist-installers/* --clobber
