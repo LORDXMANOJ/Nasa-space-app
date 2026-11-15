@@ -9,6 +9,7 @@ import { useMission } from "../store/mission";
 import { infoOf, useCrew } from "../store/crew";
 import { todayIso } from "../engine/crew";
 import { gaussian } from "../engine/rng";
+import type { Reading } from "../engine/simulation";
 import { defaultEarthDates } from "../screens/onboarding/Onboarding";
 
 /** The desktop app (Electron) never offers the tour. */
@@ -347,9 +348,44 @@ const SCRIPT: Step[] = [
     const labels = [...document.querySelectorAll<HTMLElement>(".checklist label")].filter(visible).slice(0, 2);
     for (const l of labels) await press(t, l);
   },
+
+  // the rest of the mission: days of check-ins, the fever settles, everything stays on record
+  async (t) => {
+    addMissionDays("Manoj", 14);
+    await sleep(500, t);
+  },
+  say("Days pass. Manoj checks in every morning, and the fever settles.", 3200),
+  go("#/trends?ind=temp"),
+  say("Day 14. His temperature against his own normal from Earth: the fever, then the recovery.", 4600),
+  go("#/crew"),
+  say("To the end of the mission, every check-in and every report stays on record, for the crew and for Earth.", 4600),
   go("#/"),
-  say("That is the whole loop. Everything runs on board. Nothing waits for Earth.", 3800),
+  say("Before launch, in space, to the end of the mission: it all runs on board. Nothing waits for Earth.", 4400),
 ];
+
+/** Fills the days after the fever for one member (simulated): the temperature and heart rate come back to normal. */
+function addMissionDays(name: string, lastDay: number) {
+  const m = useCrew.getState().members.find((x) => x.name === name);
+  if (!m) return;
+  const temps = [38.3, 37.8, 37.3, 36.9];
+  const hrs = [99, 90, 78, 70];
+  const rs: Reading[] = [];
+  for (let d = 2; d <= lastDay; d++) {
+    const w = (k: number) => gaussian(`demo-days:${name}:${k}:${d}`);
+    const t = temps[d - 2] ?? Math.round((36.6 + w(1) * 0.1) * 10) / 10;
+    const hr = hrs[d - 2] ?? Math.round(62 + w(2) * 2);
+    rs.push(
+      { indicatorId: "temp", day: d, values: [t], source: "user" },
+      { indicatorId: "hr", day: d, values: [hr, Math.round(55 + w(3) * 4)], source: "user" },
+      { indicatorId: "bp", day: d, values: [Math.round(118 + w(4) * 3), Math.round(76 + w(5) * 2)], source: "user" },
+      { indicatorId: "spo2", day: d, values: [98], source: "user" },
+      { indicatorId: "sleep", day: d, values: [Math.round((7.2 + w(6) * 0.3) * 10) / 10, 7], source: "user" },
+      { indicatorId: "mood", day: d, values: [d < 5 ? 5 : 7, 265], source: "user" },
+    );
+  }
+  useCrew.getState().addReadings(m.id, rs);
+  useMission.setState((st) => ({ day: lastDay, checkedIn: { ...st.checkedIn, [`${m.id}:${lastDay}`]: true } }));
+}
 
 /* ---------- a real crew is never lost to the tour ---------- */
 
