@@ -88,6 +88,8 @@
       .row .bar { height: 32px; border-radius: 16px; background: #fff; overflow: hidden; border: 1px solid var(--rule); }
       .row .bar span { display: block; height: 100%; border-radius: 16px; }
       .row .v { font: 500 34px var(--mono); text-align: right; }
+      .row .why { display: block; font: 500 18px var(--mono); letter-spacing: .04em; color: var(--dim); margin-top: 2px; }
+      .row { grid-template-columns: 260px 1fr 140px; }
       .act { margin-top: 38px; display: inline-flex; padding: 20px 34px; border-radius: 14px; background: var(--red); color: #fff; font: 800 40px var(--display); font-stretch: 115%; letter-spacing: .04em; }
       .iss { margin-top: 26px; font-size: 27px; color: var(--dim); }
       .checks { display: grid; gap: 30px; }
@@ -229,8 +231,8 @@
           <div class="t5">
             <div class="verdict">
               <div class="lab">Fever with a fast heart rate · Mars transit</div>
-              <div class="row"><span>Safe wait</span><div class="bar"><span style="width: 38%; background: var(--red)"></span></div><span class="v">60 min</span></div>
-              <div class="row"><span>Earth reply</span><div class="bar"><span style="width: 41%; background: var(--deep)"></span></div><span class="v">64 min</span></div>
+              <div class="row"><span>Safe wait<small class="why">fever card</small></span><div class="bar"><span style="width: 38%; background: var(--red)"></span></div><span class="v">60 min</span></div>
+              <div class="row"><span>Earth reply<small class="why">22 out + 20 review + 22 back</small></span><div class="bar"><span style="width: 41%; background: var(--deep)"></span></div><span class="v">64 min</span></div>
               <div class="act">ACT ON BOARD NOW</div>
               <p class="iss">The same fever on the ISS, 20 minutes from an answer: ASK EARTH.</p>
             </div>
@@ -240,7 +242,7 @@
                 <div class="check"><i>2</i><div><b>Unusual day</b><span>Several readings a little off, together.</span></div></div>
                 <div class="check"><i>3</i><div><b>Slow drift</b><span>Forecasts when a reading reaches its limit.</span></div></div>
               </div>
-              <p class="proof"><b>300 simulated astronauts:</b> every fever caught on day one. Every alert says why, in plain words.</p>
+              <p class="proof"><b>300 simulated astronauts:</b> every full fever caught on day one; 1.3 % false alarms on normal days. A check of the method, not of clinical accuracy.</p>
             </div>
           </div>
           <div class="foot"><span>Team Spades · Astronaut Health Monitor</span><span>5 / 7</span></div>
@@ -264,7 +266,7 @@
             <div class="src">
               <div class="who"><b>Canadian Space Agency</b>Bio-Monitor wearable</div>
               <div class="to" aria-hidden="true">→</div>
-              <div class="what">The wearable sends heart rate, temperature and sleep by itself.</div>
+              <div class="what">The wearable sends heart rate, temperature and sleep by itself. <span style="font: 400 26px var(--sans); color: var(--dim)">(Simulated in the prototype.)</span></div>
             </div>
           </div>
           <p class="note">All crew and readings in the prototype are simulated. It flags and explains; it does not diagnose. Sources are listed in the project's references.</p>
