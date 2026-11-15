@@ -7,7 +7,6 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, BadgeCheck, Check, CircleHelp, Pause, Play, PenLine } from "../components/icons";
 import { INDICATORS, indicatorById, type Indicator } from "../data";
-import { simulateReading } from "../engine/simulation";
 import { learnMetricBaselines } from "../engine/detectors";
 import { formatPrimary, statusLabel } from "../lib/format";
 import { GlossaryText, HazardChip, IndicatorIcon } from "../components/ui";
@@ -215,11 +214,10 @@ function HowTo({ ind, onNext }: { ind: Indicator; onNext: () => void }) {
 
 function Capture({ ind, onDone }: { ind: Indicator; onDone: () => void }) {
   const h = useHealth();
-  const env = useMission((s) => s.environment);
   const addReadings = useMission((s) => s.addReadings);
   const [phase, setPhase] = useState<"idle" | "running" | "manual">("idle");
   const [progress, setProgress] = useState(0);
-  const target = simulateReading(ind, h.day, h.profile, env);
+  const target = h.simulate(ind);
   const save = (values: number[]) => {
     addReadings([{ indicatorId: ind.id, day: h.day, values, source: "user" }]);
     onDone();

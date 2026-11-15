@@ -1,7 +1,8 @@
 /** The visible parts of Demo mode: a cursor, a caption bar with progress, and a Stop button. Web version only. */
 import { useEffect } from "react";
 import { Play, X } from "../components/icons";
-import { isDesktopApp, setVoice, startDemo, stopDemo, useDemo } from "./demo";
+import { isDesktopApp, restoreRealCrew, setVoice, startDemo, stopDemo, useDemo } from "./demo";
+import { useCrew } from "../store/crew";
 
 /** Button that starts the tour. Renders nothing in the desktop app. */
 export function DemoButton({
@@ -22,6 +23,12 @@ export function DemoButton({
 
 export function DemoOverlay() {
   const { running, caption, step, total, cursor, voice, ready } = useDemo();
+
+  // a tour that was cut off (tab closed) still gives the real crew back, once storage has loaded
+  const crewHydrated = useCrew((s) => s.hydrated);
+  useEffect(() => {
+    if (crewHydrated && !useDemo.getState().running) restoreRealCrew();
+  }, [crewHydrated]);
 
   // ?demo=1 in the address starts the tour on load (used by the links on the slides)
   useEffect(() => {

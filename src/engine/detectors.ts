@@ -82,8 +82,16 @@ export function coreRow(history: Record<string, Reading[]>, day: number): number
 }
 
 export function learnCoreBaseline(history: Record<string, Reading[]>): CoreBaseline {
+  // every Earth day counts: 10 is the plan, more is better, fewer still works with wider limits
+  const first = Math.min(
+    PREFLIGHT_START,
+    ...Object.values(history).flatMap((l) => l.filter((r) => r.day <= 0).map((r) => r.day)),
+  );
   const rows: number[][] = [];
-  for (let d = PREFLIGHT_START; d <= 0; d++) rows.push(coreRow(history, d));
+  for (let d = first; d <= 0; d++) {
+    const row = coreRow(history, d);
+    if (d >= PREFLIGHT_START || row.some(Number.isFinite)) rows.push(row);
+  }
   const { mean, sd } = columnStats(rows, CORE_KEYS.length);
   const sdF = sd.map((s, i) => Math.max(Number.isFinite(s) ? s : 0, SD_FLOOR[CORE_KEYS[i]]));
   const { R, lambda } = shrunkCorrelation(rows, mean, sdF);
@@ -98,7 +106,7 @@ export function learnCoreBaseline(history: Record<string, Reading[]>): CoreBasel
       cov = cov.map((row, i) => row.map((v, j) => (i === j ? v : v * 0.7)));
     }
   }
-  return { keys: CORE_KEYS, mean, sd: sdF, R, cov, lambda, days: BASELINE_DAYS };
+  return { keys: CORE_KEYS, mean, sd: sdF, R, cov, lambda, days: Math.max(BASELINE_DAYS, rows.length) };
 }
 
 /** Per-metric personal baseline (mean, floored sd) for every metric, from mission days 1–10. */
@@ -108,7 +116,7 @@ export function learnMetricBaselines(history: Record<string, Reading[]>): Record
     const ind = indicatorById(indId);
     ind.metrics.forEach((m, i) => {
       const key = `${indId}.${m.key}`;
-      const vals = list.filter((r) => r.day <= 0).map((r) => r.values[i]);
+      const vals = list.filter((r) => r.day <= 0).map((r) => r.values[i]).filter(Number.isFinite);
       if (vals.length < 1) return;
       const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
       const sd = vals.length > 1 ? Math.sqrt(vals.reduce((a, b) => a + (b - mean) ** 2, 0) / (vals.length - 1)) : 0;
@@ -128,7 +136,8 @@ export interface UnusualResult {
 
 /** Detector 1: squared Mahalanobis distance of today's readings from the personal baseline. */
 export function unusualDay(base: CoreBaseline, x: number[]): UnusualResult | null {
-  const idx = x.map((v, i) => (Number.isFinite(v) ? i : -1)).filter((i) => i >= 0);
+  // a reading with no Earth baseline (e.g. glucose never measured before launch) cannot be compared: leave it out
+  const idx = x.map((v, i) => (Number.isFinite(v) && Number.isFinite(base.mean[i]) ? i : -1)).filter((i) => i >= 0);
   if (idx.length < 2) return null;
   const d2 = mahalanobis2(
     idx.map((i) => x[i]),

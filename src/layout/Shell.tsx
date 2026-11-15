@@ -2,7 +2,7 @@
  * App shell: left navigation rail (icon + label), top mission bar, persistent safety footer,
  * global keyboard shortcuts (1–9 screens, M = next measurement, ? = shortcuts, Ctrl+Shift+D = presenter).
  */
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
   Activity,
@@ -16,6 +16,7 @@ import {
   ShieldAlert,
   Stethoscope,
   MessageCircleQuestion,
+  Users,
   TriangleAlert,
   Zap,
 } from "../components/icons";
@@ -28,6 +29,9 @@ import { PresenterPanel } from "./PresenterPanel";
 import { ActionButton } from "../components/Feedback";
 import { useSaveStatus } from "../store/saveStatus";
 import { Toaster } from "../components/Feedback";
+import { useCrew } from "../store/crew";
+import { useCrewToday, useReportSchedule } from "../store/crewHealth";
+import { CrewAlertBanner } from "../screens/Crew";
 
 export const NAV = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, key: "1" },
@@ -41,10 +45,16 @@ export const NAV = [
   { to: "/how", label: "How it decides", icon: BookOpen, key: "8" },
   { to: "/settings", label: "Settings", icon: SettingsIcon, key: "9" },
 ];
+/** Only for a real crew: everyone's results, read only. */
+const CREW_NAV = { to: "/crew", label: "Crew", icon: Users, key: "c" };
 
 export function Shell({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const health = useHealth();
+  const mission = useCrew((s) => s.mode) === "mission";
+  const crewToday = useCrewToday();
+  useReportSchedule(crewToday);
+  const nav = useMemo(() => (mission ? [NAV[0], NAV[1], CREW_NAV, ...NAV.slice(2)] : NAV), [mission]);
   const day = useMission((s) => s.day);
   const env = environmentById(useMission((s) => s.environment));
   const lowPower = useMission((s) => s.settings.lowPower);
@@ -76,8 +86,8 @@ export function Shell({ children }: { children: ReactNode }) {
         return;
       }
       if (e.ctrlKey || e.metaKey || e.altKey) return;
-      const nav = NAV.find((n) => n.key === e.key);
-      if (nav) navigate(nav.to);
+      const hit = nav.find((n) => n.key === e.key);
+      if (hit) navigate(hit.to);
       else if (e.key === "m" || e.key === "M") {
         const next = health.due[0];
         navigate(next ? "/checkin" : "/measure");
@@ -85,7 +95,7 @@ export function Shell({ children }: { children: ReactNode }) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [navigate, health.due, togglePresenter]);
+  }, [navigate, health.due, togglePresenter, nav]);
 
   return (
     <div className="shell">
@@ -96,7 +106,7 @@ export function Shell({ children }: { children: ReactNode }) {
         <div className="rail-brand" aria-hidden>
           <img src="./logo-mark-on-dark.svg" width={40} height={40} alt="" />
         </div>
-        {NAV.map((n) => (
+        {nav.map((n) => (
           <NavLink
             key={n.to}
             to={n.to}
@@ -145,11 +155,12 @@ export function Shell({ children }: { children: ReactNode }) {
         )}
         <span className="sim-pill" role="note">
           <TriangleAlert width={14} height={14} aria-hidden />
-          SIMULATED DEMO DATA
+          {health.member ? "SIMULATED WEARABLE · NOT A MEDICAL DEVICE" : "SIMULATED DEMO DATA"}
         </span>
       </header>
 
       <main id="main" className="shell-main" tabIndex={-1}>
+        <CrewAlertBanner crew={crewToday} />
         {saveFailed && (
           <div className="banner banner--watch save-banner" role="alert">
             <TriangleAlert aria-hidden />
@@ -190,7 +201,7 @@ export function Shell({ children }: { children: ReactNode }) {
         <Modal title="Keyboard shortcuts" onClose={() => setHelp(false)}>
           <table className="table">
             <tbody>
-              {NAV.map((n) => (
+              {nav.map((n) => (
                 <tr key={n.key}>
                   <td style={{ width: 80 }}>
                     <span className="kbd">{n.key}</span>

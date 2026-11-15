@@ -13,6 +13,7 @@ import "./styles/base.css";
 import "./styles/components.css";
 import "./styles/shell.css";
 import "./styles/screens.css";
+import "./styles/onboarding.css";
 import { App } from "./App";
 
 createRoot(document.getElementById("root")!).render(

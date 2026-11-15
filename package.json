@@ -1,7 +1,7 @@
 {
   "name": "astronaut-health-monitor",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Astronaut Health Monitor: a desktop app for a one-minute daily astronaut health check that knows when a problem can wait for Earth. Offline, simulated data, decision support only. NASA Space Apps 2026.",
   "type": "module",
   "scripts": {
@@ -53,5 +53,8 @@
     "email": "LORDXMANOJ@users.noreply.github.com"
   },
   "homepage": "https://github.com/LORDXMANOJ/Nasa-space-app",
-  "main": "electron/main.cjs"
+  "main": "electron/main.cjs",
+  "dependencies": {
+    "electron-updater": "6.8.12"
+  }
 }

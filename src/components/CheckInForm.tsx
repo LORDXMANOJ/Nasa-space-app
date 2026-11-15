@@ -11,7 +11,9 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, Cpu, Loader2, Radio } from "./icons";
 import { indicatorById, type Indicator } from "../data";
 import { learnMetricBaselines } from "../engine/detectors";
-import { isScheduled, simulateReading, type Reading } from "../engine/simulation";
+import { isScheduled, type Reading } from "../engine/simulation";
+import { canSkip } from "../engine/crew";
+import { useCrew } from "../store/crew";
 import { useHealth } from "../store/health";
 import { useMission } from "../store/mission";
 import { toastWhenSaved } from "../store/toast";
@@ -96,7 +98,6 @@ const wait = (ms: number) => new Promise((r) => window.setTimeout(r, ms));
 
 export function CheckInForm({ onDone }: { onDone?: () => void }) {
   const h = useHealth();
-  const env = useMission((s) => s.environment);
   const reduced = useMission((s) => s.settings.reducedMotion || s.settings.lowPower);
   const addReadings = useMission((s) => s.addReadings);
   const setSymptoms = useMission((s) => s.setSymptoms);
@@ -131,7 +132,7 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
   };
   const steps: StepId[] = byStep.devices.length ? ["wearable", "devices", "feel"] : ["wearable", "feel"];
 
-  const sim = (ind: Indicator) => simulateReading(ind, h.day, h.profile, env);
+  const sim = (ind: Indicator) => h.simulate(ind);
   const [vals, setVals] = useState<Record<string, string>>(() => {
     const v: Record<string, string> = {};
     for (const r of rows) {
@@ -154,8 +155,16 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
   const [submitting, setSubmitting] = useState(false);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const cur = steps[step];
+  // "Didn't measure": a real crew member may skip a reading for one day, never two days in a row
+  const setSkips = useCrew((s) => s.setSkips);
+  const pastSkips = h.member?.skips ?? {};
+  const [skipped, setSkipped] = useState<string[]>(() => h.member?.skips[h.day] ?? []);
+  const skippable = (r: Row) => !!h.member && r.ind.id !== "radiation" && canSkip(pastSkips, r.ind.id, h.day);
+  const skippedYesterday = (r: Row) => !!h.member && !canSkip(pastSkips, r.ind.id, h.day);
+  const isSkipped = (key: string) => skipped.includes(key.split(".")[0]);
 
   const err = (f: Field) => {
+    if (isSkipped(f.key)) return "";
     const raw = vals[f.key];
     if (raw === undefined || raw === "") return "Needed. Press Measure or tap the box to type it.";
     const n = Number(raw);
@@ -203,7 +212,7 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
     }
     setSubmitting(true);
     await wait(reduced ? 300 : 1100);
-    const rs: Reading[] = rows.map((r) => {
+    const rs: Reading[] = rows.filter((r) => !skipped.includes(r.ind.id)).map((r) => {
       const values = sim(r.ind);
       r.fields.forEach((f) => (values[f.idx] = Number(vals[f.key])));
       if (r.ind.id === "weight") {
@@ -212,9 +221,10 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
       }
       return { indicatorId: r.ind.id, day: h.day, values, source: "user" };
     });
-    const ms = simulateReading(indicatorById("mood"), h.day, h.profile, env);
+    const ms = h.simulate(indicatorById("mood"));
     rs.push({ indicatorId: "mood", day: h.day, values: [mood!, ms[1]], source: "user" });
     addReadings(rs);
+    if (h.member) setSkips(h.member.id, h.day, skipped);
     setSymptoms(h.day, symptoms.filter((s) => s !== "None").concat(pain > 0 ? [`Pain ${pain}/10`] : []));
     markCheckedIn();
     toastWhenSaved("Check-in saved. Here are your results.");
@@ -248,7 +258,8 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
         </div>
       </div>
       <div className="ci-card-body">
-        {r.fields.map((f) => {
+        {skipped.includes(r.ind.id) && <p className="ci-skipped">Not measured today. It must be measured tomorrow.</p>}
+        {!skipped.includes(r.ind.id) && r.fields.map((f) => {
           const e = tried[cur] || touched[f.key] ? err(f) : "";
           return (
             <div key={f.key} className="ci-numfield">
@@ -273,7 +284,20 @@ export function CheckInForm({ onDone }: { onDone?: () => void }) {
             </div>
           );
         })}
-        {r.mode === "device" && (
+        {skippable(r) && (
+          <button
+            type="button"
+            className="btn btn--ghost ci-skip"
+            aria-pressed={skipped.includes(r.ind.id)}
+            onClick={() =>
+              setSkipped((l) => (l.includes(r.ind.id) ? l.filter((x) => x !== r.ind.id) : [...l, r.ind.id]))
+            }
+          >
+            {skipped.includes(r.ind.id) ? "Measure it after all" : "Didn't measure"}
+          </button>
+        )}
+        {skippedYesterday(r) && <small className="ci-skip-note">Skipped yesterday, so it is needed today.</small>}
+        {r.mode === "device" && !skipped.includes(r.ind.id) && (
           <ActionButton
             className="btn btn--primary ci-measure"
             onAction={() => measure(r)}

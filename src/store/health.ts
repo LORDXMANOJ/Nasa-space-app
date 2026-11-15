@@ -4,12 +4,14 @@
  * → statuses, alerts with T_harm, Earth reply time, "can it wait?" verdicts, readiness, due list, brief.
  */
 import { useMemo } from "react";
-import { INDICATORS, REGIONS, type RegionId } from "../data";
+import { INDICATORS, REGIONS, type Indicator, type RegionId } from "../data";
 import { worst, type Status } from "../engine/alerts";
 import { assessDay, verdictFor, type Alert } from "../engine/assess";
 import { profileById } from "../engine/profiles";
 import { dueIndicators, readiness } from "../engine/readiness";
-import { buildHistory } from "../engine/simulation";
+import { buildHistory, simulateReading } from "../engine/simulation";
+import { earthReadings, memberHistory, wearableReading } from "../engine/crew";
+import { useCrew } from "./crew";
 import { earthReply, ENV_TO_MISSION, formatDuration, MISSIONS, type Verdict } from "../engine/missions";
 import { useMission } from "./mission";
 
@@ -36,10 +38,31 @@ export function useHealth() {
   const day = useMission((s) => s.day);
   const userReadings = useMission((s) => s.userReadings);
   const link = useLink();
+  const mode = useCrew((s) => s.mode);
+  const members = useCrew((s) => s.members);
+  const launchDate = useCrew((s) => s.launchDate);
 
   return useMemo(() => {
-    const profile = profileById(profileId);
-    const history = buildHistory(profile, environment, day, userReadings);
+    // a real crew member (mission mode) or one of the simulated demo crew
+    const member = mode === "mission" ? members.find((m) => m.id === profileId) : undefined;
+    const earth = member ? earthReadings(member.earth, launchDate) : [];
+    const profile: { id: string; name: string; role: string } = member ?? profileById(profileId);
+    const history = member
+      ? memberHistory({
+          memberId: member.id,
+          earth,
+          readings: member.readings,
+          day,
+          env: environment,
+          wearablePaired: !!member.deviceTestedAt,
+          skippedToday: member.skips[day],
+        })
+      : buildHistory(profileById(profileId), environment, day, userReadings);
+    /** What a device "measures" today: simulated in both modes, around the member's own Earth normal for a real crew. */
+    const simulate = (ind: Indicator) =>
+      member
+        ? wearableReading(member.id, ind, day, earth, environment)
+        : simulateReading(ind, day, profileById(profileId), environment);
     const a = assessDay(history, day);
     const alerts: AlertWithVerdict[] = a.alerts.map((x) => ({
       ...x,
@@ -81,6 +104,8 @@ export function useHealth() {
       day,
       learning: false,
       link,
+      simulate,
+      member,
     };
-  }, [profileId, environment, day, userReadings, link]);
+  }, [profileId, environment, day, userReadings, link, mode, members, launchDate]);
 }

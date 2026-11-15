@@ -11,3 +11,5 @@
 | Any other Linux | `AstronautHealthMonitor-Linux-x86_64.AppImage` / `-arm64.AppImage` | `chmod +x` the file, then run it. |
 
 Windows shows a SmartScreen notice because the installer is not code-signed yet: choose **More info → Run anyway**.
+
+**Updates.** From version 1.1.0 the app checks for a new version when the computer is online (you can turn this off in Settings). On Windows and Linux it downloads the update and installs it when you press **Restart and update**; your readings stay on the computer. On a Mac it opens the download page, because the app is not signed by Apple yet. Versions 1.0.0 and 1.0.1 cannot update themselves: install 1.1.0 once, over the old version, and later updates come in the app.

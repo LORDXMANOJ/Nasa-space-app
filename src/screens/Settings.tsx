@@ -8,6 +8,9 @@ import { formatDuration, MISSIONS, ENV_TO_MISSION } from "../engine/missions";
 import { useLink } from "../store/health";
 import { useMission } from "../store/mission";
 import { toast, toastWhenSaved } from "../store/toast";
+import { useCrew } from "../store/crew";
+import { UpdateSettings } from "../components/UpdateNotice";
+import { missionDayOf, todayIso } from "../engine/crew";
 
 function Toggle({
   checked,
@@ -61,6 +64,7 @@ export function Settings() {
     toastWhenSaved("Saved");
   };
   const mission = MISSIONS[ENV_TO_MISSION[st.environment]];
+  const crewMode = useCrew((s) => s.mode);
   return (
     <div className="page">
       <div className="page-head">
@@ -69,22 +73,33 @@ export function Settings() {
         </div>
       </div>
       <div className="settings-grid">
-        <section className="card stack">
-          <h2>Crew member (demo stories)</h2>
-          <div className="crew-pick">
-            {PROFILES.map((p) => (
-              <button key={p.id} aria-pressed={st.profileId === p.id} onClick={() => st.setProfile(p.id)}>
-                <strong>{p.name}</strong>
-                <span className="dim">{p.role}</span>
-                <span style={{ fontSize: "var(--fs-sm)" }}>{p.storyTitle}</span>
-              </button>
-            ))}
-          </div>
-          <p className="dim" style={{ fontSize: "var(--fs-sm)" }}>
-            All crew and readings are simulated. Each story is seeded, so it plays out the same way every
-            time.
-          </p>
-        </section>
+        {crewMode === "mission" ? (
+          <MissionCard />
+        ) : (
+          <section className="card stack">
+            <h2>Crew member (demo stories)</h2>
+            <div className="crew-pick">
+              {PROFILES.map((p) => (
+                <button key={p.id} aria-pressed={st.profileId === p.id} onClick={() => st.setProfile(p.id)}>
+                  <strong>{p.name}</strong>
+                  <span className="dim">{p.role}</span>
+                  <span style={{ fontSize: "var(--fs-sm)" }}>{p.storyTitle}</span>
+                </button>
+              ))}
+            </div>
+            <p className="dim" style={{ fontSize: "var(--fs-sm)" }}>
+              All crew and readings are simulated. Each story is seeded, so it plays out the same way every
+              time.
+            </p>
+            <button
+              className="btn"
+              style={{ alignSelf: "flex-start" }}
+              onClick={() => useCrew.getState().setMode(useCrew.getState().setupDone ? "mission" : "new")}
+            >
+              {useCrew.getState().setupDone ? "Back to my crew" : "Set up a real crew"}
+            </button>
+          </section>
+        )}
 
         <section className="card stack">
           <h2>Where are we?</h2>
@@ -95,6 +110,8 @@ export function Settings() {
               value={st.environment}
               onChange={(e) => {
                 st.setEnvironment(e.target.value as EnvironmentId);
+                const c = useCrew.getState();
+                if (c.mode === "mission") c.setMission(c.launchDate, e.target.value as EnvironmentId);
                 toastWhenSaved("Saved. Earth reply updated.");
               }}
             >
@@ -232,7 +249,74 @@ export function Settings() {
             </button>
           </div>
         </section>
+
+        <UpdateSettings />
       </div>
     </div>
+  );
+}
+
+/** Real crew: launch date (editable), mission setup, and switching to the demo. */
+function MissionCard() {
+  const c = useCrew();
+  const day = missionDayOf(c.launchDate, todayIso());
+  return (
+    <section className="card stack">
+      <h2>Mission and crew</h2>
+      <label className="field">
+        <span>Launch date</span>
+        <input
+          type="date"
+          className="select"
+          value={c.launchDate}
+          onChange={(e) => {
+            if (!e.target.value) return;
+            c.setMission(e.target.value, c.environment);
+            useMission.setState({ day: missionDayOf(e.target.value, todayIso()) });
+            toastWhenSaved("Saved. Mission days updated.");
+          }}
+        />
+      </label>
+      <p className="dim" style={{ fontSize: "var(--fs-sm)" }}>
+        {day < 1 ? `Launch in ${1 - day} day${1 - day === 1 ? "" : "s"}.` : `Today is mission day ${day}.`}{" "}
+        Earth records are the days before the launch date.
+      </p>
+      <p style={{ fontSize: "var(--fs-sm)" }}>
+        {c.members.length} crew member{c.members.length === 1 ? "" : "s"}:{" "}
+        {c.members.map((m) => `${m.name} (${m.role})`).join(", ")}
+      </p>
+      <div className="row">
+        <button
+          className="btn"
+          onClick={() => {
+            useCrew.setState({ setupDone: false });
+            c.goStep("crew");
+            useMission.getState().signOut();
+          }}
+        >
+          Edit crew, Earth records or wearables
+        </button>
+        <button
+          className="btn btn--ghost"
+          onClick={() => {
+            useMission.getState().signOut();
+            c.setMode("demo");
+          }}
+        >
+          Open the demo crew
+        </button>
+        <button
+          className="btn btn--ghost"
+          onClick={() => {
+            if (!window.confirm("Remove this crew and all its records from this device, and start setup again?")) return;
+            useMission.getState().signOut();
+            c.resetAll();
+            useCrew.setState({ hydrated: true });
+          }}
+        >
+          Start over with a new crew
+        </button>
+      </div>
+    </section>
   );
 }

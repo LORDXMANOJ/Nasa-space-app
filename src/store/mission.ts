@@ -10,6 +10,7 @@ import type { EnvironmentId } from "../data";
 import { profileById } from "../engine/profiles";
 import type { Reading } from "../engine/simulation";
 import { dexieStorage } from "./db";
+import { useCrew } from "./crew";
 
 export interface ConsultPacket {
   id: string;
@@ -33,6 +34,8 @@ export interface Settings {
   largeText: boolean;
   highContrast: boolean;
   reducedMotion: boolean;
+  /** desktop app: look for a new version at start when online (undefined in older saves = on) */
+  checkUpdates?: boolean;
 }
 
 interface MissionState {
@@ -87,6 +90,7 @@ const defaultSettings: Settings = {
   largeText: false,
   highContrast: false,
   reducedMotion: false,
+  checkUpdates: true,
 };
 
 const DEFAULT_PROFILE = "okafor";
@@ -150,6 +154,12 @@ export const useMission = create<MissionState>()(
       replayOnboarding: () => set({ onboarded: false }),
       addReadings: (rs) =>
         set((st) => {
+          // a real crew member's readings live with that member, so the whole crew can see them
+          const crew = useCrew.getState();
+          if (crew.mode === "mission" && crew.members.some((m) => m.id === st.profileId)) {
+            crew.addReadings(st.profileId, rs);
+            return {};
+          }
           const keep = st.userReadings.filter(
             (u) => !rs.some((r) => r.indicatorId === u.indicatorId && r.day === u.day),
           );
