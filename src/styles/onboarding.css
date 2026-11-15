@@ -864,3 +864,13 @@ textarea.ob-input {
     grid-template-columns: 1fr auto;
   }
 }
+
+/* the wide Earth grid scrolls inside its own box; nothing around it may grow to fit it */
+.who-sheet,
+.ob-sheet,
+.ob-sheet .stack,
+.ob-section,
+.ob-grid-wrap {
+  min-width: 0;
+  max-width: 100%;
+}
